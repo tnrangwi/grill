@@ -2,6 +2,7 @@
 
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
+import qualified FormulaEngine.Evaluate as Eval
 
 -- Fixme: How to treat different input types accordingly?
 
@@ -15,7 +16,6 @@ add = foldl step P.PlEmpty
 
 main :: IO ()
 main = do
-  let t1 = T.Raw P.PlEmpty
-  let t2 = T.Funcall add [(T.Raw (P.PlInt 1)), (T.Raw (P.PlInt 2))]
-  print (T.eval t2)
+  let tree = T.Funcall add [(T.Raw (P.PlInt 1)), (T.Raw (P.PlInt 2))]
+  print (Eval.eval tree)
   print "Done"

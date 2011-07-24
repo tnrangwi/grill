@@ -4,8 +4,7 @@
 module Tree.FormulaTree
 (
  FormulaTree(..),
- TreeError,
- eval
+ TreeError
 )
 
 where
@@ -22,9 +21,4 @@ data FormulaTree = Raw P.Plain -- ^ Node is plain result value
                  | Funcall ([P.Plain] -> P.Plain) [FormulaTree] -- ^ Node is a formula
                  | TreeError -- ^ Node is evaluated to an error
 
--- | Evaluate FormulaTree. Better place it in a different module?
-eval :: FormulaTree -- ^ Compiled tree to evaluate
-     -> P.Plain -- ^ Plain result value
-eval (Raw v) = v
-eval (Funcall f l) = f (map eval l)
 
