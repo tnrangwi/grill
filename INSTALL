@@ -1,0 +1,4 @@
+Code is far from doing anything useful.
+
+Use ghci --make test.hs to compile and ./test.hs to run it directly.
+See file test.hs for what is working already.
