@@ -26,15 +26,5 @@ data FormulaTree = Raw P.Plain -- ^ Node is plain result value
 eval :: FormulaTree -- ^ Compiled tree to evaluate
      -> P.Plain -- ^ Plain result value
 eval (Raw v) = v
-eval (Funcall f l) = f (map eval l)  --map f (eval l) 
-
--- eval TreeError = TreeErro
-
--- data Tree a f = Raw a -- ^ Plain item - number format or ++string format
---            | Funcall f [Tree a] -- ^ Another node: Function call, several node inputs
-
--- type FormulaTree = Tree Plain ([Plain] -> Plain)
-
--- type ParserTree = Tree 
-
+eval (Funcall f l) = f (map eval l)
 
