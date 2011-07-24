@@ -1,4 +1,7 @@
 #!/usr/bin/runghc
+-- Author: Thorsten Rangwich
+-- See file LICENSE for details.
+-- This file defines the tree structure used for the formulas.
 
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
