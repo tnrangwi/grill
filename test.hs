@@ -7,6 +7,7 @@ import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
 import qualified FormulaEngine.Evaluate as Eval
 import qualified FormulaEngine.Functions.Numerics as NumFuncs
+import qualified FormulaEngine.Parse as Parse
 
 -- Fixme: How to treat different input types accordingly?
 
@@ -14,6 +15,11 @@ import qualified FormulaEngine.Functions.Numerics as NumFuncs
 
 main :: IO ()
 main = do
-  let tree = T.Funcall NumFuncs.add [(T.Raw (P.PlInt 1)), (T.Raw (P.PlInt 2))]
-  print (Eval.eval tree)
+  print "Evaluating raw formula tree"
+  let rawtree = T.Funcall NumFuncs.add [(T.Raw (P.PlInt 1)), (T.Raw (P.PlInt 2))]
+  print (Eval.eval rawtree)
+  print "Done!"
+  print "Compiling and evaluating String tree"
+  let stringtree = Parse.compile "(add 1 (add 2 3))"
+  print (Eval.eval stringtree)
   print "Done"

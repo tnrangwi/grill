@@ -4,7 +4,7 @@
 
 module FormulaEngine.Parse
 (
- parse
+ compile
 )
 
 where
@@ -12,7 +12,17 @@ where
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
 import qualified FormulaEngine.Functions.Numerics as NumFuncs
+import Text.ParserCombinators.Parsec
 
 -- | Function to parse a string and return a compiled FormulaTree
-parse :: String -> T.FormulaTree
-parse = error "NYI"
+compile :: String -> T.FormulaTree
+compile = error "NYI"
+
+-- | Formula parser to be used by Parsec
+-- form :: Parsec.Parser T.FormulaTree
+-- form = do
+--  char '('
+--  command <- word
+--  -- ...
+--  char ')'
+--  return T.Funcall (func4word command) [forms]
