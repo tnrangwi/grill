@@ -4,7 +4,7 @@
 module Tree.FormulaTree
 (
  FormulaTree(..),
- TreeError
+ TreeError(..)
 )
 
 where
@@ -18,7 +18,7 @@ data TreeError = NamedError String -- ^ Named error - this should be used
 
 -- | Compiled representation of a formula
 data FormulaTree = Raw P.Plain -- ^ Node is plain result value
-                 | Funcall ([P.Plain] -> P.Plain) [FormulaTree] -- ^ Node is a formula
-                 | TreeError -- ^ Node is evaluated to an error
+                 | Funcall P.PlainFunction [FormulaTree] -- ^ Node is a formula
+                 | TreeError TreeError -- ^ Node is evaluated to an error -- FIXME: use error in plain instead - more flexible (?!)
 
 

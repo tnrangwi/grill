@@ -5,7 +5,8 @@ module Data.Plain
 (
  GenericResult,
  Plain(..),
- Extract(..)
+ Convert(..),
+ PlainFunction
 )
 
 where
@@ -27,10 +28,20 @@ data Plain = PlEmpty -- ^ Empty item
            | PlComposite GenericResult
              deriving Show
 
-class Extract a where
-    get :: Plain -> a
-    get _ = error "Unexpected type - add instance declaration to unpack 'Plain' type"
+type PlainFunction = ([Plain] -> Plain)
 
-instance Extract Int where
+-- | Convert Plain into raw data type and vice versa
+class Convert a where
+    -- | Convert Plain data type into its raw data type
+    get :: Plain -- ^ Input Plain
+        -> a -- ^ Raw data type for return
+    -- | Standard implementation - raise error
+    get _ = error "Unexpected type - add instance declaration to unpack 'Plain' type"
+    toPlain :: a -> Plain
+    toPlain _ = PlError "No 'Plain' implementation for this data type"
+
+
+instance Convert Int where
     get (PlInt v) = v
     get _ = error "No plain integer value"
+
