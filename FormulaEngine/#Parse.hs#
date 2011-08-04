@@ -50,7 +50,6 @@ term = do -- parse enother term
            then
                do
                  Parsec.spaces
-                 -- error ("Read:" ++ ((sign:[]) ++ prefix))
                  return (T.Raw (P.PlInt ((if sign == '-' then -1 else 1) * (read prefix))))
            else
                do
