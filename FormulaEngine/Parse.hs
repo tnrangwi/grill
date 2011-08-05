@@ -27,7 +27,7 @@ compile s = case (Parsec.parse term "" s) of
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse enother term
          Parsec.char '('
-         Parsec.spaces --"skipMany space instead?
+         Parsec.spaces
          command <- Parsec.many1 Parsec.letter
          Parsec.spaces
          args <- Parsec.many term
@@ -50,15 +50,29 @@ term = do -- parse enother term
            then
                do
                  Parsec.spaces
-                 -- error ("Read:" ++ ((sign:[]) ++ prefix))
-                 return (T.Raw (P.PlInt ((if sign == '-' then -1 else 1) * (read prefix))))
+                 return (T.Raw (P.PlInt ((getSign sign) * (read prefix))))
            else
                do
                  Parsec.spaces
                  suffix <- Parsec.many1 Parsec.digit -- could do without a digit, see above
-                 return (T.Raw (P.PlFloat ((if sign == '-' then -1 else 1) * (read (prefix ++ "." ++ suffix)))))
-         
-             
+                 return (T.Raw (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix)))))
+
+class ParseSign a where
+    getSign :: Char -> a
+    getSign _ = error "No implementation getSign for this type"
+
+--FIXME: one implementation should be enough for both
+instance ParseSign Int where
+    getSign c = case c of
+                  '+' -> 1
+                  '1' -> -1
+                  otherwise -> error ("Internal error - got invalid sign:" ++ (c:[]))
+
+instance ParseSign Float where
+    getSign c = case c of
+                  '+' -> 1
+                  '1' -> -1
+                  otherwise -> error ("Internal error - got invalid sign:" ++ (c:[]))
 
 -- FIXME: This does not escape double quotes yet.
 -- | Parse String, double quote escapes a double quote. Take rest as is.
