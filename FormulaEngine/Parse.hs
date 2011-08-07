@@ -12,9 +12,9 @@ where
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
 import qualified FormulaEngine.Functions.Numerics as NumFuncs
-import qualified FormulaEngine.Functions.Registry as Reg
+import qualified FormulaEngine.Registry as Reg
 import qualified Text.ParserCombinators.Parsec as Parsec
-import Text.ParserCombinators.Parsec ((<|>))
+import Text.ParserCombinators.Parsec ((<|>), (<?>))
 
 -- | Function to parse a string and return a compiled FormulaTree
 compile :: String -> T.FormulaTree
@@ -36,12 +36,17 @@ term = do -- parse enother term
          return (T.Funcall (Reg.resolve command) args)
      <|> -- parse escaped string
        do
-         Parsec.char '"'
-         word <- Parsec.many escapedChar
-         Parsec.char '"'
-         Parsec.spaces
+         word <- parseString
          return (T.Raw (P.PlString word))
-     <|> -- parse a number as float or integer
+     <|> --Parse a reference or anything else strange. FIXME: This should be replaced by reference parsing.
+         -- This is just an example how to add a negative matching or a cell reference. Negative matching
+         -- easily brings up funny problems and should not be done.
+       do
+         -- The right parantheses is necessary, otherwise the plain expressions in a paranthesis expression
+         -- will not terminate properly
+         c <- Parsec.noneOf ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', ')']
+         fail ("Invalid character:" ++ (c:[]) ++ ". References or special treatment not yet implemented")
+     <|> -- parse a number as float or integer. This has to be the last one to parse.
        do
          sign <- Parsec.option '+' (Parsec.oneOf ['+', '-'])
          prefix <- Parsec.many1 Parsec.digit -- could do without a digit as well with special treatment afterwards
@@ -56,6 +61,7 @@ term = do -- parse enother term
                  Parsec.spaces
                  suffix <- Parsec.many1 Parsec.digit -- could do without a digit, see above
                  return (T.Raw (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix)))))
+     <?> "function term, number, string or reference"
 
 class ParseSign a where
     getSign :: Char -> a
@@ -81,30 +87,11 @@ escapedChar = do
   c <- Parsec.noneOf ['"'] -- add newline or similar strange stuff?
   return c
 
+parseString :: Parsec.Parser String
+parseString = do
+  Parsec.char '"'
+  word <- Parsec.many escapedChar
+  Parsec.char '"'
+  Parsec.spaces
+  return word
 
-{- Not needed, I suppose...
-number :: Char -> Parsec.Parser -> Either Int Float
-number ind = do
-  case ind of
-         case ind of
-           Left i -> case sign of
-                       '-' -> return T.Raw (P.PlInt i * -1)
-                       '+' -> return T.Raw (P.PlInt i)
-                       '.' -> return T.Raw (P.PlInt 0) -- this cannot happen
-                       otherwise -> return T.Raw (P.PlInt ((read sign) * 10 ^ (exponent i) + i))
-           Right f -> case signe of
-                        '-' -> return T.Raw (P.PlFloat f * -1.0)
-                        '+' return R.Raw (P.PlFloat f)
-                        '.' return T.Raw ()
-                        otherwise -> return T.Raw (P.PlInt ((read signe) * 10 ^ (exponent f) + f))
-         -- comment out
-         case sign of
-           '-' -> let (fac, hasVk) = (-1, True)
-           '+' -> let (fac, hasVk) = (1, True)
-           '.' -> let (fac, hasVk) = (1, False)
-           otherwise -> let (fac, vk) = (read sign :: Int, True)
-         if vk then
-             dkf <- many digit
-         else
-             vk = 0
--}

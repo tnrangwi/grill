@@ -2,7 +2,7 @@
 -- | See file LICENSE for details.
 -- | This file defines the tree structure used for the formulas.
 
-module FormulaEngine.Functions.Registry
+module FormulaEngine.Registry
 (
  resolve
 )

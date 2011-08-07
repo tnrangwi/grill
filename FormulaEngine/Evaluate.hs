@@ -16,4 +16,5 @@ import qualified Tree.FormulaTree as T
 eval :: T.FormulaTree -- ^ Compiled tree to evaluate
      -> P.Plain -- ^ Plain result value
 eval (T.Raw v) = v
+eval (T.TreeError e) = P.PlError (show e)
 eval (T.Funcall f l) = f (map eval l)
