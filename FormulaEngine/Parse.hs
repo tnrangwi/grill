@@ -43,19 +43,9 @@ term = do -- parse function call containing more terms
          fail ("Invalid character:" ++ (c:[]) ++ ". References or special treatment not yet implemented")
      <|> -- parse a number as float or integer. This has to be the last one to parse.
        do
-         sign <- Parsec.option '+' (Parsec.oneOf ['+', '-'])
-         prefix <- Parsec.many1 Parsec.digit -- could do without a digit as well with special treatment afterwards
-         comma <- Parsec.option 'X' (Parsec.char '.')
-         if comma == 'X'
-           then
-               do
-                 Parsec.spaces
-                 return (T.Raw (P.PlInt ((getSign sign) * (read prefix))))
-           else
-               do
-                 Parsec.spaces
-                 suffix <- Parsec.many1 Parsec.digit -- could do without a digit, see above
-                 return (T.Raw (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix)))))
+         number <- parseNumber
+         Parsec.spaces
+         return (T.Raw number)
      <?> "function term, number, string or reference"
 
 parseFunction :: Parsec.Parser (String, [T.FormulaTree])
@@ -70,17 +60,30 @@ parseFunction = do
 
 -- FIXME: This does not escape double quotes yet.
 -- | Parse String, double quote escapes a double quote. Take rest as is.
-escapedChar :: Parsec.Parser Char
-escapedChar = do
+_escapedChar :: Parsec.Parser Char
+_escapedChar = do
   c <- Parsec.noneOf ['"'] -- add newline or similar strange stuff?
   return c
 
 parseString :: Parsec.Parser String
 parseString = do
   Parsec.char '"'
-  word <- Parsec.many escapedChar
+  word <- Parsec.many _escapedChar
   Parsec.char '"'
   return word
+
+parseNumber :: Parsec.Parser P.Plain
+parseNumber = do
+  sign <- Parsec.option '+' (Parsec.oneOf ['+', '-'])
+  prefix <- Parsec.many1 Parsec.digit -- could do without a digit as well with special treatment afterwards
+  comma <- Parsec.option 'X' (Parsec.char '.')
+  if comma == 'X' --no comma
+    then
+        return (P.PlInt ((getSign sign) * (read prefix)))
+    else
+        do
+          suffix <- Parsec.many1 Parsec.digit -- could do without a digit, see above
+          return (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix))))
 
 -- Help stubs
 class ParseSign a where
