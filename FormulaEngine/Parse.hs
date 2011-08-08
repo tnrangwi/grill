@@ -25,18 +25,13 @@ compile s = case (Parsec.parse term "" s) of
 
 -- | Formula parser to be used by Parsec
 term :: Parsec.Parser T.FormulaTree
-term = do -- parse enother term
-         Parsec.char '('
-         Parsec.spaces
-         command <- Parsec.many1 Parsec.letter
-         Parsec.spaces
-         args <- Parsec.many term
-         Parsec.char ')'
-         Parsec.spaces
+term = do -- parse function call containing more terms
+         (command, args) <- parseFunction
          return (T.Funcall (Reg.resolve command) args)
      <|> -- parse escaped string
        do
          word <- parseString
+         Parsec.spaces
          return (T.Raw (P.PlString word))
      <|> --Parse a reference or anything else strange. FIXME: This should be replaced by reference parsing.
          -- This is just an example how to add a negative matching or a cell reference. Negative matching
@@ -63,6 +58,31 @@ term = do -- parse enother term
                  return (T.Raw (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix)))))
      <?> "function term, number, string or reference"
 
+parseFunction :: Parsec.Parser (String, [T.FormulaTree])
+parseFunction = do
+  Parsec.char '('
+  Parsec.spaces
+  command <- Parsec.many1 Parsec.letter
+  Parsec.spaces
+  args <- Parsec.many term
+  Parsec.char ')'
+  return (command, args)
+
+-- FIXME: This does not escape double quotes yet.
+-- | Parse String, double quote escapes a double quote. Take rest as is.
+escapedChar :: Parsec.Parser Char
+escapedChar = do
+  c <- Parsec.noneOf ['"'] -- add newline or similar strange stuff?
+  return c
+
+parseString :: Parsec.Parser String
+parseString = do
+  Parsec.char '"'
+  word <- Parsec.many escapedChar
+  Parsec.char '"'
+  return word
+
+-- Help stubs
 class ParseSign a where
     getSign :: Char -> a
     getSign _ = error "No implementation getSign for this type"
@@ -79,19 +99,4 @@ instance ParseSign Float where
                   '+' -> 1
                   '1' -> -1
                   otherwise -> error ("Internal error - got invalid sign:" ++ (c:[]))
-
--- FIXME: This does not escape double quotes yet.
--- | Parse String, double quote escapes a double quote. Take rest as is.
-escapedChar :: Parsec.Parser Char
-escapedChar = do
-  c <- Parsec.noneOf ['"'] -- add newline or similar strange stuff?
-  return c
-
-parseString :: Parsec.Parser String
-parseString = do
-  Parsec.char '"'
-  word <- Parsec.many escapedChar
-  Parsec.char '"'
-  Parsec.spaces
-  return word
 
