@@ -18,8 +18,8 @@ import Text.ParserCombinators.Parsec ((<|>), (<?>))
 
 -- | Function to parse a string and return a compiled FormulaTree
 compile :: String -> T.FormulaTree
-compile s = case (Parsec.parse term "" s) of
-              Left err -> (T.TreeError (T.NamedError (show err)))
+compile s = case Parsec.parse term "" s of
+              Left err -> T.TreeError . T.NamedError . show $ err
               Right v -> v
 
 
@@ -27,25 +27,26 @@ compile s = case (Parsec.parse term "" s) of
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
          (command, args) <- parseFunction
-         return (T.Funcall (Reg.resolve command) args)
+         Parsec.spaces
+         return $ T.Funcall (Reg.resolve command) args
      <|> -- parse escaped string
        do
          word <- parseString
          Parsec.spaces
-         return (T.Raw (P.PlString word))
+         return . T.Raw . P.PlString $ word
      <|> --Parse a reference or anything else strange. FIXME: This should be replaced by reference parsing.
          -- This is just an example how to add a negative matching or a cell reference. Negative matching
          -- easily brings up funny problems and should not be done.
        do
          -- The right parantheses is necessary, otherwise the plain expressions in a paranthesis expression
          -- will not terminate properly
-         c <- Parsec.noneOf ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', ')']
-         fail ("Invalid character:" ++ (c:[]) ++ ". References or special treatment not yet implemented")
+         c <- Parsec.noneOf "0123456789+-)"
+         fail $ "Invalid character:" ++ [c] ++ ". References or special treatment not yet implemented"
      <|> -- parse a number as float or integer. This has to be the last one to parse.
        do
          number <- parseNumber
          Parsec.spaces
-         return (T.Raw number)
+         return . T.Raw $ number
      <?> "function term, number, string or reference"
 
 -- | Parse a function call
@@ -63,14 +64,12 @@ parseFunction = do
 -- | Parse String, double quote escapes a double quote. Take rest as is.
 _escapedChar :: Parsec.Parser Char
 _escapedChar = do
-                 -- try is quite expensive. It is possible without it, however, I didn't manage.
-                 Parsec.try (Parsec.string "\"\"")
+                 -- FIXME: try is quite expensive. It is possible without it, however, I didn't manage.
+                 Parsec.try $ Parsec.string "\"\""
                  return '"'
              <|>
-               do
-                 c <- Parsec.noneOf ['"']
-                 return c
-             <?> "double quote or unquoted character"
+               Parsec.noneOf "\""
+             <?> "It is impossible to see this error message unless code above is changed!"
 
 -- | Parse a string. FIXME: Parse quoted string instead.
 parseString :: Parsec.Parser String
@@ -84,16 +83,16 @@ parseString = do
 -- | Parse a number, return packaged in Plain (either Float or Int)
 parseNumber :: Parsec.Parser P.Plain
 parseNumber = do
-  sign <- Parsec.option '+' (Parsec.oneOf ['+', '-'])
+  sign <- Parsec.option '+' $ Parsec.oneOf "+-"
   prefix <- Parsec.many1 Parsec.digit -- could do without a digit (like .5) as well with special treatment afterwards
-  comma <- Parsec.option 'X' (Parsec.char '.')
+  comma <- Parsec.option 'X' $ Parsec.char '.'
   if comma == 'X' --no comma
     then
-        return (P.PlInt ((getSign sign) * (read prefix)))
+        return . P.PlInt $ getSign sign * read prefix
     else
         do
           suffix <- Parsec.many1 Parsec.digit -- could do without a digit (like 1.), see above
-          return (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix))))
+          return . P.PlFloat $ getSign sign * read (prefix ++ "." ++ suffix)
 
 -- Help stubs
 
@@ -110,11 +109,10 @@ instance ParseSign Int where
     getSign c = case c of
                   '+' -> 1
                   '1' -> -1
-                  otherwise -> error ("Internal error - got invalid sign:" ++ (c:[]))
+                  otherwise -> error $ "Internal error - got invalid sign:" ++ [c]
 
 instance ParseSign Float where
     getSign c = case c of
                   '+' -> 1
                   '1' -> -1
-                  otherwise -> error ("Internal error - got invalid sign:" ++ (c:[]))
-
+                  otherwise -> error $ "Internal error - got invalid sign:" ++ [c]

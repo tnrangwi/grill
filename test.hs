@@ -19,10 +19,17 @@ main = do
   let rawtree = T.Funcall NumFuncs.add [(T.Raw (P.PlInt 1)), (T.Raw (P.PlInt 2))]
   print (Eval.eval rawtree)
   print "Done!"
-  print "Compiling and evaluating String tree"
-  let stringtree = Parse.compile "(add 1 (add 2 3))"
-  print (Eval.eval stringtree)
-  print "Compiling and evaluating string function"
-  let stringtree2 = Parse.compile "(conc \"A\"\"\" \"BC\")"
+
+  print "Compiling and evaluating add tree with int"
+  let stringtree1 = Parse.compile "(add 1 (add 2 3))"
+  print (Eval.eval stringtree1)
+
+  print "Compiling and evaluating add tree with float"
+  let stringtree2 = Parse.compile "(add 1.0 (add 2.1 3.2))"
   print (Eval.eval stringtree2)
+
+  print "Compiling and evaluating string function"
+  let stringtree3 = Parse.compile "(conc \"A\"\"\" \"BC\")"
+  print (Eval.eval stringtree3)
+
   print "Done"

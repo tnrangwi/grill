@@ -25,7 +25,7 @@ registry = Map.fromList [("add", NumFuncs.add), ("conc", StringFuncs.conc)]
 -- | Provides a default function returning error
 defaultFunction :: String -- ^ Name of the (unmapped) function searched
                 -> P.PlainFunction -- ^ Return value - function returning "function not found" error
-defaultFunction name _ = P.PlError ("Function " ++ name ++ "not found in registry")
+defaultFunction name _ = P.PlError $ "Function " ++ name ++ "not found in registry"
 
 -- | Resolve a function name into a function operating in a tree
 resolve :: String -- ^ Name of the function
