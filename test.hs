@@ -22,4 +22,7 @@ main = do
   print "Compiling and evaluating String tree"
   let stringtree = Parse.compile "(add 1 (add 2 3))"
   print (Eval.eval stringtree)
+  print "Compiling and evaluating string function"
+  let stringtree2 = Parse.compile "(conc \"A\" \"BC\")"
+  print (Eval.eval stringtree2)
   print "Done"

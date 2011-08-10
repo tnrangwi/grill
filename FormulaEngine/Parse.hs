@@ -23,7 +23,7 @@ compile s = case (Parsec.parse term "" s) of
               Right v -> v
 
 
--- | Formula parser to be used by Parsec
+-- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
          (command, args) <- parseFunction
@@ -58,18 +58,29 @@ parseFunction = do
   Parsec.char ')'
   return (command, args)
 
--- FIXME: This does not escape double quotes yet.
+{-
 -- | Parse String, double quote escapes a double quote. Take rest as is.
-_escapedChar :: Parsec.Parser Char
+_escapedChar :: Parsec.Parser Maybe Char
 _escapedChar = do
-  c <- Parsec.noneOf ['"'] -- add newline or similar strange stuff?
-  return c
+                 c <- Parsec.char('"')
+                 term <- Parsec.option 'X' (Parsec.char('"'))
+                 case term of
+                   'X' -> return Nothing
+                   otherwise -> return Just '"'
+             <|>
+               do
+                 c <- Parsec.anyChar
+                 return Just c
+-}
+
 
 parseString :: Parsec.Parser String
+--parseString :: Parsec.GenParser Char Bool String
 parseString = do
   Parsec.char '"'
-  word <- Parsec.many _escapedChar
-  Parsec.char '"'
+  -- HERE: now do some left or right fold with _escapedChar
+  --word <- Parsec.many _escapedChar
+  word <- Parsec.many Parsec.letter
   return word
 
 parseNumber :: Parsec.Parser P.Plain
@@ -86,8 +97,13 @@ parseNumber = do
           return (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix))))
 
 -- Help stubs
+
+-- | Class with method to return the sign (from +/-) as a properly typed number
 class ParseSign a where
-    getSign :: Char -> a
+    -- | Function to return the sign as number
+    getSign :: Char -- ^ '+' or '-' sign
+            -> a -- ^ Int, Float, or what ever...
+    -- | Default implementation can only throw an error
     getSign _ = error "No implementation getSign for this type"
 
 --FIXME: one implementation should be enough for both

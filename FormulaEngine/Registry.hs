@@ -13,13 +13,14 @@ import qualified Data.Map as Map
 import qualified Data.Plain as P
 
 import qualified FormulaEngine.Functions.Numerics as NumFuncs
+import qualified FormulaEngine.Functions.StringFuncs as StringFuncs
 -- add more...
 
 -- | There should be a more generic way to do this. Map containing name mapping
 -- | from a function name to its implementation. There should be a way to find
 -- | out by browsing the function files.
 registry :: Map.Map String P.PlainFunction
-registry = Map.fromList [("add", NumFuncs.add)]
+registry = Map.fromList [("add", NumFuncs.add), ("conc", StringFuncs.conc)]
 
 -- | Provides a default function returning error
 defaultFunction :: String -- ^ Name of the (unmapped) function searched
