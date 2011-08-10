@@ -48,6 +48,7 @@ term = do -- parse function call containing more terms
          return (T.Raw number)
      <?> "function term, number, string or reference"
 
+-- | Parse a function call
 parseFunction :: Parsec.Parser (String, [T.FormulaTree])
 parseFunction = do
   Parsec.char '('
@@ -58,42 +59,40 @@ parseFunction = do
   Parsec.char ')'
   return (command, args)
 
-{-
+
 -- | Parse String, double quote escapes a double quote. Take rest as is.
-_escapedChar :: Parsec.Parser Maybe Char
+_escapedChar :: Parsec.Parser Char
 _escapedChar = do
-                 c <- Parsec.char('"')
-                 term <- Parsec.option 'X' (Parsec.char('"'))
-                 case term of
-                   'X' -> return Nothing
-                   otherwise -> return Just '"'
+                 -- try is quite expensive. It is possible without it, however, I didn't manage.
+                 Parsec.try (Parsec.string "\"\"")
+                 return '"'
              <|>
                do
-                 c <- Parsec.anyChar
-                 return Just c
--}
+                 c <- Parsec.noneOf ['"']
+                 return c
+             <?> "double quote or unquoted character"
 
-
+-- | Parse a string. FIXME: Parse quoted string instead.
 parseString :: Parsec.Parser String
 --parseString :: Parsec.GenParser Char Bool String
 parseString = do
   Parsec.char '"'
-  -- HERE: now do some left or right fold with _escapedChar
-  --word <- Parsec.many _escapedChar
-  word <- Parsec.many Parsec.letter
+  word <- Parsec.many _escapedChar
+  Parsec.char '"'
   return word
 
+-- | Parse a number, return packaged in Plain (either Float or Int)
 parseNumber :: Parsec.Parser P.Plain
 parseNumber = do
   sign <- Parsec.option '+' (Parsec.oneOf ['+', '-'])
-  prefix <- Parsec.many1 Parsec.digit -- could do without a digit as well with special treatment afterwards
+  prefix <- Parsec.many1 Parsec.digit -- could do without a digit (like .5) as well with special treatment afterwards
   comma <- Parsec.option 'X' (Parsec.char '.')
   if comma == 'X' --no comma
     then
         return (P.PlInt ((getSign sign) * (read prefix)))
     else
         do
-          suffix <- Parsec.many1 Parsec.digit -- could do without a digit, see above
+          suffix <- Parsec.many1 Parsec.digit -- could do without a digit (like 1.), see above
           return (P.PlFloat ((getSign sign) * (read (prefix ++ "." ++ suffix))))
 
 -- Help stubs
