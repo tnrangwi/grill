@@ -51,15 +51,64 @@
 ></TD
 ></TR
 ><TR
+><TD
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="section4"
+><B
+>Contents</B
+></TD
+></TR
+><TR
+><TD
+><DL
+><DT
+><A HREF="#1"
+>Base Data Types supported in Tree
+</A
+></DT
+><DT
+><A HREF="#2"
+>Type Classes for Base Data Types
+</A
+></DT
+><DT
+><A HREF="#3"
+>Tree Function Interface
+</A
+></DT
+><DT
+><A HREF="#4"
+>Experimental
+</A
+></DT
+></DL
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="section1"
 >Description</TD
 ></TR
 ><TR
 ><TD CLASS="doc"
->Author: Thorsten Rangwich
- | See file LICENSE for details.
- | This file defines the tree structure used for the formulas.
-</TD
+><P
+>This file defines <TT
+><A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+></TT
+>, the base type used for the calculation trees.
+</P
+><P
+>Author: Thorsten Rangwich. See file LICENSE for details.
+</P
+></TD
 ></TR
 ><TR
 ><TD CLASS="s15"
@@ -76,18 +125,6 @@
 ><TR
 ><TD CLASS="body"
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
-><TR
-><TD CLASS="decl"
-><SPAN CLASS="keyword"
->data</SPAN
->  <A HREF="#t%3AGenericResult"
->GenericResult</A
-> </TD
-></TR
-><TR
-><TD CLASS="s8"
-></TD
-></TR
 ><TR
 ><TD CLASS="decl"
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
@@ -198,7 +235,23 @@
 >Plain</A
 ></TD
 ></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AGenericResult"
+>GenericResult</A
+> </TD
+></TR
 ></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
 ></TD
 ></TR
 ><TR
@@ -207,54 +260,11 @@
 ></TR
 ><TR
 ><TD CLASS="section1"
->Documentation</TD
-></TR
-><TR
-><TD CLASS="s15"
-></TD
-></TR
-><TR
-><TD CLASS="decl"
-><SPAN CLASS="keyword"
->data</SPAN
->  <A NAME="t:GenericResult"
-><A NAME="t%3AGenericResult"
+><A NAME="1"
+><A NAME="1"
+>Base Data Types supported in Tree
+</A
 ></A
-></A
-><B
->GenericResult</B
->  </TD
-></TR
-><TR
-><TD CLASS="body"
-><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
-><TR
-><TD CLASS="ndoc"
->Generic object - this is to hold results that cannot be shown (like the result of an external library.
- | I currently don't know how this should be implemented but I am sure we will need that even for
- | internal use.
-</TD
-></TR
-><TR
-><TD CLASS="section4"
-><IMG SRC="minus.gif" CLASS="coll" ONCLICK="toggle(this,'i:GenericResult')" ALT="show/hide"
-> Instances</TD
-></TR
-><TR
-><TD CLASS="body"
-><DIV ID="i:GenericResult" STYLE="display:block;"
-><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
-><TR
-><TD CLASS="decl"
->Show <A HREF="Data-Plain.html#t%3AGenericResult"
->GenericResult</A
-></TD
-></TR
-></TABLE
-></DIV
-></TD
-></TR
-></TABLE
 ></TD
 ></TR
 ><TR
@@ -278,7 +288,7 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="ndoc"
->Plain data type containing some plain value or a composite result that should not be evaluated further
+>Plain data type containing some plain value or a composite result that should not be evaluated further.
 </TD
 ></TR
 ><TR
@@ -397,6 +407,19 @@
 ></TD
 ></TR
 ><TR
+><TD CLASS="section1"
+><A NAME="2"
+><A NAME="2"
+>Type Classes for Base Data Types
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >class</SPAN
@@ -415,7 +438,7 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="ndoc"
->Convert Plain into raw data type and vice versa
+>Class to convert Plain into raw data type and vice versa.
 </TD
 ></TR
 ><TR
@@ -456,12 +479,11 @@
 >-&gt; a</TD
 ><TD CLASS="rdoc"
 >Raw data type for return
- | Standard implementation - raise error
 </TD
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Convert Plain data type into its raw data type
+>Convert Plain data type into its raw data type. Has to raise error in default implementation.
 </TD
 ></TR
 ></TABLE
@@ -479,8 +501,33 @@
 ></A
 ><B
 >toPlain</B
-> :: a -&gt; <A HREF="Data-Plain.html#t%3APlain"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: a</TD
+><TD CLASS="rdoc"
+>Input arbitrary data type.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Plain.html#t%3APlain"
 >Plain</A
+></TD
+><TD CLASS="rdoc"
+>Output - packaged in Plain.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Convert arbitrary data type into a packaged Plain. Default implementation returns PlError.
+</TD
+></TR
+></TABLE
 ></TD
 ></TR
 ></TABLE
@@ -517,6 +564,19 @@
 ></TD
 ></TR
 ><TR
+><TD CLASS="section1"
+><A NAME="3"
+><A NAME="3"
+>Tree Function Interface
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >type</SPAN
@@ -530,6 +590,74 @@
 >Plain</A
 >] -&gt; <A HREF="Data-Plain.html#t%3APlain"
 >Plain</A
+></TD
+></TR
+><TR
+><TD CLASS="doc"
+>Function type for every tree function. Input takes a list of plains and returns one Plain value.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="4"
+><A NAME="4"
+>Experimental
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t:GenericResult"
+><A NAME="t%3AGenericResult"
+></A
+></A
+><B
+>GenericResult</B
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Generic object - this is to hold results that cannot be shown (like the result of an external library).
+ I currently don't know how this should be implemented but I am sure we will need that even for
+ internal use.
+ FIXME: Use a special type class instead with methods for display in cell,
+ possibly serialisation or whatever will be needed.
+</TD
+></TR
+><TR
+><TD CLASS="section4"
+><IMG SRC="minus.gif" CLASS="coll" ONCLICK="toggle(this,'i:GenericResult')" ALT="show/hide"
+> Instances</TD
+></TR
+><TR
+><TD CLASS="body"
+><DIV ID="i:GenericResult" STYLE="display:block;"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+>Show <A HREF="Data-Plain.html#t%3AGenericResult"
+>GenericResult</A
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
 ></TD
 ></TR
 ><TR
