@@ -1,6 +1,6 @@
 -- | This file defines 'Plain', the base type used for the calculation trees.
 --
---   Author: Thorsten Rangwich. See file LICENSE for details.
+--   Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 module Data.Plain
 (

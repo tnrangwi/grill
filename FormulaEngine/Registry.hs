@@ -1,6 +1,10 @@
--- | Author: Thorsten Rangwich
--- | See file LICENSE for details.
--- | This file defines the tree structure used for the formulas.
+-- | This merges all formula functions into one great registry.
+-- 
+-- This is necessary to have everything available in the implementation
+-- of the tree evaluator.
+-- 
+-- Author: Thorsten Rangwich. See file <../LICENSE> for details.
+
 
 module FormulaEngine.Registry
 (
@@ -17,8 +21,8 @@ import qualified FormulaEngine.Functions.StringFuncs as StringFuncs
 -- add more...
 
 -- | There should be a more generic way to do this. Map containing name mapping
--- | from a function name to its implementation. There should be a way to find
--- | out by browsing the function files.
+-- from a function name to its implementation. There should be a way to find
+-- out by browsing the function files.
 registry :: Map.Map String P.PlainFunction
 registry = Map.fromList [("add", NumFuncs.add), ("conc", StringFuncs.conc)]
 

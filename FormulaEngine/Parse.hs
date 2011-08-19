@@ -1,6 +1,6 @@
--- | Author: Thorsten Rangwich
--- | See file LICENSE for details.
--- | This file defines the tree structure used for the formulas.
+-- | This file implements parsing from strings into formula trees.
+--
+-- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 module FormulaEngine.Parse
 (
@@ -34,7 +34,7 @@ term = do -- parse function call containing more terms
          word <- parseString
          Parsec.spaces
          return . T.Raw . P.PlString $ word
-     <|> --Parse a reference or anything else strange. FIXME: This should be replaced by reference parsing.
+     <|> -- Parse a reference or anything else strange. FIXME: This should be replaced by reference parsing.
          -- This is just an example how to add a negative matching or a cell reference. Negative matching
          -- easily brings up funny problems and should not be done.
        do
@@ -71,9 +71,8 @@ _escapedChar = do
                Parsec.noneOf "\""
              <?> "It is impossible to see this error message unless code above is changed!"
 
--- | Parse a string. FIXME: Parse quoted string instead.
+-- | Parse a string.
 parseString :: Parsec.Parser String
---parseString :: Parsec.GenParser Char Bool String
 parseString = do
   Parsec.char '"'
   word <- Parsec.many _escapedChar
@@ -101,10 +100,10 @@ class ParseSign a where
     -- | Function to return the sign as number
     getSign :: Char -- ^ '+' or '-' sign
             -> a -- ^ Int, Float, or what ever...
-    -- | Default implementation can only throw an error
+    -- Default implementation can only throw an error
     getSign _ = error "No implementation getSign for this type"
 
---FIXME: one implementation should be enough for both
+-- FIXME: one implementation should be enough for both Int and Float.
 instance ParseSign Int where
     getSign c = case c of
                   '+' -> 1

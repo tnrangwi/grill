@@ -1,6 +1,6 @@
--- | Author: Thorsten Rangwich
--- | See file LICENSE for details.
--- | This file defines the tree structure used for the formulas.
+-- | This file defines numerical functions available in formulas.
+--
+-- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 module FormulaEngine.Functions.Numerics
 (
  add
@@ -12,7 +12,7 @@ import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
 
 -- | Function to numerical add numbers.
--- | FIXME: Add combinations for Int and Float.
+-- FIXME: Add combinations for Int and Float.
 add :: [P.Plain] -> P.Plain
 add = foldl step P.PlEmpty
     where step P.PlEmpty p@(P.PlInt v) = p

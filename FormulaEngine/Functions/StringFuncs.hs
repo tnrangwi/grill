@@ -1,6 +1,6 @@
--- | Author: Thorsten Rangwich
--- | See file LICENSE for details.
--- | This file defines the tree structure used for the formulas.
+-- | This file implements string functions available in formulas.
+--
+-- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 module FormulaEngine.Functions.StringFuncs
 (
