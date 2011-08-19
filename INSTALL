@@ -1,4 +1,38 @@
-Code is far from doing anything useful.
-
-Use ghci --make test.hs to compile and ./test.hs to run it directly.
+Code is far from doing anything useful apart from some test cases.
 See file test.hs for what is working already.
+
+COMPILATION
+
+There is a quite simple makefile included. Run
+
+make test
+
+to pass the tests (which simply tries to run the test files) and
+
+make
+
+to create an executable running the tests. Creating the executable
+may find problems during compilation that are not found by just
+running the test case. This is object to more checks for e.g. filename
+conventions done by ghc during compilation that are not done by runghc
+used in the test program.
+
+CREATING DOCUMENTATION
+
+Run
+
+make doc
+
+to create the inline (haddock) documentation.
+
+DO THE STUFF MANUALLY
+
+If you do not have make up and running you can run
+
+ghci --make test.hs
+
+to compile and
+
+./test.hs
+
+to run the test cases directly without using the compiled files.
