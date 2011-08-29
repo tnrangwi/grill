@@ -24,10 +24,10 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 # Just let ghc create one executable depending on all source files. Quick hack, will change in the future.
 all:
-	ghc --make test.hs
+	ghc --make demo/demo_calc_trees.hs
 
 test:
-	./test.hs
+	demo/demo_calc_trees.hs
 
 clean:
 	rm -f $(HS_OBJ) $(HS_HI)
