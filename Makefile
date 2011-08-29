@@ -28,6 +28,7 @@ all:
 
 test:
 	demo/demo_calc_trees.hs
+	demo/display_sheet.hs TestData/demo_sheet.gst
 
 clean:
 	rm -f $(HS_OBJ) $(HS_HI)
