@@ -6,7 +6,7 @@
 
 #This file magic is for cleanup and documentation, not needed else currently
 
-EXCLUDE_HS=test.hs
+EXCLUDE_HS=demo_*.hs
 #From file1 file2 file3 --> file1 -o -name file2 -o -name file3
 EXCLUDE_HS_FIND_PARAM=$(patsubst %,-o -name %,$(EXCLUDE_HS))
 HS_SRC=$(shell find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_FIND_PARAM) \))
@@ -31,6 +31,7 @@ test:
 
 clean:
 	rm -f $(HS_OBJ) $(HS_HI)
+	rm -f demo/*.hi demo/*.o
 
 doc:
 	haddock -o doc -h $(HS_SRC)
@@ -39,3 +40,4 @@ clean_doc:
 	rm -f doc/*
 
 mrproper: clean clean_doc
+	rm -f demo/demo_calc_trees

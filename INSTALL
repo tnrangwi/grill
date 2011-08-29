@@ -29,10 +29,11 @@ DO THE STUFF MANUALLY
 
 If you do not have make up and running you can run
 
-ghci --make test.hs
+ghci --make demo/xyz.hs
 
-to compile and
+for any file in the demo directory to compile and
 
-./test.hs
+demo/xyz.hs
 
-to run the test cases directly without using the compiled files.
+to run any single test cases directly without using the compiled files - for any
+file in the demo directory.
