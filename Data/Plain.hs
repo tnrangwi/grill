@@ -30,7 +30,7 @@ data Plain = PlEmpty -- ^ Empty item
            | PlInt Int -- ^ Int value
            | PlFloat Float -- ^ Float value
            | PlString String -- ^ String value
-           | PlError String -- ^ Error occured - FIXME: Better to packlage whole plain in Either instead?
+           | PlError String -- ^ Error occured
            | PlComposite GenericResult
              deriving Show
 
