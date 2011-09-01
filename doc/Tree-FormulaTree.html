@@ -109,6 +109,14 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
+>| <A HREF="#v%3AReference"
+>Reference</A
+> <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+></TR
+><TR
+><TD CLASS="decl"
 >| <A HREF="#v%3AFuncall"
 >Funcall</A
 > <A HREF="Data-Plain.html#t%3APlainFunction"
@@ -154,6 +162,12 @@
 >= <A HREF="#v%3ANamedError"
 >NamedError</A
 > String</TD
+></TR
+><TR
+><TD CLASS="decl"
+>| <A HREF="#v%3ACircularReference"
+>CircularReference</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="decl"
@@ -226,6 +240,20 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
+><A NAME="v:Reference"
+><A NAME="v%3AReference"
+></A
+></A
+><B
+>Reference</B
+> <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+><TD CLASS="rdoc"
+></TD
+></TR
+><TR
+><TD CLASS="arg"
 ><A NAME="v:Funcall"
 ><A NAME="v%3AFuncall"
 ></A
@@ -253,7 +281,9 @@
 >TreeError</A
 ></TD
 ><TD CLASS="rdoc"
->Node is evaluated to an error -- FIXME: use error in plain instead - more flexible (?!)
+>Node is evaluated to an error
+ This makes sense for errors affecting the tree like circular references
+ in contrast to plain value errors like div/0.
 </TD
 ></TR
 ></TABLE
@@ -308,6 +338,19 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
+><A NAME="v:CircularReference"
+><A NAME="v%3ACircularReference"
+></A
+></A
+><B
+>CircularReference</B
+></TD
+><TD CLASS="rdoc"
+>Circular reference in tree.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
 ><A NAME="v:UnspecifiedError"
 ><A NAME="v%3AUnspecifiedError"
 ></A
@@ -316,7 +359,7 @@
 >UnspecifiedError</B
 ></TD
 ><TD CLASS="rdoc"
->Unspecified error - not useful, better add more sepcific errors
+>Unspecified error - not useful, better add more specific errors
 </TD
 ></TR
 ></TABLE
