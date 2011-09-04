@@ -14,6 +14,7 @@ import qualified Tree.FormulaTree as T
 
 
 -- FIXME: Eval needs to be enhanced for sheet evaluation with references
+-- FIXME: Treating PlError is left to every single function - this should be done only if the function likes to treat errors
 
 -- | Evaluate FormulaTree.
 eval :: T.FormulaTree -- ^ Compiled tree to evaluate
