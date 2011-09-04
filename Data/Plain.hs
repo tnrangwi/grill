@@ -10,6 +10,7 @@ module Data.Plain
  Convert(..),
  -- * Tree Function Interface
  PlainFunction,
+ checkError,
  -- * Experimental
  GenericResult -- export more of it?
 )
@@ -33,6 +34,12 @@ data Plain = PlEmpty -- ^ Empty item
            | PlError String -- ^ Error occured
            | PlComposite GenericResult
              deriving Show
+
+-- | Check Plain for error
+checkError :: Plain -- ^ Plain value to check for error
+           -> Bool -- ^ Return value - error contained in Plain?
+checkError (PlError _) = True
+checkError _ = False
 
 -- | Function type for every tree function. Input takes a list of plains and returns one Plain value.
 type PlainFunction = ([Plain] -> Plain)

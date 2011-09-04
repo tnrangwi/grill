@@ -19,6 +19,5 @@ add = foldl step P.PlEmpty
           step P.PlEmpty p@(P.PlFloat v) = p
           step (P.PlInt v1) (P.PlInt v2) = P.PlInt $ v1 + v2
           step (P.PlFloat v1) (P.PlFloat v2) = P.PlFloat $ v1 + v2
-          step P.PlEmpty p@(P.PlError v) = p
           step p@(P.PlError v) _ = p
           step _ _ = P.PlError "Invalid data type or data type combination in add"
