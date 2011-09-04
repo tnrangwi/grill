@@ -31,4 +31,8 @@ main = do
   let stringtree3 = Parse.compile "(conc \"A\"\"\" \"BC\")"
   print (Eval.eval stringtree3)
 
+  print "Compiling tree with references - will fail in eval"
+  let reftree1 = Parse.compile "'1:1"
+  print (Eval.eval reftree1)
+
   print "All done successfully"
