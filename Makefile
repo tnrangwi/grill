@@ -26,9 +26,14 @@ HS_HI=$(HS_SRC:.hs=.hi)
 all:
 	ghc --make demo/demo_calc_trees.hs
 
+#Run test suites
 test:
 	demo/demo_calc_trees.hs
 	demo/display_sheet.hs TestData/demo_sheet.gst
+
+#Check syntax of all files using hlint
+hlint:
+	hlint .
 
 clean:
 	rm -f $(HS_OBJ) $(HS_HI)
