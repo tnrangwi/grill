@@ -8,6 +8,8 @@ import qualified System.Exit as Exit
 import qualified System.IO as FileIO
 import qualified Control.Monad as M
 
+import qualified FormulaEngine.Parse as Parse
+
 -- | Tell error and exit from main.
 exitMain :: String -- ^ Error message
          -> IO () -- Just exit, no return value
@@ -27,4 +29,7 @@ main = do
   let sheetFile = head argv
   rawSheet <- FileIO.readFile sheetFile
   putStr $ "Parsing raw sheet:\n===\n" ++ rawSheet ++ "===\n"
+  let sheet = Parse.compileSheet rawSheet
+  print "Done"
+  
   -- Parse contents using the enhanced parser for a whole sheet - TODO!

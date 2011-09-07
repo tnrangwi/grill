@@ -4,7 +4,8 @@
 
 module FormulaEngine.Parse
 (
- compile
+ compileTree,
+ compileSheet
 )
 
 where
@@ -13,19 +14,49 @@ import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
 import qualified FormulaEngine.Functions.Numerics as NumFuncs
 import qualified FormulaEngine.Registry as Reg
-import qualified Data.SheetLayout as S
+import qualified Data.SheetLayout as SheetLayout
+import qualified Data.Sheet as Sheet
 import qualified Text.ParserCombinators.Parsec as Parsec
 import Text.ParserCombinators.Parsec ((<|>), (<?>))
 
 import qualified Control.Monad as M
 
 -- | Function to parse a string and return a compiled FormulaTree
-compile :: String -> T.FormulaTree
-compile s = case Parsec.parse term "" s of
-              Left err -> T.TreeError . T.NamedError . show $ err
-              Right v -> v
+compileTree :: String -> T.FormulaTree
+compileTree s = case Parsec.parse term "" s of
+                  Left err -> T.TreeError . T.NamedError . show $ err
+                  Right v -> v
 
+-- FIXME: There should be a function using a handle instead of a string. Creating the string is very expensive!
 
+compileSheet = error "Not yet implemented"
+{-
+-- | Function to parse a string containing a whole sheet.
+compileSheet :: String -> Sheet.RawSheet
+compileSheet s = case Parsec.parse sheet "" s of
+                   Left err -> T.TreeError . T.NamedError. show $ err
+                   Right v -> v
+
+sheet :: Parsec.Parser Sheet.RawSheet
+sheet = do
+          header <- sheetHeader
+          fail "Not fully implemented"
+          -- Control.Monad.when (Sheet.invalid header) ...
+          
+
+-- | Parse sheet header
+sheetHeader :: Parsec.Parser Sheet.SheetHeader
+sheetHeader = do -- parse sheet version 1
+                Version.parseMagicBytes
+                version <- Version.parseSheetVersion
+                calcVersion <- Version.parseCalcVersion
+                Version.parseChecksum
+                let v = Version.versionString
+                    -- FIXME: Should be different versions, test only
+                M.when (version > v || version > v) (fail "Your grill version is too old to open this")
+                fail "FIXME: Not yet implemented"
+            <?> "expecting sheet header"
+-}
 -- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
@@ -104,7 +135,7 @@ parseNumber = do
 
 
 -- | Parse a reference to another tree, addressed as external cell address
-parseReference :: Parsec.Parser S.Address
+parseReference :: Parsec.Parser SheetLayout.Address
 parseReference = do
   Parsec.char '\''
   stringRow <- Parsec.many1 Parsec.digit
@@ -112,8 +143,8 @@ parseReference = do
   stringCol <- Parsec.many1 Parsec.digit
   let row = read stringRow
   let col = read stringCol
-  M.when (row > S.maxRow || col > S.maxCol) (fail "Cell reference not < 256:16")
-  return $ S.makeAddr row col
+  M.when (row > SheetLayout.maxRow || col > SheetLayout.maxCol) (fail "Cell reference not < 256:16")
+  return $ SheetLayout.makeAddr row col
 
 
 -- Help stubs
