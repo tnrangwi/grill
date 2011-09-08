@@ -16,10 +16,12 @@ import qualified FormulaEngine.Functions.Numerics as NumFuncs
 import qualified FormulaEngine.Registry as Reg
 import qualified Data.SheetLayout as SheetLayout
 import qualified Data.Sheet as Sheet
+import qualified Version.Information as Version
 import qualified Text.ParserCombinators.Parsec as Parsec
 import Text.ParserCombinators.Parsec ((<|>), (<?>))
 
 import qualified Control.Monad as M
+
 
 -- | Function to parse a string and return a compiled FormulaTree
 compileTree :: String -> T.FormulaTree
@@ -29,13 +31,11 @@ compileTree s = case Parsec.parse term "" s of
 
 -- FIXME: There should be a function using a handle instead of a string. Creating the string is very expensive!
 
-compileSheet = error "Not yet implemented"
-{-
--- | Function to parse a string containing a whole sheet.
-compileSheet :: String -> Sheet.RawSheet
+-- | Function to parse a whole sheet.
+compileSheet :: String -> Either String Sheet.RawSheet -- FIXME: Return something else on error?
 compileSheet s = case Parsec.parse sheet "" s of
-                   Left err -> T.TreeError . T.NamedError. show $ err
-                   Right v -> v
+                   Left err -> Left $ show err
+                   Right v -> Right v
 
 sheet :: Parsec.Parser Sheet.RawSheet
 sheet = do
@@ -45,7 +45,7 @@ sheet = do
           
 
 -- | Parse sheet header
-sheetHeader :: Parsec.Parser Sheet.SheetHeader
+sheetHeader :: Parsec.Parser Sheet.RawHeader
 sheetHeader = do -- parse sheet version 1
                 Version.parseMagicBytes
                 version <- Version.parseSheetVersion
@@ -54,9 +54,9 @@ sheetHeader = do -- parse sheet version 1
                 let v = Version.versionString
                     -- FIXME: Should be different versions, test only
                 M.when (version > v || version > v) (fail "Your grill version is too old to open this")
-                fail "FIXME: Not yet implemented"
+                return Sheet.emptyRawHeader -- FIXME: Add contents!
             <?> "expecting sheet header"
--}
+
 -- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms

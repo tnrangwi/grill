@@ -14,20 +14,28 @@ module Data.SheetLayout
 
 where
 
-newtype Address = Addr (Int, Int)
+-- | Type storing a sheet cell address. Format may change.
+newtype Address = Addr { adr :: (Int, Int) }
 
+-- | Max rows allowed in sheet. FIXME: Should be in Constants.
 maxRow :: Int
 maxRow = 256
+
+-- | Max columns in sheet. FIXME: Should be in Constants.
 maxCol :: Int
 maxCol = 16
 
+-- | Extract row from address.
 row :: Address -> Int
 row (Addr (a, _)) = a
 
+-- | Extract column of address.
 col :: Address -> Int
 col (Addr (_, b)) = b
 
-address :: Address -> (Int, Int)
+-- | Access row / col from string. While the internal representation of Address may change, address should not.
+address :: Address -- ^ Input adress
+        -> (Int, Int) -- ^ Row / Col
 address (Addr a) = a
 
 makeAddr :: Int -> Int -> Address
@@ -35,4 +43,14 @@ makeAddr a b = Addr (a, b)
 
 instance Show Address
     where
-      show (Addr (r, c)) = (show r) ++ ":" ++ (show c)
+      show (Addr (r, c)) = show r ++ ":" ++ show c
+
+instance Ord Address
+    where
+      (<=) a b = (<=) (address a) (address b)
+      max a b = Addr $ max (address a) (address b)
+
+
+instance Eq Address
+    where
+      (==) a b = (==) (address a) (address b) -- FIXME: There certainly is some luft function for that

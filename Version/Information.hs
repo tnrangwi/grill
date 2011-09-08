@@ -10,6 +10,7 @@ module Version.Information
      -- * Version information
      versionString,
      -- * Parser to parse version from a string - only used by parsers
+     parseMagicBytes,
      parseSheetVersion,
      parseCalcVersion,
      parseChecksum
@@ -43,7 +44,7 @@ parseVersion prefix msg = do
   Parsec.char '.'
   micro <- Parsec.many1 Parsec.digit
   let res = major ++ "." ++ minor ++ "." ++ micro
-  if (length res) == 8
+  if length res == 8
       then
           return res
       else

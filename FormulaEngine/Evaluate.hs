@@ -26,7 +26,7 @@ eval (T.Funcall f l) = let argv = map eval l
                          case res of
                            P.PlError _ -> findError res argv
                            otherwise -> res
-eval (T.Reference addr) = P.PlError $ "Cannot evaluate address without a sheet - referenced:" ++ (show addr) ++ "."
+eval (T.Reference addr) = P.PlError $ "Cannot evaluate address without a sheet - referenced:" ++ show addr ++ "."
 
 -- | Check if error already in input or in result of function
 findError :: P.Plain -- ^ Result error value
