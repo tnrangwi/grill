@@ -9,7 +9,7 @@ module Data.Sheet
      addCell,
      RawHeader,
      emptyRawHeader,
-     addHeaderProperty
+     addHeaderProperties
     )
 
 where
@@ -41,9 +41,8 @@ addCell a t = RSheet . Map.insert a t . rSheet
 emptyRawHeader :: RawHeader
 emptyRawHeader = RHeader Map.empty
 
--- | Add single property to header.
-addHeaderProperty :: String -- ^ Property name
-                  -> P.Plain -- ^ Property value
-                  -> RawHeader -- ^ Old header
-                  -> RawHeader -- ^ updated header
-addHeaderProperty k v = RHeader . Map.insert k v . rHeader
+-- | Add properties to header.
+addHeaderProperties :: [(String, P.Plain)] -- ^ Property name / value
+                    -> RawHeader -- ^ Old header
+                    -> RawHeader -- ^ updated header
+addHeaderProperties p = RHeader . Map.union (Map.fromList p) . rHeader

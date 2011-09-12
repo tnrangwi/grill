@@ -1,2 +1,14 @@
 move registry to formula_engine
 gui IO
+
+Try out:
+========
+
+Possibly replace Plain with a (arbitrary type) and add constraints
+to functions. This would make it possibly to turn tree and sheet
+in a Monad for better use. Further on the whole implementation
+get some functional style.
+
+E.g. filling a sheet could then be done within the Monad. Plain may
+be needed for properties but perhaps it is fully obsolete and a type
+class instead of a type.

@@ -41,20 +41,23 @@ sheet :: Parsec.Parser Sheet.RawSheet
 sheet = do
           header <- sheetHeader
           fail "Not fully implemented"
-          -- Control.Monad.when (Sheet.invalid header) ...
           
 
 -- | Parse sheet header
 sheetHeader :: Parsec.Parser Sheet.RawHeader
-sheetHeader = do -- parse sheet version 1
+sheetHeader = do
                 Version.parseMagicBytes
-                version <- Version.parseSheetVersion
-                calcVersion <- Version.parseCalcVersion
+                format <- Version.parseFormat
+                version <- Version.parseVersion
                 Version.parseChecksum
-                let v = Version.versionString
-                    -- FIXME: Should be different versions, test only
-                M.when (version > v || version > v) (fail "Your grill version is too old to open this")
-                return Sheet.emptyRawHeader -- FIXME: Add contents!
+                -- FIXME: This should split into major, minor etc. and pass it this way into the header
+                let f = Version.formatString
+                    v = Version.versionString
+                M.when (format > f || version > v) (fail "Your grill version is too old to open this")
+                return $ 
+                       Sheet.addHeaderProperties
+                                [("format", P.PlString format), ("version", P.PlString version)]
+                                Sheet.emptyRawHeader 
             <?> "expecting sheet header"
 
 -- | Formula parser to be used by compile

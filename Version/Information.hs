@@ -9,10 +9,11 @@ module Version.Information
      module StaticVersion,
      -- * Version information
      versionString,
+     formatString,
      -- * Parser to parse version from a string - only used by parsers
      parseMagicBytes,
-     parseSheetVersion,
-     parseCalcVersion,
+     parseFormat,
+     parseVersion,
      parseChecksum
     )
 
@@ -28,15 +29,19 @@ import qualified Version.StaticVersion as StaticVersion
 versionString :: String
 versionString = Printf.printf "%02d.%02d.%02d" StaticVersion.grillMajor StaticVersion.grillMinor StaticVersion.grillMicro
 
+-- | Maximum sheet format grill can handle
+formatString :: String -- FIXME: These should be different
+formatString = versionString
+
 -- | Parse magic bytes at the beginning of every grill sheet
 parseMagicBytes :: Parsec.Parser ()
 parseMagicBytes = Parsec.string Constants.grillPrefix >> return ()
 
 -- | Help stub to parse one of the versions in the sheet header
-parseVersion :: Char -- ^ Identifier
-             -> String -- ^ String for fail messages
-             -> Parsec.Parser String -- ^ Parsec data type for string parsers
-parseVersion prefix msg = do
+parseVersionString :: Char -- ^ Identifier
+                   -> String -- ^ String for fail messages
+                   -> Parsec.Parser String -- ^ Parsec data type for string parsers
+parseVersionString prefix msg = do
   Parsec.char prefix
   major <- Parsec.many1 Parsec.digit
   Parsec.char '.'
@@ -51,12 +56,12 @@ parseVersion prefix msg = do
           fail $ "Invalid version string:" ++ res ++ " for " ++ msg ++ "."
 
 -- | Parse sheet version in header.
-parseSheetVersion :: Parsec.Parser String
-parseSheetVersion = parseVersion Constants.sheetPrefix "sheet"
+parseFormat :: Parsec.Parser String
+parseFormat = parseVersionString Constants.sheetPrefix "sheet"
 
 -- | Parse calc engine version in header.
-parseCalcVersion :: Parsec.Parser String
-parseCalcVersion = parseVersion Constants.calcEnginePrefix "calc engine"
+parseVersion :: Parsec.Parser String
+parseVersion = parseVersionString Constants.calcEnginePrefix "calc engine"
 
 -- | Parse checksum in sheet header. Not yet implemented, always gives empty string currently.
 parseChecksum :: Parsec.Parser String
