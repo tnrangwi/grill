@@ -14,6 +14,8 @@ module Data.SheetLayout
 
 where
 
+import Data.Function (on)
+
 -- | Type storing a sheet cell address. Format may change.
 newtype Address = Addr { adr :: (Int, Int) }
 
@@ -47,10 +49,11 @@ instance Show Address
 
 instance Ord Address
     where
-      (<=) a b = (<=) (address a) (address b)
+      --(<=) a b = (<=) (address a) (address b)
+      (<=) = (<=) `on` address
       max a b = Addr $ max (address a) (address b)
 
 
 instance Eq Address
     where
-      (==) a b = (==) (address a) (address b) -- FIXME: There certainly is some luft function for that
+      (==) = (==) `on` address

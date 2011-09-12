@@ -35,7 +35,7 @@ addCell :: L.Address -- ^ Cell address
         -> T.FormulaTree -- ^ Tree to add into cell
         -> RawSheet -- ^ Sheet to update
         -> RawSheet -- ^ Updated sheet
-addCell a t s = RSheet $ Map.insert a t $ rSheet s
+addCell a t = RSheet . Map.insert a t . rSheet
 
 -- | Return empty header to add properties later.
 emptyRawHeader :: RawHeader
@@ -46,4 +46,4 @@ addHeaderProperty :: String -- ^ Property name
                   -> P.Plain -- ^ Property value
                   -> RawHeader -- ^ Old header
                   -> RawHeader -- ^ updated header
-addHeaderProperty k v h = RHeader $ Map.insert k v $ rHeader h
+addHeaderProperty k v = RHeader . Map.insert k v . rHeader
