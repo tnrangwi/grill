@@ -7,6 +7,7 @@ module Data.Sheet
      RawSheet,
      emptyRawSheet,
      addCell,
+     buildSheet,
      RawHeader,
      emptyRawHeader,
      addHeaderProperties
@@ -36,6 +37,12 @@ addCell :: L.Address -- ^ Cell address
         -> RawSheet -- ^ Sheet to update
         -> RawSheet -- ^ Updated sheet
 addCell a t = RSheet . Map.insert a t . rSheet
+
+-- | Create a sheet from (usually parsed) contents
+buildSheet :: RawHeader -- ^ Sheet header
+           -> [[T.FormulaTree]]
+           -> Either String RawSheet
+buildSheet h rs = error "build sheet not yet implemented"
 
 -- | Return empty header to add properties later.
 emptyRawHeader :: RawHeader

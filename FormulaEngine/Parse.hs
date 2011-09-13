@@ -39,8 +39,16 @@ compileSheet s = case Parsec.parse sheet "" s of
 
 sheet :: Parsec.Parser Sheet.RawSheet
 sheet = do
-          header <- sheetHeader
-          fail "Not fully implemented"
+          header <- sheetHeader -- FIXME: This should go somewhere as well
+          rows <- Parsec.endBy sheetRow $ (Parsec.string "\n" <|> Parsec.string "\r\n")
+                                -- FIXME: This is mad. Read in the whole sheet and convert it afterwards.
+                                -- Use a parser with a state to fill sheet on the fly.
+          let res = Sheet.buildSheet header rows
+          case res of
+            Left err -> fail err
+            Right r -> return r
+      <?> "This does not have sheet structure"
+
           
 
 -- | Parse sheet header
@@ -59,6 +67,12 @@ sheetHeader = do
                                 [("format", P.PlString format), ("version", P.PlString version)]
                                 Sheet.emptyRawHeader 
             <?> "expecting sheet header"
+
+-- | Parse one sheet row.
+sheetRow :: Parsec.Parser [T.FormulaTree]
+sheetRow = Parsec.sepBy term (Parsec.char '\t')
+         <?> "expecting sheet row"
+
 
 -- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree
