@@ -40,7 +40,7 @@ compileSheet s = case Parsec.parse sheet "" s of
 sheet :: Parsec.Parser Sheet.RawSheet
 sheet = do
           header <- sheetHeader -- FIXME: This should go somewhere as well
-          rows <- Parsec.endBy sheetRow $ (Parsec.string "\n" <|> Parsec.string "\r\n")
+          rows <- Parsec.endBy sheetRow eol
                                 -- FIXME: This is mad. Read in the whole sheet and convert it afterwards.
                                 -- Use a parser with a state to fill sheet on the fly.
           let res = Sheet.buildSheet header rows
@@ -57,14 +57,18 @@ sheetHeader = do
                 Version.parseMagicBytes
                 format <- Version.parseFormat
                 version <- Version.parseVersion
-                Version.parseChecksum
+                checksum <- Version.parseChecksum
+                Version.parseEndOfHeader
+                eol
                 -- FIXME: This should split into major, minor etc. and pass it this way into the header
                 let f = Version.formatString
                     v = Version.versionString
                 M.when (format > f || version > v) (fail "Your grill version is too old to open this")
                 return $ 
                        Sheet.addHeaderProperties
-                                [("format", P.PlString format), ("version", P.PlString version)]
+                                [("format", P.PlString format),
+                                 ("version", P.PlString version),
+                                 ("checksum", P.PlString checksum)]
                                 Sheet.emptyRawHeader 
             <?> "expecting sheet header"
 
@@ -73,6 +77,8 @@ sheetRow :: Parsec.Parser [T.FormulaTree]
 sheetRow = Parsec.sepBy term (Parsec.char '\t')
          <?> "expecting sheet row"
 
+eol :: Parsec.Parser ()
+eol = (Parsec.string "\n" <|> Parsec.string "\r\n" <|> Parsec.string "\r") >> return ()
 
 -- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree

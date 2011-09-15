@@ -14,7 +14,8 @@ module Version.Information
      parseMagicBytes,
      parseFormat,
      parseVersion,
-     parseChecksum
+     parseChecksum,
+     parseEndOfHeader
     )
 
 where
@@ -67,6 +68,9 @@ parseVersion = parseVersionString Constants.calcEnginePrefix "calc engine"
 parseChecksum :: Parsec.Parser String
 parseChecksum = do
   Parsec.char Constants.checksumPrefix
-  Parsec.spaces
-  Parsec.newline
-  return ""
+  checksum <- Parsec.many $ Parsec.oneOf "ABCDEF0123456789"
+  return checksum
+
+-- | Parse header terminator.
+parseEndOfHeader :: Parsec.Parser ()
+parseEndOfHeader = Parsec.string Constants.grillSuffix >> return ()
