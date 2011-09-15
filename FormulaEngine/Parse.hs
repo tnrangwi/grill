@@ -38,7 +38,7 @@ compileSheet s = case Parsec.parse sheet "" s of
                    Right v -> Right v
 
 sheet :: Parsec.Parser Sheet.RawSheet
-sheet = do
+sheet = do -- FIXME: Parse empty cells properly!
           header <- sheetHeader -- FIXME: This should go somewhere as well
           rows <- Parsec.endBy sheetRow eol
                                 -- FIXME: This is mad. Read in the whole sheet and convert it afterwards.

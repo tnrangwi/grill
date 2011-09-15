@@ -68,8 +68,7 @@ parseVersion = parseVersionString Constants.calcEnginePrefix "calc engine"
 parseChecksum :: Parsec.Parser String
 parseChecksum = do
   Parsec.char Constants.checksumPrefix
-  checksum <- Parsec.many $ Parsec.oneOf "ABCDEF0123456789"
-  return checksum
+  Parsec.many $ Parsec.oneOf "ABCDEF0123456789"
 
 -- | Parse header terminator.
 parseEndOfHeader :: Parsec.Parser ()

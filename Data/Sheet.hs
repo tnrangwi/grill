@@ -42,7 +42,11 @@ addCell a t = RSheet . Map.insert a t . rSheet
 buildSheet :: RawHeader -- ^ Sheet header
            -> [[T.FormulaTree]]
            -> Either String RawSheet
-buildSheet h rs = error "build sheet not yet implemented"
+buildSheet header rows = -- FIXME: The limited data type currently does not put the header into the sheet datatype
+    Right . RSheet . Map.fromList $ concatMap buildRow (zip [0..] rows)
+        where
+          buildRow (r, cs) = map (buildCell r) $ zip [0..] cs
+          buildCell r (c, t) = (L.makeAddr r c, t)
 
 -- | Return empty header to add properties later.
 emptyRawHeader :: RawHeader
