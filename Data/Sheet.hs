@@ -43,9 +43,12 @@ buildSheet :: RawHeader -- ^ Sheet header
            -> [[T.FormulaTree]]
            -> Either String RawSheet
 buildSheet header rows = -- FIXME: The limited data type currently does not put the header into the sheet datatype
-    Right . RSheet . Map.fromList $ concatMap buildRow (zip [0..] rows)
+                         -- FIXME: Put maximum row and maximum cell by row somewhere else!
+    Right . RSheet . Map.fromList $
+              (L.makeAddr (-1) (-1), len rows) : concatMap buildRow (zip [0..] rows)
         where
-          buildRow (r, cs) = map (buildCell r) $ zip [0..] cs
+          len = T.Raw . P.PlInt . length
+          buildRow (r, cs) = (L.makeAddr r (-1), len cs) : map (buildCell r) (zip [0..] cs)
           buildCell r (c, t) = (L.makeAddr r c, t)
 
 -- | Return empty header to add properties later.
