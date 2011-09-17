@@ -4,14 +4,16 @@
 
 module FormulaEngine.Evaluate
 (
- eval
+ eval,
+ calcCell
 )
 
 where
 
 import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
-
+import qualified Data.Sheet as S
+import qualified Data.SheetLayout as L
 
 -- FIXME: Eval needs to be enhanced for sheet evaluation with references
 
@@ -38,3 +40,9 @@ findError r argv = let errors = filter P.checkError argv
                          head errors -- FIXME: Build a summary message with all errors?
                      else
                          r
+
+-- | Calculate one cell in a sheet and return Plain value.
+calcCell :: S.RawSheet -- ^ The sheet to calculate a cell
+         -> L.Address -- ^ The cell address we are interested in
+         -> P.Plain -- ^ Plain value suitable for show
+calcCell = error "calcCell not yet implemented"
