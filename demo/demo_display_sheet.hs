@@ -35,12 +35,10 @@ main = do
   let sheet = Parse.compileSheet rawSheet
   case sheet of
     Left pErr -> do
-               print "Parsing failed"
-               error $ "Parse error in sheet:" ++ show pErr
-               return ()
+               putStr $ "Parse error in sheet:" ++ pErr
     Right parsedSheet -> do
                print "Sheet parsed"
                Dump.dump parsedSheet
-  print "Done"
+  putStr "\n\nDone\n"
   
   -- Parse contents using the enhanced parser for a whole sheet - TODO!

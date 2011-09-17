@@ -80,21 +80,24 @@ sheetRow = Parsec.sepBy term (Parsec.char '\t')
 eol :: Parsec.Parser ()
 eol = (Parsec.string "\n" <|> Parsec.string "\r\n" <|> Parsec.string "\r") >> return ()
 
+realSpaces :: Parsec.Parser ()
+realSpaces = Parsec.many (Parsec.char ' ') >> return ()
+
 -- | Formula parser to be used by compile
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
          (command, args) <- parseFunction
-         Parsec.spaces
+         realSpaces
          return $ T.Funcall (Reg.resolve command) args
      <|> -- parse escaped string
        do
          word <- parseString
-         Parsec.spaces
+         realSpaces
          return . T.Raw . P.PlString $ word
      <|> -- parse reference to another tree
        do
          addr <- parseReference
-         Parsec.spaces
+         realSpaces
          return $ T.Reference addr
      <|> -- This is just an example how to add a negative matching or a cell reference. Negative matching
          -- easily brings up funny problems and should not be done. FIXME: Should be deleted
@@ -106,7 +109,7 @@ term = do -- parse function call containing more terms
      <|> -- parse a number as float or integer. This has to be the last one to parse.
        do
          number <- parseNumber
-         Parsec.spaces
+         realSpaces
          return . T.Raw $ number
      <?> "function term, number, string or reference"
 
@@ -114,9 +117,9 @@ term = do -- parse function call containing more terms
 parseFunction :: Parsec.Parser (String, [T.FormulaTree])
 parseFunction = do
   Parsec.char '('
-  Parsec.spaces
+  realSpaces
   command <- Parsec.many1 Parsec.letter
-  Parsec.spaces
+  realSpaces
   args <- Parsec.many term
   Parsec.char ')'
   return (command, args)
