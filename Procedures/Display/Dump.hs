@@ -23,9 +23,10 @@ class Dump a b where
     dump :: a -> b
 
 instance Dump S.RawSheet (IO ()) where
-    dump sheet = print ( (dump sheet) :: String )
+    dump sheet = let line = map (\_ -> '=') [0..79] ++ "\n"
+                 in
+                   putStr $ line ++ ( (dump sheet) :: String ) ++ line
 
 -- FIXME: Replace by Data.Text
 instance Dump S.RawSheet String where
-    dump sheet = "Aetsch! Sheet anzeigen gibt es noch nicht"
-    
+    dump sheet = "Aetsch! Sheet anzeigen gibt es noch nicht\n"
