@@ -2,12 +2,16 @@
 --
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
+--FIXME: Define a sheet, additional to RawSheet and use that one externally
+
 module Data.Sheet
     (
      RawSheet,
      emptyRawSheet,
      addCell,
      buildSheet,
+     numRows,
+     numCols,
      RawHeader,
      emptyRawHeader,
      addHeaderProperties
@@ -60,3 +64,18 @@ addHeaderProperties :: [(String, P.Plain)] -- ^ Property name / value
                     -> RawHeader -- ^ Old header
                     -> RawHeader -- ^ updated header
 addHeaderProperties p = RHeader . Map.union (Map.fromList p) . rHeader
+
+-- | Retrieve number of rows in sheet
+numRows :: RawSheet -- ^ The sheet.
+        -> Int -- ^ Max row or -1.
+numRows s = case Map.lookup (L.makeAddr (-1) (-1)) $ rSheet s of
+              Just (T.Raw (P.PlInt i)) -> i
+              otherwise -> -1
+
+-- | Retrieve maximum column in row
+numCols :: RawSheet -- ^ The sheet.
+        -> Int -- ^ Row to search
+        -> Int -- ^ Max column in row or -1
+numCols s r = case Map.lookup (L.makeAddr r (-1)) $ rSheet s of
+              Just (T.Raw (P.PlInt i)) -> i
+              otherwise -> -1

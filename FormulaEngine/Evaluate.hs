@@ -45,4 +45,4 @@ findError r argv = let errors = filter P.checkError argv
 calcCell :: S.RawSheet -- ^ The sheet to calculate a cell
          -> L.Address -- ^ The cell address we are interested in
          -> P.Plain -- ^ Plain value suitable for show
-calcCell = error "calcCell not yet implemented"
+calcCell sheet addr = P.PlError "calcCell not yet implemented"

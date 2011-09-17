@@ -16,6 +16,7 @@ where
 import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
 import qualified Data.Sheet as S
+import qualified Data.SheetLayout as L
 import qualified FormulaEngine.Evaluate as E -- FIXME: Sheet calculation in this module?
 
 -- | Dump objects in a more or less suitable way
@@ -29,4 +30,8 @@ instance Dump S.RawSheet (IO ()) where
 
 -- FIXME: Replace by Data.Text
 instance Dump S.RawSheet String where
-    dump sheet = "Aetsch! Sheet anzeigen gibt es noch nicht\n"
+    dump sheet = concat [buildRow r | r <- [0..nRows] ]
+        where
+          nRows = S.numRows sheet
+          nCols = S.numCols sheet
+          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..nCols r] ] ++ "\n"
