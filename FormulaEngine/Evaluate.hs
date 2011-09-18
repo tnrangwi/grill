@@ -41,6 +41,9 @@ findError r argv = let errors = filter P.checkError argv
                      else
                          r
 
+-- FIXME: implement an eval' that gets a tree and a sheet and informations catching circular references
+-- Possibly use a typeclass and a type constructor to make the current eval a special instance of the
+-- new eval (with something throwing an error on no reference).
 
 -- | Calculate one cell in a sheet and return Plain value.
 calcCell :: S.RawSheet -- ^ The sheet to calculate a cell
@@ -50,4 +53,6 @@ calcCell sheet addr = let c = S.getCell sheet addr
                       in
                         case c of
                           T.Raw v -> v
+                          T.Reference a -> calcCell sheet a -- FIXME: Crashes on circular references
+                          T.TreeError e -> P.PlError $ show e
                           otherwise -> P.PlError "Combinations not yet implemented"
