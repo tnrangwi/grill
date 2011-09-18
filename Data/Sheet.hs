@@ -10,8 +10,8 @@ module Data.Sheet
      emptyRawSheet,
      addCell,
      buildSheet,
-     numRows,
-     numCols,
+     maxRow,
+     maxCol,
      RawHeader,
      emptyRawHeader,
      addHeaderProperties
@@ -51,7 +51,7 @@ buildSheet header rows = -- FIXME: The limited data type currently does not put 
     Right . RSheet . Map.fromList $
               (L.makeAddr (-1) (-1), len rows) : concatMap buildRow (zip [0..] rows)
         where
-          len = T.Raw . P.PlInt . length
+          len = T.Raw . P.PlInt . flip (-) 1 . length
           buildRow (r, cs) = (L.makeAddr r (-1), len cs) : map (buildCell r) (zip [0..] cs)
           buildCell r (c, t) = (L.makeAddr r c, t)
 
@@ -66,16 +66,16 @@ addHeaderProperties :: [(String, P.Plain)] -- ^ Property name / value
 addHeaderProperties p = RHeader . Map.union (Map.fromList p) . rHeader
 
 -- | Retrieve number of rows in sheet
-numRows :: RawSheet -- ^ The sheet.
-        -> Int -- ^ Max row or -1.
-numRows s = case Map.lookup (L.makeAddr (-1) (-1)) $ rSheet s of
-              Just (T.Raw (P.PlInt i)) -> i
-              otherwise -> -1
+maxRow :: RawSheet -- ^ The sheet.
+       -> Int -- ^ Max row or -1.
+maxRow s = case Map.lookup (L.makeAddr (-1) (-1)) $ rSheet s of
+             Just (T.Raw (P.PlInt i)) -> i
+             otherwise -> -1
 
 -- | Retrieve maximum column in row
-numCols :: RawSheet -- ^ The sheet.
-        -> Int -- ^ Row to search
-        -> Int -- ^ Max column in row or -1
-numCols s r = case Map.lookup (L.makeAddr r (-1)) $ rSheet s of
-              Just (T.Raw (P.PlInt i)) -> i
-              otherwise -> -1
+maxCol :: RawSheet -- ^ The sheet.
+       -> Int -- ^ Row to search
+       -> Int -- ^ Max column in row or -1
+maxCol s r = case Map.lookup (L.makeAddr r (-1)) $ rSheet s of
+               Just (T.Raw (P.PlInt i)) -> i
+               otherwise -> -1

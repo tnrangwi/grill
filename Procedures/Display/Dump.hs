@@ -32,6 +32,6 @@ instance Dump S.RawSheet (IO ()) where
 instance Dump S.RawSheet String where
     dump sheet = concat [buildRow r | r <- [0..nRows] ]
         where
-          nRows = S.numRows sheet
-          nCols = S.numCols sheet
+          nRows = S.maxRow sheet
+          nCols = S.maxCol sheet
           buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..nCols r] ] ++ "\n"
