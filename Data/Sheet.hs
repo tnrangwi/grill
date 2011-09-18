@@ -12,6 +12,7 @@ module Data.Sheet
      buildSheet,
      maxRow,
      maxCol,
+     getCell,
      RawHeader,
      emptyRawHeader,
      addHeaderProperties
@@ -79,3 +80,9 @@ maxCol :: RawSheet -- ^ The sheet.
 maxCol s r = case Map.lookup (L.makeAddr r (-1)) $ rSheet s of
                Just (T.Raw (P.PlInt i)) -> i
                otherwise -> -1
+
+-- | Get content of single cell
+getCell :: RawSheet -- ^ The sheet.
+        -> L.Address -- ^ Cell address.
+        -> T.FormulaTree
+getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a $ rSheet s

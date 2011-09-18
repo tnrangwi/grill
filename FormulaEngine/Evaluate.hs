@@ -41,8 +41,13 @@ findError r argv = let errors = filter P.checkError argv
                      else
                          r
 
+
 -- | Calculate one cell in a sheet and return Plain value.
 calcCell :: S.RawSheet -- ^ The sheet to calculate a cell
          -> L.Address -- ^ The cell address we are interested in
          -> P.Plain -- ^ Plain value suitable for show
-calcCell sheet addr = P.PlError "calcCell not yet implemented"
+calcCell sheet addr = let c = S.getCell sheet addr
+                      in
+                        case c of
+                          T.Raw v -> v
+                          otherwise -> P.PlError "Combinations not yet implemented"
