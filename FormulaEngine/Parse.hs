@@ -22,6 +22,21 @@ import Text.ParserCombinators.Parsec ((<|>), (<?>))
 
 import qualified Control.Monad as M
 
+{-
+ FIXME: There should be a function using a handle instead of a string for sheet compilation.
+        Creating the string is very expensive.
+ FIXME: Return something else in exported parser functions on error if errors get more sophisticated?
+ FIXME: Parse empty cells properly in sheet parser.
+ FIXME: Return sheet header information. Enhance header in separated major, minor, micro.
+ FIXME: Change sheet format again (leading tabs) to return empty rows properly.
+ FIXME: Possibly remove try statetement, this is expensive and it should be possible without that.
+ FIXME: Enhance number parser (could do without digits or leading numbers, does not respect exponents).
+-}
+
+
+---------------------------
+-- Exporter main functions
+---------------------------
 
 -- | Function to parse a string into a compiled FormulaTree.
 compileTree :: String -- ^ Input string -- as given in a cell.
@@ -30,21 +45,26 @@ compileTree s = case Parsec.parse (realSpaces >> term) "" s of
                   Left err -> T.TreeError . T.NamedError . show $ err
                   Right v -> v
 
--- FIXME: There should be a function using a handle instead of a string. Creating the string is very expensive!
-
 -- | Function to parse a whole sheet.
 compileSheet :: String -- ^ Input String. This may change to something else in the future.
-             -> Either String Sheet.RawSheet -- FIXME: Return something else on error if errors get more sophisticated?
+             -> Either String Sheet.RawSheet
 compileSheet s = case Parsec.parse sheet "" s of
                    Left err -> Left $ show err
                    Right v -> Right v
 
+
+------------------------------------------------
+-- Parser building blocks to parse a whole sheet
+------------------------------------------------
+
+-- | Parser help function for parsing a whole sheet.
 sheet :: Parsec.Parser Sheet.RawSheet
-sheet = do -- FIXME: Parse empty cells properly!
-          header <- sheetHeader -- FIXME: This should go somewhere as well
+sheet = do
+          header <- sheetHeader
           rows <- Parsec.endBy sheetRow eol
                                 -- FIXME: This is mad. Read in the whole sheet and convert it afterwards.
-                                -- Use a parser with a state to fill sheet on the fly.
+                                -- Use a parser with a state to fill sheet on the fly. Or solve this properly
+                                -- with lazy evaluation (maybe it even is already).
           let res = Sheet.buildSheet header rows
           case res of
             Left err -> fail err
@@ -52,7 +72,6 @@ sheet = do -- FIXME: Parse empty cells properly!
       <?> "This does not have sheet structure"
 
           
-
 -- | Parse sheet header
 sheetHeader :: Parsec.Parser Sheet.RawHeader
 sheetHeader = do
@@ -62,7 +81,6 @@ sheetHeader = do
                 checksum <- Version.parseChecksum
                 Version.parseEndOfHeader
                 eol
-                -- FIXME: This should split into major, minor etc. and pass it this way into the header
                 let f = Version.formatString
                     v = Version.versionString
                 M.when (format > f || version > v) (fail "Your grill version is too old to open this")
@@ -74,18 +92,18 @@ sheetHeader = do
                                 Sheet.emptyRawHeader 
             <?> "expecting sheet header"
 
+
 -- | Parse one sheet row.
 sheetRow :: Parsec.Parser [T.FormulaTree]
 sheetRow = Parsec.sepBy term (Parsec.char '\t')
          <?> "expecting sheet row"
 
-eol :: Parsec.Parser ()
-eol = (Parsec.string "\n" <|> Parsec.string "\r\n" <|> Parsec.string "\r") >> return ()
 
-realSpaces :: Parsec.Parser ()
-realSpaces = Parsec.many (Parsec.char ' ') >> return ()
+---------------------------------------------------------------------
+-- Parser building blocks to parse a single cell expression / a tree.
+---------------------------------------------------------------------
 
--- | Formula parser to be used by compile
+-- | Parse a single term, i. e. cell content as found in sheet or in cell editor).
 term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
          (command, args) <- parseFunction
@@ -101,13 +119,6 @@ term = do -- parse function call containing more terms
          addr <- parseReference
          realSpaces
          return $ T.Reference addr
-     <|> -- This is just an example how to add a negative matching or a cell reference. Negative matching
-         -- easily brings up funny problems and should not be done. FIXME: Should be deleted
-       do
-         -- The right parantheses is necessary, otherwise the plain expressions in a paranthesis expression
-         -- will not terminate properly
-         c <- Parsec.noneOf "0123456789+-)"
-         fail $ "Invalid character:" ++ [c] ++ ". References or special treatment not yet implemented"
      <|> -- parse a number as float or integer. This has to be the last one to parse.
        do
          number <- parseNumber
@@ -115,7 +126,8 @@ term = do -- parse function call containing more terms
          return . T.Raw $ number
      <?> "function term, number, string or reference"
 
--- | Parse a function call
+
+-- | Parse a function call within a tree.
 parseFunction :: Parsec.Parser (String, [T.FormulaTree])
 parseFunction = do
   Parsec.char '('
@@ -126,23 +138,29 @@ parseFunction = do
   Parsec.char ')'
   return (command, args)
 
+-- | Parse a reference to another tree, addressed as external cell address
+parseReference :: Parsec.Parser SheetLayout.Address
+parseReference = do
+  Parsec.char '\''
+  stringRow <- Parsec.many1 Parsec.digit
+  Parsec.char ':'
+  stringCol <- Parsec.many1 Parsec.digit
+  let row = read stringRow
+  let col = read stringCol
+  M.when (row > SheetLayout.maxRow || col > SheetLayout.maxCol) (fail "Cell reference not < 256:16")
+  return $ SheetLayout.makeAddr row col
 
--- | Parse String, double quote escapes a double quote. Take rest as is.
-_escapedChar :: Parsec.Parser Char
-_escapedChar = do
-                 -- FIXME: try is quite expensive. It is possible without it, however, I didn't manage.
-                 Parsec.try $ Parsec.string "\"\""
-                 return '"'
-             <|>
-               Parsec.noneOf "\""
-             <?> "It is impossible to see this error message unless code above is changed!"
+
+----------------------------------------------------------
+-- Building blocks to parse "raw" values (part of a tree).
+----------------------------------------------------------
 
 
--- | Parse a string.
+-- | Parse a string enclosed in double quotes.
 parseString :: Parsec.Parser String
 parseString = do
   Parsec.char '"'
-  word <- Parsec.many _escapedChar
+  word <- Parsec.many escapedChar
   Parsec.char '"'
   return word
 
@@ -162,20 +180,33 @@ parseNumber = do
           return . P.PlFloat $ getSign sign * read (prefix ++ "." ++ suffix)
 
 
--- | Parse a reference to another tree, addressed as external cell address
-parseReference :: Parsec.Parser SheetLayout.Address
-parseReference = do
-  Parsec.char '\''
-  stringRow <- Parsec.many1 Parsec.digit
-  Parsec.char ':'
-  stringCol <- Parsec.many1 Parsec.digit
-  let row = read stringRow
-  let col = read stringCol
-  M.when (row > SheetLayout.maxRow || col > SheetLayout.maxCol) (fail "Cell reference not < 256:16")
-  return $ SheetLayout.makeAddr row col
+
+-- Parser help stubs
+
+-- | Parse "our" definition of eol. Will change, I see no reason why this should be text editor
+-- compatible.
+eol :: Parsec.Parser ()
+eol = (Parsec.string "\n" <|> Parsec.string "\r\n" <|> Parsec.string "\r") >> return ()
+
+-- | Parse any number of spaces. Standard whitespace is not suitable because tabs are used
+-- to separate the cells within a row. Spaces will be possible within the cell editor.
+realSpaces :: Parsec.Parser ()
+realSpaces = Parsec.many (Parsec.char ' ') >> return ()
+
+-- | Parse String, double quote escapes a double quote. Take rest as is.
+escapedChar :: Parsec.Parser Char
+escapedChar = do
+                Parsec.try $ Parsec.string "\"\""
+                return '"'
+            <|>
+              Parsec.noneOf "\""
+            <?> "Parsing of string changed - internal error. You will never be here."
 
 
--- Help stubs
+--------------
+-- Help stubs.
+--------------
+
 
 -- | Function returning the sign (from +/-) as a properly typed number.
 -- The definition of symbols like 1 in Haskell allows to do it in one function
