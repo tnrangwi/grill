@@ -1,5 +1,5 @@
--- | This file implements parsing from strings into formula trees.
---
+-- | This file implements parsing of both full sheets and single formula trees.
+-- 
 -- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 module FormulaEngine.Parse
@@ -23,16 +23,18 @@ import Text.ParserCombinators.Parsec ((<|>), (<?>))
 import qualified Control.Monad as M
 
 
--- | Function to parse a string and return a compiled FormulaTree
-compileTree :: String -> T.FormulaTree
-compileTree s = case Parsec.parse term "" s of
+-- | Function to parse a string into a compiled FormulaTree.
+compileTree :: String -- ^ Input string -- as given in a cell.
+            -> T.FormulaTree -- ^ Compiled formula tree.
+compileTree s = case Parsec.parse (realSpaces >> term) "" s of
                   Left err -> T.TreeError . T.NamedError . show $ err
                   Right v -> v
 
 -- FIXME: There should be a function using a handle instead of a string. Creating the string is very expensive!
 
 -- | Function to parse a whole sheet.
-compileSheet :: String -> Either String Sheet.RawSheet -- FIXME: Return something else on error?
+compileSheet :: String -- ^ Input String. This may change to something else in the future.
+             -> Either String Sheet.RawSheet -- FIXME: Return something else on error if errors get more sophisticated?
 compileSheet s = case Parsec.parse sheet "" s of
                    Left err -> Left $ show err
                    Right v -> Right v
@@ -175,23 +177,13 @@ parseReference = do
 
 -- Help stubs
 
--- | Class with method to return the sign (from +/-) as a properly typed number
-class ParseSign a where
-    -- | Function to return the sign as number
-    getSign :: Char -- ^ '+' or '-' sign
-            -> a -- ^ Int, Float, or what ever...
-    -- Default implementation can only throw an error
-    getSign _ = error "No implementation getSign for this type"
-
--- FIXME: one implementation should be enough for both Int and Float.
-instance ParseSign Int where
-    getSign c = case c of
-                  '+' -> 1
-                  '1' -> -1
-                  otherwise -> error $ "Internal error - got invalid sign:" ++ [c]
-
-instance ParseSign Float where
-    getSign c = case c of
-                  '+' -> 1
-                  '1' -> -1
-                  otherwise -> error $ "Internal error - got invalid sign:" ++ [c]
+-- | Function returning the sign (from +/-) as a properly typed number.
+-- The definition of symbols like 1 in Haskell allows to do it in one function
+-- without a typeclass for all instances of Num.
+getSign :: (Num a) => 
+    Char -- ^ '+' or '-' sign
+    -> a -- ^ Any type compatible with Num so the implementation will work.
+getSign c = case c of
+              '+' -> 1
+              '-' -> -1
+              otherwise -> error $ "Internal error - got invalid sign:" ++ [c]
