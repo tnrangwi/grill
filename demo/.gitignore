@@ -1,4 +1,19 @@
+#C and Haskell files created during compilation
+
+*.o
+*.hi
+
+#Windows backup files
+*.bak
+
+#vi backup and swap files
+*~
+*.swp
+
+#emacs backup and swap files
+\#*#
+.#*
+
+#Executable binaries
 demo_calc_trees
 demo_display_sheet
-*.hi
-*.o

@@ -1,0 +1,20 @@
+####################################################
+#Top level gitignore. Default for all subdirectories
+#Copy file to subdirectory if you need to append.
+####################################################
+
+#C and Haskell files created during compilation
+
+*.o
+*.hi
+
+#Windows backup files
+*.bak
+
+#vi backup and swap files
+*~
+*.swp
+
+#emacs backup and swap files
+\#*#
+.#*
