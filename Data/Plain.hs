@@ -2,6 +2,8 @@
 --
 --   Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
+{-# LANGUAGE TypeSynonymInstances #-}
+
 module Data.Plain
 (
  -- * Base Data Types supported in Tree
@@ -60,5 +62,15 @@ class Convert a where
 
 instance Convert Int where
     get (PlInt v) = v
+    get PlEmpty = 0
     get _ = error "No plain integer value"
 
+instance Convert Float where
+    get (PlFloat v) = v
+    get PlEmpty = 0
+    get _ = error "No plain float value"
+
+instance Convert String where
+    get (PlString v) = v
+    get PlEmpty =  []
+    get _ = error "No plain string value"

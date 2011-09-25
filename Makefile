@@ -17,7 +17,7 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 
 .SUFFIXES:
-.PHONY: doc test
+.PHONY: doc test demo
 
 #Neither correct nor used...
 #%.hi:%.hs
@@ -31,6 +31,10 @@ all:
 
 #Run test suites
 test:
+	cd test && runghc -i.. EvalTrees.hs
+
+#Run demonstrations
+demo:
 	demo/demo_calc_trees.hs
 	demo/demo_display_sheet.hs TestData/demo_sheet.gst
 
