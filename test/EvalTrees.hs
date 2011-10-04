@@ -1,6 +1,9 @@
 -- | This file defines tests tree evaluation and parser functions.
 -- 
 --   Author: Thorsten Rangwich. See file <../LICENSE> for details.
+-- 
+-- Currently depends on QuickCheck < 2 - My debian based distribution
+-- does not yet support ghc7.
 
 import Test.QuickCheck.Batch
 
@@ -64,9 +67,9 @@ main :: IO ()
 main = do
   runTests "simple" options
                [ run prop_addInt
-               --, run prop_concString
+               --, run prop_concString    --FIXME: Define Char as instance of Arbitrary
                , run prop_recursive
-               --, run prop_leadingSpaces
-               --, run prop_string
+               --, run prop_leadingSpaces --FIXME: Same fix
+               --, run prop_string        --FIXME: Same fix
                , run prop_invalidReference
                ]
