@@ -35,8 +35,9 @@ test:
 
 #Run demonstrations
 demo:
-	demo/demo_calc_trees.hs
-	demo/demo_display_sheet.hs TestData/demo_sheet.gst
+	#Mac shell does not like she bang if the script is not compatible to bourne shell. So call runghc directly.
+	runghc demo/demo_calc_trees.hs
+	runghc demo/demo_display_sheet.hs TestData/demo_sheet.gst
 
 #Check syntax of all files using hlint
 hlint:
