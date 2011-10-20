@@ -25,19 +25,19 @@ argument = ""
 newtype Properties = Prop { prop :: [(String, String)] }
 instance Show Properties where
     show props = let raw = prop props
-                     fa (x,_) = if x == argument then True else False
+                     fa (x,_) = x == argument
                      fp = not . fa
                      as = map snd (filter fa raw)
                      ps = filter fp raw
                  in
-                   "Properties:\n" ++ (concatMap (\(k,v) -> ("   " ++ k ++ ":" ++ v ++ "\n")) ps) ++
-                         "Files:\n" ++ (concatMap (\v -> "   " ++ v ++ "\n") as)
+                   "Properties:\n" ++ concatMap (\(k,v) -> ("   " ++ k ++ ":" ++ v ++ "\n")) ps ++
+                         "Files:\n" ++ concatMap (\v -> "   " ++ v ++ "\n") as
 
 -- | Helper function to retrieve argument or property from the properties list.
 getProp' :: String
         -> Properties
         -> [String]
-getProp' n = map snd . filter (\(k,_) -> if k == n then True else False) . prop
+getProp' n = map snd . filter (\(k,_) -> k == n) . prop
 
 -- | Get a property (list, if given more than once). Does not return special key used as
 -- marker for arguments instead of properties.
@@ -73,23 +73,23 @@ mapFlag = (`mapOption` [])
 options :: [GetOpt.OptDescr (String, String)]
 options =
     [
-     GetOpt.Option ['v','?'] ["version"]
+     GetOpt.Option "v?" ["version"]
                (GetOpt.NoArg (mapFlag "ShowVersion"))
                "show version",
 
-     GetOpt.Option ['c'] ["console"]
+     GetOpt.Option "c" ["console"]
                (GetOpt.NoArg (mapFlag "Console"))
                "no GUI - use console",
 
-     GetOpt.Option ['d'] ["debug"]
+     GetOpt.Option "d" ["debug"]
                (GetOpt.OptArg (mapOption "DebugLevel" . Maybe.fromMaybe "0") "0|1|2")
                "debug on - pass 1 or 2 to increase level",
 
-     GetOpt.Option ['f'] ["output-filter"]
+     GetOpt.Option "f" ["output-filter"]
                (GetOpt.ReqArg (mapOption "OutputFilter") "TSV|CSV|PP")
                "Output filter - TSV, CSV, PP",
 
-     GetOpt.Option ['o'] ["dump-file"]
+     GetOpt.Option "o" ["dump-file"]
                (GetOpt.NoArg (mapFlag "Dump"))
                "output contents and exit"
     ]
@@ -117,8 +117,9 @@ consoleLoop :: Properties -> Sheet.RawSheet -> IO ()
 consoleLoop props sheet = do
   putStr ['\n' | _ <- [0..25]]
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
-  command <- FileIO.getLine >>= return . StringUtils.strip
-  case if length command > 0 then command!!0 else ' ' of
+  -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
+  command <- fmap StringUtils.strip FileIO.getLine
+  case if length command > 0 then head command else ' ' of
     'q' -> return ()
     'l' -> showMessage "Load not yet implemented" >> consoleLoop props sheet
     'd' -> showMessage "Dump not yet implemented" >> consoleLoop props sheet
@@ -132,8 +133,8 @@ loadSheet :: [String]
 loadSheet names = case length names of
                     0 -> showMessage "No sheet preloaded" >> return Sheet.emptyRawSheet
                     1 -> do
-                      let sheetName = names!!0
-                      stream <- FileIO.readFile (names!!0)
+                      let sheetName = head names
+                      stream <- FileIO.readFile (head names)
                       let sheet = Parse.compileSheet stream
                       case sheet of
                         Left msg -> showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptyRawSheet
