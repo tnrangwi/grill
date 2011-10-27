@@ -107,7 +107,7 @@ data Argument = Argument {
 optionSpec2GetOpt :: [Argument]
                   -> [GetOpt.OptDescr (String, String)]
 optionSpec2GetOpt [] = []
-optionSpec2GetOpt (x:xs) = (convert x):(optionSpec2GetOpt xs)
+optionSpec2GetOpt (x:xs) = convert x : optionSpec2GetOpt xs --FIXME: Efficient?
     where convert x = GetOpt.Option
                       (shortNames x)
                       (longNames x)
@@ -135,5 +135,5 @@ parseOptions optionSpec argv = do
 -- further options for debugging are processed.
 parseCmdLine :: [Argument] -- ^ Options speficication
              -> IO Properties -- ^ Parsed object to be used for queries
-parseCmdLine options = System.getArgs >>= (parseOptions options)
+parseCmdLine options = System.getArgs >>= parseOptions options
 

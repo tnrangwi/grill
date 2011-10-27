@@ -22,18 +22,18 @@ integerFuncWrapper :: ([P.Plain] -> P.Plain) -> ([Int] -> Int)
 integerFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlInt)
 
 floatFuncWrapper :: ([P.Plain] -> P.Plain) -> ([Float] -> Float)
-floatFuncWrapper tFunc = (P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlFloat))
+floatFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlFloat)
 
 stringFuncWrapper :: ([P.Plain] -> P.Plain) -> ([String] -> String)
-stringFuncWrapper tFunc = (P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlString))
+stringFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlString)
 
 -- | Integer add function should match results of builtin (+) for Int.
 prop_addInt :: [Int] -> Bool
-prop_addInt xs = (integerFuncWrapper NumFuncs.add) xs == (foldl (\x y -> x + y) 0) xs
+prop_addInt xs = integerFuncWrapper NumFuncs.add xs == foldl (\x y -> x + y) 0 xs
 
 -- | String concatenation function.
 prop_concString :: [String] -> Bool
-prop_concString xs = (stringFuncWrapper StringFuncs.conc) xs == concat xs
+prop_concString xs = stringFuncWrapper StringFuncs.conc xs == concat xs
 
 -- | Recursive calls.
 prop_recursive :: Bool
@@ -47,11 +47,12 @@ quote s = "\"" ++ s ++ "\""
 
 -- | Leading spaces.
 prop_leadingSpaces :: Int -> String -> Bool
-prop_leadingSpaces n s = (P.get . Eval.calcTree . Parse.compileTree) (concat [(DL.replicate n ' '), "\"", concat (map escape s), "\""]) == s
+prop_leadingSpaces n s =
+    (P.get . Eval.calcTree . Parse.compileTree) (concat [(DL.replicate n ' '), "\"", concatMap escape s, "\""]) == s
 
 -- | Arbitrary strings.
 prop_string :: String -> Bool
-prop_string s = ((P.get . Eval.calcTree . Parse.compileTree . quote . concat . map escape) s) == s
+prop_string s = (P.get . Eval.calcTree . Parse.compileTree . quote . concatMap escape) s == s
 
 -- | References are invalid in calcTrees.
 prop_invalidReference :: Bool
@@ -64,12 +65,11 @@ options = TestOptions { no_of_tests = 200,
 
 -- | Run the tests
 main :: IO ()
-main = do
-  runTests "simple" options
-               [ run prop_addInt
-               --, run prop_concString    --FIXME: Define Char as instance of Arbitrary
-               , run prop_recursive
-               --, run prop_leadingSpaces --FIXME: Same fix
-               --, run prop_string        --FIXME: Same fix
-               , run prop_invalidReference
-               ]
+main = runTests "simple" options
+       [ run prop_addInt
+       --, run prop_concString    --FIXME: Define Char as instance of Arbitrary
+       , run prop_recursive
+       --, run prop_leadingSpaces --FIXME: Same fix
+       --, run prop_string        --FIXME: Same fix
+       , run prop_invalidReference
+       ]

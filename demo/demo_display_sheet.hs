@@ -34,8 +34,7 @@ main = do
   putStr $ "Parsing raw sheet:\n===\n" ++ rawSheet ++ "===\n"
   let sheet = Parse.compileSheet rawSheet
   case sheet of
-    Left pErr -> do
-               putStr $ "Parse error in sheet:" ++ pErr
+    Left pErr -> putStr $ "Parse error in sheet:" ++ pErr
     Right parsedSheet -> do
                print "Sheet parsed"
                Dump.dump parsedSheet

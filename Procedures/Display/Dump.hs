@@ -13,6 +13,8 @@ module Procedures.Display.Dump
 
 where
 
+import qualified Data.List as List
+
 import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
 import qualified Data.Sheet as S
@@ -24,9 +26,9 @@ class Dump a b where
     dump :: a -> b
 
 instance Dump S.RawSheet (IO ()) where
-    dump sheet = let line = map (\_ -> '=') [0..79] ++ "\n"
+    dump sheet = let line = take 79 (List.repeat '=') ++ "\n"
                  in
-                   putStr $ line ++ ( (dump sheet) :: String ) ++ line
+                   putStr $ line ++ (dump sheet :: String) ++ line
 
 -- FIXME: Replace by Data.Text
 instance Dump S.RawSheet String where
