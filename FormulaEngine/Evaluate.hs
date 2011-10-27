@@ -39,7 +39,7 @@ eval (T.Reference a) (FullRef s xs) = if a `elem` xs then
                                           P.PlError $ "Circular reference. Twice referenced:" ++ show a
                                       else
                                           eval (S.getCell s a) (FullRef s (a:xs))
-eval r@(T.Reference a) (SheetRef s) = eval r (FullRef s [])
+eval r@(T.Reference a) (SheetRef s) = eval r (FullRef s [a])
 eval (T.Reference a) (NoRef) = P.PlError $ "Cannot evaluate address without a sheet - referenced:" ++ show a ++ "."
 
 

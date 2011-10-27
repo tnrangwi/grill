@@ -2,15 +2,17 @@
 -- | This file implements a simple (ugly) console interface. It does
 -- only suit for some simple tests and demonstrations.
 -- 
--- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
+-- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 import qualified Data.Maybe as Maybe
-import Data.String.Utils as StringUtils
+import qualified Data.String.Utils as StringUtils
 import qualified System.IO as FileIO
+import qualified Data.List as List
 
 import qualified Console.CommandLine as Cmd
 import qualified FormulaEngine.Parse as Parse
 import qualified Data.Sheet as Sheet
+import qualified Procedures.Display.Dump as Dump
 
 -- | Command line option description for grill.
 -- List of Option constructor from System.GetOpt taking the following arguments:
@@ -42,14 +44,15 @@ showMessage m = do
 -- FIXME: Do not use command line properties. Use something else!
 consoleLoop :: Cmd.Properties -> Sheet.RawSheet -> IO ()
 consoleLoop props sheet = do
-  putStr ['\n' | _ <- [0..25]]
+  putStr . take 25 . List.repeat $ '\n'
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
   command <- fmap StringUtils.strip FileIO.getLine
   case if length command > 0 then head command else ' ' of
     'q' -> return ()
     'l' -> showMessage "Load not yet implemented" >> consoleLoop props sheet
-    'd' -> showMessage "Dump not yet implemented" >> consoleLoop props sheet
+                          --FIXME without type compiler searches for ":: IO a" instead. Why?
+    'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
     'e' -> showMessage "Edit not yet implemented" >> consoleLoop props sheet
     ' ' -> consoleLoop props sheet
@@ -80,3 +83,4 @@ main = do
   sheet <- loadSheet (Cmd.getArguments props)
   consoleLoop props sheet
   putStr "Exiting grill...\n"
+

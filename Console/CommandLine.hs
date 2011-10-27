@@ -127,7 +127,7 @@ parseOptions optionSpec argv = do
   let options = optionSpec2GetOpt optionSpec
   prog <- System.getProgName
   case GetOpt.getOpt GetOpt.Permute options argv of
-    (opts, args, [])   -> return $ Prop $ opts ++ map (\x -> (".", x)) args
+    (opts, args, [])   -> return $ Prop $ opts ++ map (\x -> ("", x)) args
     (_, _, errs) -> ioError (userError (concat errs ++ GetOpt.usageInfo header options))
         where header = "Usage: " ++ prog ++ " [options]" 
 
