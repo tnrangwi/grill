@@ -1,0 +1,711 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
+><TITLE
+>Console.CommandLine</TITLE
+><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
+><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
+></SCRIPT
+><SCRIPT TYPE="text/javascript"
+>window.onload = function () {setSynopsis("mini_Console-CommandLine.html")};</SCRIPT
+></HEAD
+><BODY
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="topbar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><IMG SRC="haskell_icon.gif" WIDTH="16" HEIGHT="16" ALT=" "
+></TD
+><TD CLASS="title"
+></TD
+><TD CLASS="topbut"
+><A HREF="index.html"
+>Contents</A
+></TD
+><TD CLASS="topbut"
+><A HREF="doc-index.html"
+>Index</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="modulebar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><FONT SIZE="6"
+>Console.CommandLine</FONT
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="section4"
+><B
+>Contents</B
+></TD
+></TR
+><TR
+><TD
+><DL
+><DT
+><A HREF="#1"
+>Accessing command line options.
+</A
+></DT
+><DT
+><A HREF="#2"
+>Parsing command line
+</A
+></DT
+></DL
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Description</TD
+></TR
+><TR
+><TD CLASS="doc"
+><P
+>This file implements command line tools for startup of grill.
+ In fact it currently is a general command line option parser.
+</P
+><P
+>| Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
+>../LICENSE</A
+> for details.
+</P
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Synopsis</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AProperties"
+>Properties</A
+> </TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AgetFlag"
+>getFlag</A
+> :: String -&gt; <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AgetProp"
+>getProp</A
+> :: String -&gt; <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; [String]</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AgetArguments"
+>getArguments</A
+> :: <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; [String]</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3APropertyType"
+>PropertyType</A
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+>= <A HREF="#v%3AFlag"
+>Flag</A
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+>| <A HREF="#v%3AOptOpt"
+>OptOpt</A
+> String String</TD
+></TR
+><TR
+><TD CLASS="decl"
+>| <A HREF="#v%3AReqOpt"
+>ReqOpt</A
+> String</TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AArgument"
+>Argument</A
+>  = <A HREF="#v%3AArgument"
+>Argument</A
+> {<TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AshortNames"
+>shortNames</A
+> :: String</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AlongNames"
+>longNames</A
+> :: [String]</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3Adescription"
+>description</A
+> :: String</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3ApropertyName"
+>propertyName</A
+> :: String</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3ApropertyType"
+>propertyType</A
+> :: <A HREF="Console-CommandLine.html#t%3APropertyType"
+>PropertyType</A
+></TD
+></TR
+></TABLE
+>}</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AparseOptions"
+>parseOptions</A
+> :: [<A HREF="Console-CommandLine.html#t%3AArgument"
+>Argument</A
+>] -&gt; [String] -&gt; IO <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AparseCmdLine"
+>parseCmdLine</A
+> :: [<A HREF="Console-CommandLine.html#t%3AArgument"
+>Argument</A
+>] -&gt; IO <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="1"
+><A NAME="1"
+>Accessing command line options.
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t:Properties"
+><A NAME="t%3AProperties"
+></A
+></A
+><B
+>Properties</B
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Type storing command line properties. Properties are named by string
+ and may occur more than once. The empty string marks command line
+ arguments.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:getFlag"
+><A NAME="v%3AgetFlag"
+></A
+></A
+><B
+>getFlag</B
+> :: String -&gt; <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Retrieve a command line option without an argument.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:getProp"
+><A NAME="v%3AgetProp"
+></A
+></A
+><B
+>getProp</B
+> :: String -&gt; <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; [String]</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Get a property (list, if given more than once). Use getArguments to retrieve
+ command line arguments instead of command line options.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:getArguments"
+><A NAME="v%3AgetArguments"
+></A
+></A
+><B
+>getArguments</B
+> :: <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+> -&gt; [String]</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Retrieve the command line arguments from the properties.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="2"
+><A NAME="2"
+>Parsing command line
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t:PropertyType"
+><A NAME="t%3APropertyType"
+></A
+></A
+><B
+>PropertyType</B
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Data constructor to specify type of command line option.
+</TD
+></TR
+><TR
+><TD CLASS="section4"
+>Constructors</TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v:Flag"
+><A NAME="v%3AFlag"
+></A
+></A
+><B
+>Flag</B
+></TD
+><TD CLASS="rdoc"
+>Command line option is a flag without parameter.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:OptOpt"
+><A NAME="v%3AOptOpt"
+></A
+></A
+><B
+>OptOpt</B
+> String String</TD
+><TD CLASS="rdoc"
+>Command line option is a flag with optional parameter description
+ and default value.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:ReqOpt"
+><A NAME="v%3AReqOpt"
+></A
+></A
+><B
+>ReqOpt</B
+> String</TD
+><TD CLASS="rdoc"
+>Command line option is a flag with a required parameter description.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t:Argument"
+><A NAME="t%3AArgument"
+></A
+></A
+><B
+>Argument</B
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Data constructor to specify one command line argument.
+</TD
+></TR
+><TR
+><TD CLASS="section4"
+>Constructors</TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="5" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v:Argument"
+><A NAME="v%3AArgument"
+></A
+></A
+><B
+>Argument</B
+></TD
+><TD CLASS="rdoc"
+></TD
+></TR
+><TR
+><TD CLASS="body" COLSPAN="2"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v:shortNames"
+><A NAME="v%3AshortNames"
+></A
+></A
+><B
+>shortNames</B
+> :: String</TD
+><TD CLASS="rdoc"
+>String with all short option characters matching this option / flag.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:longNames"
+><A NAME="v%3AlongNames"
+></A
+></A
+><B
+>longNames</B
+> :: [String]</TD
+><TD CLASS="rdoc"
+>List of long option strings matching this option / flag.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:description"
+><A NAME="v%3Adescription"
+></A
+></A
+><B
+>description</B
+> :: String</TD
+><TD CLASS="rdoc"
+>Description of this command line option.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:propertyName"
+><A NAME="v%3ApropertyName"
+></A
+></A
+><B
+>propertyName</B
+> :: String</TD
+><TD CLASS="rdoc"
+>Name of the property to identify this option within properties.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v:propertyType"
+><A NAME="v%3ApropertyType"
+></A
+></A
+><B
+>propertyType</B
+> :: <A HREF="Console-CommandLine.html#t%3APropertyType"
+>PropertyType</A
+></TD
+><TD CLASS="rdoc"
+>Type of this command line option.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:parseOptions"
+><A NAME="v%3AparseOptions"
+></A
+></A
+><B
+>parseOptions</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: [<A HREF="Console-CommandLine.html#t%3AArgument"
+>Argument</A
+>]</TD
+><TD CLASS="rdoc"
+>Options specification
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; [String]</TD
+><TD CLASS="rdoc"
+>Command line arguments
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+></TD
+><TD CLASS="rdoc"
+>Parsed properties
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Parse options and arguments into properties.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:parseCmdLine"
+><A NAME="v%3AparseCmdLine"
+></A
+></A
+><B
+>parseCmdLine</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: [<A HREF="Console-CommandLine.html#t%3AArgument"
+>Argument</A
+>]</TD
+><TD CLASS="rdoc"
+>Options speficication
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="Console-CommandLine.html#t%3AProperties"
+>Properties</A
+></TD
+><TD CLASS="rdoc"
+>Parsed object to be used for queries
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Parse command line and return properties for further processing.
+ further options for debugging are processed.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="botbar"
+>Produced by <A HREF="http://www.haskell.org/haddock/"
+>Haddock</A
+> version 2.6.0</TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

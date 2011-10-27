@@ -6,7 +6,7 @@
 
 #This file magic is for cleanup and documentation, not needed else currently
 
-DEMO_HS=demo_*.hs
+DEMO_HS=demo_*.hs grill.hs
 DEMO_EXE=$(DEMO_HS:.hs=) $(DEMO_HS:.hs=.exe)
 EXCLUDE_HS=$(DEMO_HS)
 #From file1 file2 file3 --> file1 -o -name file2 -o -name file3
@@ -28,6 +28,7 @@ HS_HI=$(HS_SRC:.hs=.hi)
 all:
 	ghc --make demo/demo_calc_trees.hs
 	ghc --make demo/demo_display_sheet.hs
+	ghc -Wall -O --make Console/grill.hs -o grill
 
 #Run test suites
 test:

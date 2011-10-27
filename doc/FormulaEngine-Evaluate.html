@@ -83,10 +83,26 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3Aeval"
->eval</A
+><A HREF="#v%3AcalcTree"
+>calcTree</A
 > :: <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
 >FormulaTree</A
+> -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AcalcCell"
+>calcCell</A
+> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
 > -&gt; <A HREF="Data-Plain.html#t%3APlain"
 >Plain</A
 ></TD
@@ -108,12 +124,12 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:eval"
-><A NAME="v%3Aeval"
+><A NAME="v:calcTree"
+><A NAME="v%3AcalcTree"
 ></A
 ></A
 ><B
->eval</B
+>calcTree</B
 ></TD
 ></TR
 ><TR
@@ -125,7 +141,7 @@
 >FormulaTree</A
 ></TD
 ><TD CLASS="rdoc"
->Compiled tree to evaluate
+>Tree for evaluation.
 </TD
 ></TR
 ><TR
@@ -134,12 +150,64 @@
 >Plain</A
 ></TD
 ><TD CLASS="rdoc"
->Plain result value
+>Return value
 </TD
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Evaluate FormulaTree.
+>Calculate a tree - without a sheet reference. Useful for tests only.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:calcCell"
+><A NAME="v%3AcalcCell"
+></A
+></A
+><B
+>calcCell</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>The sheet to calculate a cell
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+><TD CLASS="rdoc"
+>The cell address we are interested in
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+></TD
+><TD CLASS="rdoc"
+>Plain value suitable for show
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Calculate one cell in a sheet and return Plain value.
 </TD
 ></TR
 ></TABLE

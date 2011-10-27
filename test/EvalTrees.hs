@@ -1,6 +1,6 @@
 -- | This file defines tests tree evaluation and parser functions.
 -- 
---   Author: Thorsten Rangwich. See file <../LICENSE> for details.
+-- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 -- 
 -- Currently depends on QuickCheck < 2 - My debian based distribution
 -- does not yet support ghc7.

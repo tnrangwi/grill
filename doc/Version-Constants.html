@@ -4,12 +4,12 @@
 ><HEAD
 ><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
 ><TITLE
->FormulaEngine.Parse</TITLE
+>Version.Constants</TITLE
 ><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
 ><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
 ></SCRIPT
 ><SCRIPT TYPE="text/javascript"
->window.onload = function () {setSynopsis("mini_FormulaEngine-Parse.html")};</SCRIPT
+>window.onload = function () {setSynopsis("mini_Version-Constants.html")};</SCRIPT
 ></HEAD
 ><BODY
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
@@ -40,7 +40,7 @@
 ><TR
 ><TD
 ><FONT SIZE="6"
->FormulaEngine.Parse</FONT
+>Version.Constants</FONT
 ></TD
 ></TR
 ></TABLE
@@ -57,10 +57,11 @@
 ><TR
 ><TD CLASS="doc"
 ><P
->This file implements parsing of both full sheets and single formula trees.
+>This file defines compile constants.
+ Do not use, use Version.Information instead.
 </P
 ><P
->| Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
+>Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
 >../LICENSE</A
 > for details.
 </P
@@ -83,11 +84,9 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AcompileTree"
->compileTree</A
-> :: String -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
->FormulaTree</A
-></TD
+><A HREF="#v%3AgrillPrefix"
+>grillPrefix</A
+> :: String</TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -95,11 +94,39 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AcompileSheet"
->compileSheet</A
-> :: String -&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+><A HREF="#v%3AgrillSuffix"
+>grillSuffix</A
+> :: String</TD
+></TR
+><TR
+><TD CLASS="s8"
 ></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AsheetPrefix"
+>sheetPrefix</A
+> :: Char</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AcalcEnginePrefix"
+>calcEnginePrefix</A
+> :: Char</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AchecksumPrefix"
+>checksumPrefix</A
+> :: Char</TD
 ></TR
 ></TABLE
 ></TD
@@ -118,40 +145,18 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:compileTree"
-><A NAME="v%3AcompileTree"
+><A NAME="v:grillPrefix"
+><A NAME="v%3AgrillPrefix"
 ></A
 ></A
 ><B
->compileTree</B
-></TD
+>grillPrefix</B
+> :: String</TD
 ></TR
 ><TR
-><TD CLASS="body"
-><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
-><TR
-><TD CLASS="arg"
->:: String</TD
-><TD CLASS="rdoc"
->Input string -- as given in a cell.
+><TD CLASS="doc"
+>Internals: String starting every grill sheet
 </TD
-></TR
-><TR
-><TD CLASS="arg"
->-&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
->FormulaTree</A
-></TD
-><TD CLASS="rdoc"
->Compiled formula tree.
-</TD
-></TR
-><TR
-><TD CLASS="ndoc" COLSPAN="2"
->Function to parse a string into a compiled FormulaTree.
-</TD
-></TR
-></TABLE
-></TD
 ></TR
 ><TR
 ><TD CLASS="s15"
@@ -159,39 +164,75 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:compileSheet"
-><A NAME="v%3AcompileSheet"
+><A NAME="v:grillSuffix"
+><A NAME="v%3AgrillSuffix"
 ></A
 ></A
 ><B
->compileSheet</B
-></TD
+>grillSuffix</B
+> :: String</TD
 ></TR
 ><TR
-><TD CLASS="body"
-><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
-><TR
-><TD CLASS="arg"
->:: String</TD
-><TD CLASS="rdoc"
->Input String. This may change to something else in the future.
+><TD CLASS="doc"
+>Internals: String ending signature of every grill steeht
 </TD
 ></TR
 ><TR
-><TD CLASS="arg"
->-&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
-></TD
-><TD CLASS="rdoc"
+><TD CLASS="s15"
 ></TD
 ></TR
 ><TR
-><TD CLASS="ndoc" COLSPAN="2"
->Function to parse a whole sheet.
+><TD CLASS="decl"
+><A NAME="v:sheetPrefix"
+><A NAME="v%3AsheetPrefix"
+></A
+></A
+><B
+>sheetPrefix</B
+> :: Char</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Identifier to find sheet version.
 </TD
 ></TR
-></TABLE
+><TR
+><TD CLASS="s15"
 ></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:calcEnginePrefix"
+><A NAME="v%3AcalcEnginePrefix"
+></A
+></A
+><B
+>calcEnginePrefix</B
+> :: Char</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Identifier to find required calculation engine.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:checksumPrefix"
+><A NAME="v%3AchecksumPrefix"
+></A
+></A
+><B
+>checksumPrefix</B
+> :: Char</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Identifier to find checksum.
+</TD
 ></TR
 ><TR
 ><TD CLASS="s15"

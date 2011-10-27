@@ -4,7 +4,6 @@
 -- 
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
-import qualified Data.Maybe as Maybe
 import qualified Data.String.Utils as StringUtils
 import qualified System.IO as FileIO
 import qualified Data.List as List
@@ -37,7 +36,7 @@ options =
 showMessage :: String -> IO ()
 showMessage m = do
   putStr $ m ++ "\nPress <Enter> to continue\n"
-  FileIO.getLine
+  _ <- FileIO.getLine
   return ()
 
 -- | Console main loop: Print command line keys, read command and execute it
@@ -56,7 +55,7 @@ consoleLoop props sheet = do
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
     'e' -> showMessage "Edit not yet implemented" >> consoleLoop props sheet
     ' ' -> consoleLoop props sheet
-    otherwise -> showMessage ("Unrecognised command line:" ++ command) >> consoleLoop props sheet
+    _ -> showMessage ("Unrecognised command line:" ++ command) >> consoleLoop props sheet
 
 loadSheet :: [String]
           -> IO Sheet.RawSheet
@@ -69,7 +68,7 @@ loadSheet names = case length names of
                       case sheet of
                         Left msg -> showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptyRawSheet
                         Right parsedSheet -> showMessage ("Sheet loaded:" ++ sheetName) >> return parsedSheet
-                    otherwise -> do
+                    _ -> do
                       putStr "Only one sheet supported"
                       return Sheet.emptyRawSheet
 

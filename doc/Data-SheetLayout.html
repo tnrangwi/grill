@@ -71,6 +71,84 @@
 ></TD
 ></TR
 ><TR
+><TD CLASS="section1"
+>Synopsis</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AAddress"
+>Address</A
+> </TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Arow"
+>row</A
+> :: <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+> -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Acol"
+>col</A
+> :: <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+> -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AmakeAddr"
+>makeAddr</A
+> :: Int -&gt; Int -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AmaxRow"
+>maxRow</A
+> :: Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AmaxCol"
+>maxCol</A
+> :: Int</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
 ><TD CLASS="s15"
 ></TD
 ></TR
@@ -95,6 +173,17 @@
 >  </TD
 ></TR
 ><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Type storing a sheet cell address. Format may change.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
 ><TD CLASS="s15"
 ></TD
 ></TR
@@ -111,6 +200,11 @@
 > -&gt; Int</TD
 ></TR
 ><TR
+><TD CLASS="doc"
+>Extract row from address.
+</TD
+></TR
+><TR
 ><TD CLASS="s15"
 ></TD
 ></TR
@@ -125,6 +219,65 @@
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
 > -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Extract column of address.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:makeAddr"
+><A NAME="v%3AmakeAddr"
+></A
+></A
+><B
+>makeAddr</B
+> :: Int -&gt; Int -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:maxRow"
+><A NAME="v%3AmaxRow"
+></A
+></A
+><B
+>maxRow</B
+> :: Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Max rows allowed in sheet. FIXME: Should be in Constants.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:maxCol"
+><A NAME="v%3AmaxCol"
+></A
+></A
+><B
+>maxCol</B
+> :: Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Max columns in sheet. FIXME: Should be in Constants.
+</TD
 ></TR
 ><TR
 ><TD CLASS="s15"

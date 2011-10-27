@@ -4,12 +4,12 @@
 ><HEAD
 ><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
 ><TITLE
->FormulaEngine.Parse</TITLE
+>Procedures.Display.Dump</TITLE
 ><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
 ><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
 ></SCRIPT
 ><SCRIPT TYPE="text/javascript"
->window.onload = function () {setSynopsis("mini_FormulaEngine-Parse.html")};</SCRIPT
+>window.onload = function () {setSynopsis("mini_Procedures-Display-Dump.html")};</SCRIPT
 ></HEAD
 ><BODY
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
@@ -40,7 +40,7 @@
 ><TR
 ><TD
 ><FONT SIZE="6"
->FormulaEngine.Parse</FONT
+>Procedures.Display.Dump</FONT
 ></TD
 ></TR
 ></TABLE
@@ -57,10 +57,10 @@
 ><TR
 ><TD CLASS="doc"
 ><P
->This file implements parsing of both full sheets and single formula trees.
+>This file dumps any kind of structures.
 </P
 ><P
->| Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
+>Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
 >../LICENSE</A
 > for details.
 </P
@@ -83,22 +83,24 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AcompileTree"
->compileTree</A
-> :: String -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
->FormulaTree</A
+><SPAN CLASS="keyword"
+>class</SPAN
+>  <A HREF="#t%3ADump"
+>Dump</A
+> a b  <SPAN CLASS="keyword"
+>where</SPAN
 ></TD
 ></TR
 ><TR
-><TD CLASS="s8"
-></TD
-></TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AcompileSheet"
->compileSheet</A
-> :: String -&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+><A HREF="#v%3Adump"
+>dump</A
+> :: a -&gt; b</TD
+></TR
+></TABLE
 ></TD
 ></TR
 ></TABLE
@@ -118,77 +120,49 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:compileTree"
-><A NAME="v%3AcompileTree"
+><SPAN CLASS="keyword"
+>class</SPAN
+>  <A NAME="t:Dump"
+><A NAME="t%3ADump"
 ></A
 ></A
 ><B
->compileTree</B
+>Dump</B
+> a b  <SPAN CLASS="keyword"
+>where</SPAN
 ></TD
 ></TR
 ><TR
 ><TD CLASS="body"
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
-><TD CLASS="arg"
->:: String</TD
-><TD CLASS="rdoc"
->Input string -- as given in a cell.
+><TD CLASS="ndoc"
+>Dump objects in a more or less suitable way
 </TD
 ></TR
 ><TR
-><TD CLASS="arg"
->-&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
->FormulaTree</A
+><TD CLASS="s8"
 ></TD
-><TD CLASS="rdoc"
->Compiled formula tree.
-</TD
 ></TR
 ><TR
-><TD CLASS="ndoc" COLSPAN="2"
->Function to parse a string into a compiled FormulaTree.
-</TD
+><TD CLASS="section4"
+>Methods</TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><A NAME="v:dump"
+><A NAME="v%3Adump"
+></A
+></A
+><B
+>dump</B
+> :: a -&gt; b</TD
 ></TR
 ></TABLE
 ></TD
-></TR
-><TR
-><TD CLASS="s15"
-></TD
-></TR
-><TR
-><TD CLASS="decl"
-><A NAME="v:compileSheet"
-><A NAME="v%3AcompileSheet"
-></A
-></A
-><B
->compileSheet</B
-></TD
-></TR
-><TR
-><TD CLASS="body"
-><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
-><TR
-><TD CLASS="arg"
->:: String</TD
-><TD CLASS="rdoc"
->Input String. This may change to something else in the future.
-</TD
-></TR
-><TR
-><TD CLASS="arg"
->-&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
-></TD
-><TD CLASS="rdoc"
-></TD
-></TR
-><TR
-><TD CLASS="ndoc" COLSPAN="2"
->Function to parse a whole sheet.
-</TD
 ></TR
 ></TABLE
 ></TD

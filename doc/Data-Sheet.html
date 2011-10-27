@@ -51,13 +51,50 @@
 ></TD
 ></TR
 ><TR
+><TD
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="section4"
+><B
+>Contents</B
+></TD
+></TR
+><TR
+><TD
+><DL
+><DT
+><A HREF="#1"
+>Data types
+</A
+></DT
+><DT
+><A HREF="#2"
+>Sheet functions
+</A
+></DT
+><DT
+><A HREF="#3"
+>Header functions
+</A
+></DT
+></DL
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="section1"
 >Description</TD
 ></TR
 ><TR
 ><TD CLASS="doc"
 ><P
->This file defines data structure in a workheet.
+>This file defines data structure in a workheet, build and access functions.
 </P
 ><P
 >Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
@@ -95,10 +132,124 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3ARawHeader"
+>RawHeader</A
+> </TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
 ><A HREF="#v%3AemptyRawSheet"
 >emptyRawSheet</A
 > :: <A HREF="Data-Sheet.html#t%3ARawSheet"
 >RawSheet</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AbuildSheet"
+>buildSheet</A
+> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+> -&gt; [[<A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+>]] -&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AaddCell"
+>addCell</A
+> :: <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+> -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AgetCell"
+>getCell</A
+> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+> -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AmaxRow"
+>maxRow</A
+> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+> -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AmaxCol"
+>maxCol</A
+> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+> -&gt; Int -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AemptyRawHeader"
+>emptyRawHeader</A
+> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AaddHeaderProperties"
+>addHeaderProperties</A
+> :: [(String, <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>)] -&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
 ></TD
 ></TR
 ></TABLE
@@ -109,8 +260,17 @@
 ></TD
 ></TR
 ><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="section1"
->Documentation</TD
+><A NAME="1"
+><A NAME="1"
+>Data types
+</A
+></A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s15"
@@ -133,10 +293,51 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="ndoc"
->Type for raw sheet: Just a map.
+>(Hidden) type for raw sheet: Just a map. May change in the future.
+ Most likely will become some well suited functional data structure (tree?).
 </TD
 ></TR
 ></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t:RawHeader"
+><A NAME="t%3ARawHeader"
+></A
+></A
+><B
+>RawHeader</B
+>  </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Type for sheet header. Just a properties map. May cange in the future.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="2"
+><A NAME="2"
+>Sheet functions
+</A
+></A
 ></TD
 ></TR
 ><TR
@@ -168,6 +369,345 @@
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
 >Create new empty sheet - use that for parsing a new sheet
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:buildSheet"
+><A NAME="v%3AbuildSheet"
+></A
+></A
+><B
+>buildSheet</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+></TD
+><TD CLASS="rdoc"
+>Sheet header
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; [[<A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+>]]</TD
+><TD CLASS="rdoc"
+>List of rows, rows itself lists of trees.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>Error message or sheet structure.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Create a sheet from (usually parsed) contents
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:addCell"
+><A NAME="v%3AaddCell"
+></A
+></A
+><B
+>addCell</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+><TD CLASS="rdoc"
+>Cell address
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+></TD
+><TD CLASS="rdoc"
+>Tree to add into cell
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>Sheet to update
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>Updated sheet
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Add a single cell to a raw sheet. May change and require certain conditions in the future.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:getCell"
+><A NAME="v%3AgetCell"
+></A
+></A
+><B
+>getCell</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>The sheet.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+></TD
+><TD CLASS="rdoc"
+>Cell address.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+></TD
+><TD CLASS="rdoc"
+></TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Get content of single cell
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:maxRow"
+><A NAME="v%3AmaxRow"
+></A
+></A
+><B
+>maxRow</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>The sheet.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Int</TD
+><TD CLASS="rdoc"
+>Max row or -1.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Retrieve number of rows in sheet
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:maxCol"
+><A NAME="v%3AmaxCol"
+></A
+></A
+><B
+>maxCol</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Data-Sheet.html#t%3ARawSheet"
+>RawSheet</A
+></TD
+><TD CLASS="rdoc"
+>The sheet.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Int</TD
+><TD CLASS="rdoc"
+>Row to search
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Int</TD
+><TD CLASS="rdoc"
+>Max column in row or -1
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Retrieve maximum column in row
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="3"
+><A NAME="3"
+>Header functions
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:emptyRawHeader"
+><A NAME="v%3AemptyRawHeader"
+></A
+></A
+><B
+>emptyRawHeader</B
+> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+></TD
+></TR
+><TR
+><TD CLASS="doc"
+>Return empty header to add properties later.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:addHeaderProperties"
+><A NAME="v%3AaddHeaderProperties"
+></A
+></A
+><B
+>addHeaderProperties</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: [(String, <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>)]</TD
+><TD CLASS="rdoc"
+>Property name / value
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+></TD
+><TD CLASS="rdoc"
+>Old header
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
+>RawHeader</A
+></TD
+><TD CLASS="rdoc"
+>updated header
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Add properties to header.
 </TD
 ></TR
 ></TABLE

@@ -19,10 +19,8 @@ module Console.CommandLine
 where
 
 import qualified System
-import qualified System.Exit as Exit
 import qualified System.Console.GetOpt as GetOpt
 
-import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
 
@@ -108,11 +106,11 @@ optionSpec2GetOpt :: [Argument]
                   -> [GetOpt.OptDescr (String, String)]
 optionSpec2GetOpt [] = []
 optionSpec2GetOpt (x:xs) = convert x : optionSpec2GetOpt xs --FIXME: Efficient?
-    where convert x = GetOpt.Option
-                      (shortNames x)
-                      (longNames x)
-                      (convertType (propertyName x) (propertyType x))
-                      (description x)
+    where convert v = GetOpt.Option
+                      (shortNames v)
+                      (longNames v)
+                      (convertType (propertyName v) (propertyType v))
+                      (description v)
           convertType n t = case t of
                               Flag -> GetOpt.NoArg (flag n)
                               OptOpt desc dflt -> GetOpt.OptArg (option n . Maybe.fromMaybe dflt) desc

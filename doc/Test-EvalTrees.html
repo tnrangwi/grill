@@ -1,0 +1,460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
+><TITLE
+>Test.EvalTrees</TITLE
+><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
+><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
+></SCRIPT
+><SCRIPT TYPE="text/javascript"
+>window.onload = function () {setSynopsis("mini_Test-EvalTrees.html")};</SCRIPT
+></HEAD
+><BODY
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="topbar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><IMG SRC="haskell_icon.gif" WIDTH="16" HEIGHT="16" ALT=" "
+></TD
+><TD CLASS="title"
+></TD
+><TD CLASS="topbut"
+><A HREF="index.html"
+>Contents</A
+></TD
+><TD CLASS="topbut"
+><A HREF="doc-index.html"
+>Index</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="modulebar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><FONT SIZE="6"
+>Test.EvalTrees</FONT
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Description</TD
+></TR
+><TR
+><TD CLASS="doc"
+><P
+>This file defines tests tree evaluation and parser functions.
+</P
+><P
+>Author: Thorsten Rangwich. See file <A HREF="../LICENSE"
+>../LICENSE</A
+> for details.
+</P
+><P
+>Currently depends on QuickCheck k 2 - My debian based distribution
+ does not yet support ghc7.
+</P
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Synopsis</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AintegerFuncWrapper"
+>integerFuncWrapper</A
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [Int] -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AfloatFuncWrapper"
+>floatFuncWrapper</A
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [Float] -&gt; Float</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AstringFuncWrapper"
+>stringFuncWrapper</A
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [String] -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_addInt"
+>prop_addInt</A
+> :: [Int] -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_concString"
+>prop_concString</A
+> :: [String] -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_recursive"
+>prop_recursive</A
+> :: Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aescape"
+>escape</A
+> :: Char -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aquote"
+>quote</A
+> :: String -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_leadingSpaces"
+>prop_leadingSpaces</A
+> :: Int -&gt; String -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_string"
+>prop_string</A
+> :: String -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Aprop_invalidReference"
+>prop_invalidReference</A
+> :: Bool</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3Amain"
+>main</A
+> :: IO ()</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Documentation</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:integerFuncWrapper"
+><A NAME="v%3AintegerFuncWrapper"
+></A
+></A
+><B
+>integerFuncWrapper</B
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [Int] -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Convert a tree function into an Int function.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:floatFuncWrapper"
+><A NAME="v%3AfloatFuncWrapper"
+></A
+></A
+><B
+>floatFuncWrapper</B
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [Float] -&gt; Float</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:stringFuncWrapper"
+><A NAME="v%3AstringFuncWrapper"
+></A
+></A
+><B
+>stringFuncWrapper</B
+> :: ([<A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>] -&gt; <A HREF="Data-Plain.html#t%3APlain"
+>Plain</A
+>) -&gt; [String] -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_addInt"
+><A NAME="v%3Aprop_addInt"
+></A
+></A
+><B
+>prop_addInt</B
+> :: [Int] -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Integer add function should match results of builtin (+) for Int.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_concString"
+><A NAME="v%3Aprop_concString"
+></A
+></A
+><B
+>prop_concString</B
+> :: [String] -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>String concatenation function.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_recursive"
+><A NAME="v%3Aprop_recursive"
+></A
+></A
+><B
+>prop_recursive</B
+> :: Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Recursive calls.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:escape"
+><A NAME="v%3Aescape"
+></A
+></A
+><B
+>escape</B
+> :: Char -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:quote"
+><A NAME="v%3Aquote"
+></A
+></A
+><B
+>quote</B
+> :: String -&gt; String</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_leadingSpaces"
+><A NAME="v%3Aprop_leadingSpaces"
+></A
+></A
+><B
+>prop_leadingSpaces</B
+> :: Int -&gt; String -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Leading spaces.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_string"
+><A NAME="v%3Aprop_string"
+></A
+></A
+><B
+>prop_string</B
+> :: String -&gt; Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Arbitrary strings.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:prop_invalidReference"
+><A NAME="v%3Aprop_invalidReference"
+></A
+></A
+><B
+>prop_invalidReference</B
+> :: Bool</TD
+></TR
+><TR
+><TD CLASS="doc"
+>References are invalid in calcTrees.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:main"
+><A NAME="v%3Amain"
+></A
+></A
+><B
+>main</B
+> :: IO ()</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Run the tests
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="botbar"
+>Produced by <A HREF="http://www.haskell.org/haddock/"
+>Haddock</A
+> version 2.6.0</TD
+></TR
+></TABLE
+></BODY
+></HTML
+>
