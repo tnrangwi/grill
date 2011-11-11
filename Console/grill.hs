@@ -41,9 +41,16 @@ showMessage m = do
 -- | Replace that with internal function in Data.Text when switching to Data.Text instead of String
 strip :: String -> String
 strip unstripped = walk unstripped [] 0 0 -- rest of string to process / lstripped string / length nonwhitespace char / position
-    where walk [] s l _ = take l s
-          walk (x:xs) [] l n = if isWspace x then walk xs [] l n else walk xs (x:xs) 1 1
-          walk (x:xs) ys l n = if isWspace x then walk xs ys l (n + 1) else walk xs ys (n + 1) (n + 1)
+    where walk :: String -- ^ Rest of string to process
+               -> String -- ^ Lstripped string. Empty in the beginning, non empty and constant when first chart is found.
+               -> Int -- ^ Number of cheracters in lstripped string. Maximum non wghitespace character position.
+               -> Int -- ^ Position in lstripped string currently processed.
+               -> String -- ^ Result string.
+          walk [] s l _ = take l s
+          walk (x:xs) [] l n | isWspace x = walk xs [] l n
+                             | otherwise = walk xs (x:xs) 1 1
+          walk (x:xs) ys l n | isWspace x = walk xs ys l (n + 1)
+                             | otherwise = walk xs ys (n + 1) (n + 1)
           isWspace c = c `elem` " \t\r\n"
 
 
