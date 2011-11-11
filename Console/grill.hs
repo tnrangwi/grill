@@ -40,7 +40,7 @@ showMessage m = do
 
 -- | Replace that with internal function in Data.Text when switching to Data.Text instead of String
 strip :: String -> String
-strip unstripped = walk unstripped [] 0 0 -- rest of string to process / lstripped string / length nonwhitespace char / position
+strip unstripped = walk unstripped [] 0 0
     where walk :: String -- ^ Rest of string to process
                -> String -- ^ Lstripped string. Empty in the beginning, non empty and constant when first chart is found.
                -> Int -- ^ Number of cheracters in lstripped string. Maximum non wghitespace character position.
