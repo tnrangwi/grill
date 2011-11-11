@@ -4,7 +4,6 @@
 -- 
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
-import qualified Data.String.Utils as StringUtils
 import qualified System.IO as FileIO
 import qualified Data.List as List
 
@@ -39,6 +38,15 @@ showMessage m = do
   _ <- FileIO.getLine
   return ()
 
+-- | Replace that with internal function in Data.Text when switching to Data.Text instead of String
+strip :: String -> String
+strip unstripped = walk unstripped [] 0 0 -- rest of string to process / lstripped string / length nonwhitespace char / position
+    where walk [] s l _ = take l s
+          walk (x:xs) [] l n = if isWspace x then walk xs [] l n else walk xs (x:xs) 1 1
+          walk (x:xs) ys l n = if isWspace x then walk xs ys l (n + 1) else walk xs ys (n + 1) (n + 1)
+          isWspace c = c `elem` " \t\r\n"
+
+
 -- | Console main loop: Print command line keys, read command and execute it
 -- FIXME: Do not use command line properties. Use something else!
 consoleLoop :: Cmd.Properties -> Sheet.RawSheet -> IO ()
@@ -46,7 +54,7 @@ consoleLoop props sheet = do
   putStr . take 25 . List.repeat $ '\n'
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
-  command <- fmap StringUtils.strip FileIO.getLine
+  command <- fmap strip FileIO.getLine
   case if length command > 0 then head command else ' ' of
     'q' -> return ()
     'l' -> showMessage "Load not yet implemented" >> consoleLoop props sheet
