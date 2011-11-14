@@ -8,7 +8,9 @@
 
 DEMO_HS=demo_*.hs grill.hs
 DEMO_EXE=$(DEMO_HS:.hs=) $(DEMO_HS:.hs=.exe)
-EXCLUDE_HS=$(DEMO_HS)
+TEST_HS=test_*.hs
+TEST_EXE=$(TEST_HS:.hs=) $(TEST_HS:.hs=.exe)
+EXCLUDE_HS=$(DEMO_HS) $(TEST_HS)
 #From file1 file2 file3 --> file1 -o -name file2 -o -name file3
 EXCLUDE_HS_FIND_PARAM=$(patsubst %,-o -name %,$(EXCLUDE_HS))
 HS_SRC=$(shell find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_FIND_PARAM) \))
@@ -32,7 +34,7 @@ all:
 
 #Run test suites
 test:
-	cd test && runghc -i.. EvalTrees.hs
+	cd test && runghc -i.. test_EvalTrees.hs
 
 #Run demonstrations
 demo:
