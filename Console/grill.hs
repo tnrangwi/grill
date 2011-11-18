@@ -6,6 +6,7 @@
 
 import qualified System.IO as FileIO
 import qualified Data.List as List
+import qualified Data.Char as DChar
 
 import qualified Console.CommandLine as Cmd
 import qualified FormulaEngine.Parse as Parse
@@ -38,7 +39,8 @@ showMessage m = do
   _ <- FileIO.getLine
   return ()
 
--- | Replace that with internal function in Data.Text when switching to Data.Text instead of String
+-- | Replace that with internal function in Data.Text when switching to Data.Text instead of String.
+-- There surely should not be functions like that in this main module.
 strip :: String -> String
 strip unstripped = walk unstripped [] 0 0
     where walk :: String -- ^ Rest of string to process
@@ -53,6 +55,21 @@ strip unstripped = walk unstripped [] 0 0
                              | otherwise = walk xs ys (n + 1) (n + 1)
           isWspace c = c `elem` " \t\r\n"
 
+-- | Parse command line from stdin.
+getCommandLine :: IO (Char, String) -- ^ Returns (command char, arguments) if OK, (' ', "") if empty or (!, error message)
+getCommandLine = do
+  commandLine <- fmap strip FileIO.getLine
+  let lCmd = length commandLine
+  if lCmd == 0
+    then return (' ', "")
+    else do
+      let cmd = DChar.toLower . head $ commandLine
+      if lCmd == 1
+        then
+            return (cmd, "")
+        else
+            if commandLine!!1 == ' ' then return (cmd, strip . tail $ commandLine) else return ('!', commandLine)
+
 
 -- | Console main loop: Print command line keys, read command and execute it
 -- FIXME: Do not use command line properties. Use something else!
@@ -61,16 +78,20 @@ consoleLoop props sheet = do
   putStr . take 25 . List.repeat $ '\n'
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
-  command <- fmap strip FileIO.getLine
-  case if length command > 0 then head command else ' ' of
+  (command, args) <- getCommandLine
+  case command of
     'q' -> return ()
     'l' -> showMessage "Load not yet implemented" >> consoleLoop props sheet
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
     'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
-    'e' -> showMessage "Edit not yet implemented" >> consoleLoop props sheet
+    'e' -> do
+             case Parse.compileEditCell args of
+               Left err -> showMessage err >> consoleLoop props sheet
+               Right (addr, tree) -> showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
     ' ' -> consoleLoop props sheet
-    _ -> showMessage ("Unrecognised command line:" ++ command) >> consoleLoop props sheet
+    '!' -> showMessage ("Error parsing command line:" ++ args) >> consoleLoop props sheet
+    _ -> showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet
 
 loadSheet :: [String]
           -> IO Sheet.RawSheet

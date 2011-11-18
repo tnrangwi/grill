@@ -13,7 +13,7 @@ module Data.Sheet
      -- * Sheet functions
      emptyRawSheet,
      buildSheet,
-     addCell,
+     changeCell,
      getCell,
      maxRow,
      maxCol,
@@ -59,11 +59,11 @@ buildSheet header rows =
 
 
 -- | Add a single cell to a raw sheet. May change and require certain conditions in the future.
-addCell :: L.Address -- ^ Cell address
-        -> T.FormulaTree -- ^ Tree to add into cell
-        -> RawSheet -- ^ Sheet to update
-        -> RawSheet -- ^ Updated sheet
-addCell a t = RSheet . Map.insert a t . rSheet
+changeCell :: L.Address -- ^ Cell address
+           -> T.FormulaTree -- ^ Tree to add into cell
+           -> RawSheet -- ^ Sheet to update
+           -> RawSheet -- ^ Updated sheet
+changeCell a t = RSheet . Map.insert a t . rSheet
 
 
 -- | Get content of single cell

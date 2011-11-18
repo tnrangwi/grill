@@ -5,7 +5,8 @@
 module FormulaEngine.Parse
 (
  compileTree,
- compileSheet
+ compileSheet,
+ compileEditCell
 )
 
 where
@@ -52,6 +53,10 @@ compileSheet s = case Parsec.parse sheet "" s of
                    Left err -> Left $ show err
                    Right v -> Right v
 
+-- | Function to compile an address and a new tree to put into address.
+compileEditCell :: String -- ^ Input String.
+                -> Either String (SheetLayout.Address, T.FormulaTree)
+compileEditCell = error "Parse cell editor command line is not yet implemented"
 
 ------------------------------------------------
 -- Parser building blocks to parse a whole sheet
