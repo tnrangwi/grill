@@ -56,7 +56,10 @@ compileSheet s = case Parsec.parse sheet "" s of
 -- | Function to compile an address and a new tree to put into address.
 compileEditCell :: String -- ^ Input String.
                 -> Either String (SheetLayout.Address, T.FormulaTree)
-compileEditCell = error "Parse cell editor command line is not yet implemented"
+compileEditCell s = case Parsec.parse editCellExpr "" s of
+                      Left err -> Left $ show err
+                      Right v -> Right v
+
 
 ------------------------------------------------
 -- Parser building blocks to parse a whole sheet
@@ -103,7 +106,18 @@ sheetRow :: Parsec.Parser [T.FormulaTree]
 sheetRow = Parsec.sepBy term (Parsec.char '\t')
          <?> "expecting sheet row"
 
+-----------------------------
+-- Parse cell edit expression
+-----------------------------
 
+-- | Parse edit cell expression: A combination of address and term
+editCellExpr :: Parsec.Parser (SheetLayout.Address, T.FormulaTree)
+editCellExpr = do
+  addr <- parseReferenceContent
+  Parsec.spaces
+  tree <- term
+  return (addr, tree) -- FIXME: Error message?
+ 
 ---------------------------------------------------------------------
 -- Parser building blocks to parse a single cell expression / a tree.
 ---------------------------------------------------------------------
@@ -143,10 +157,11 @@ parseFunction = do
   Parsec.char ')'
   return (command, args)
 
--- | Parse a reference to another tree, addressed as external cell address
-parseReference :: Parsec.Parser SheetLayout.Address
-parseReference = do
-  Parsec.char '\''
+-- | Parse a reference to another tree, addressed as external cell address.
+-- This either is called within a tree parse or directly within an edit cell command (where no leading single
+-- quote is given).
+parseReferenceContent :: Parsec.Parser SheetLayout.Address
+parseReferenceContent = do
   stringRow <- Parsec.many1 Parsec.digit
   Parsec.char ':'
   stringCol <- Parsec.many1 Parsec.digit
@@ -154,6 +169,13 @@ parseReference = do
   let col = read stringCol
   M.when (row > SheetLayout.maxRow || col > SheetLayout.maxCol) (fail "Cell reference not < 256:16")
   return $ SheetLayout.makeAddr row col
+
+
+-- | Parse reference content. This is marked with a leading single quote to distinguish it from values and functions.
+parseReference :: Parsec.Parser SheetLayout.Address
+parseReference = do
+  Parsec.char '\''
+  parseReferenceContent
 
 
 ----------------------------------------------------------
