@@ -1,3 +1,6 @@
 Small tree based calculation engine. To be extended with visual tools and grid framework later.
 
 See file LICENSE for licensing details.
+
+Currently only a quite rudimentary prototype is implemented. Two sheet functions,
+spartanic console GUI to edit sheets.

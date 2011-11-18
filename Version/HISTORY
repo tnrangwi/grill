@@ -1,0 +1,8 @@
+Version 0.0.1:
+
+Rudimentary console GUI finished. The sheet still cannot be saved, but
+it is possible to load sheets and change them with a rudimentary GUI.
+Formula engine calculates whole sheets, two sheet functions implemented
+for demonstration purposes. Nasty, you have to know what you are doing,
+but it is worth setting from 0.0.0 to 0.0.1.
+
