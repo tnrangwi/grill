@@ -81,7 +81,7 @@ consoleLoop props sheet = do
   (command, args) <- getCommandLine
   case command of
     'q' -> return ()
-    'l' -> showMessage "Load not yet implemented" >> consoleLoop props sheet
+    'l' -> loadSheet [args] >>= consoleLoop props
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
     'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
