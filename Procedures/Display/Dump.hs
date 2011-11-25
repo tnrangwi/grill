@@ -35,5 +35,5 @@ instance Dump S.RawSheet String where
     dump sheet = concat [buildRow r | r <- [0..nRows] ]
         where
           nRows = S.maxRow sheet
-          nCols = S.maxCol sheet
+          nCols = (flip S.maxCol) sheet
           buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..nCols r] ] ++ "\n"

@@ -53,7 +53,7 @@ strip unstripped = walk unstripped [] 0 0
                              | otherwise = walk xs (x:xs) 1 1
           walk (x:xs) ys l n | isWspace x = walk xs ys l (n + 1)
                              | otherwise = walk xs ys (n + 1) (n + 1)
-          isWspace c = c `elem` " \t\r\n"
+          isWspace = (`elem` " \t\r\n")
 
 -- | Parse command line from stdin.
 getCommandLine :: IO (Char, String) -- ^ Returns (command char, arguments) if OK, (' ', "") if empty or (!, error message)
@@ -85,10 +85,9 @@ consoleLoop props sheet = do
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
     'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
-    'e' -> do
-             case Parse.compileEditCell args of
-               Left err -> showMessage err >> consoleLoop props sheet
-               Right (addr, tree) -> showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
+    'e' -> case Parse.compileEditCell args of
+             Left err -> showMessage err >> consoleLoop props sheet
+             Right (addr, tree) -> showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
     ' ' -> consoleLoop props sheet
     '!' -> showMessage ("Error parsing command line:" ++ args) >> consoleLoop props sheet
     _ -> showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet

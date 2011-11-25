@@ -29,9 +29,14 @@ import qualified Data.Map as Map
 import qualified Tree.FormulaTree as T
 import qualified Data.SheetLayout as L
 
+-- | Implementation type. Ugly, needs to change to something where rows and column lengths and
+-- headers are included better than just put in unfitting wrapper types in the map.
+-- This type must not be exported. It exists here only for shortcuts in implementation.
+type RawSheetType = Map.Map L.Address T.FormulaTree
+
 -- | (Hidden) type for raw sheet: Just a map. May change in the future.
 -- Most likely will become some well suited functional data structure (tree?).
-newtype RawSheet = RSheet { rSheet :: (Map.Map L.Address T.FormulaTree) }
+newtype RawSheet = RSheet { rSheet :: RawSheetType }
 
 -- | Type for sheet header. Just a properties map. May cange in the future.
 newtype RawHeader = RHeader { rHeader :: (Map.Map String P.Plain) }
@@ -58,12 +63,20 @@ buildSheet header rows =
           buildCell r (c, t) = (L.makeAddr r c, t)
 
 
--- | Add a single cell to a raw sheet. May change and require certain conditions in the future.
+-- | Add / change a single cell to a raw sheet. May change and require certain conditions in the future.
 changeCell :: L.Address -- ^ Cell address
            -> T.FormulaTree -- ^ Tree to add into cell
            -> RawSheet -- ^ Sheet to update
            -> RawSheet -- ^ Updated sheet
-changeCell a t = RSheet . Map.insert a t . rSheet
+changeCell a t = RSheet . updateMax a . Map.insert a t . rSheet
+                 where updateMax a m = Map.insert (L.makeAddr (-1) (-1)) (rMax m) .
+                                       Map.insert (L.makeAddr r (-1)) (cMax m) $ m
+                       r = L.row a
+                       c = L.col a
+                       rMax m = T.Raw . P.PlInt $ max (maxRow' m) r
+                       cMax m = T.Raw . P.PlInt $ max (maxCol' r m) c
+-- FIXME: Set max updater for row and / or column to id, if nothing to do.
+-- Insert is quite more expensive then id and id will be sufficint in most cases.
 
 
 -- | Get content of single cell
@@ -72,21 +85,32 @@ getCell :: RawSheet -- ^ The sheet.
         -> T.FormulaTree
 getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a $ rSheet s
 
+-- | Help stub: Retrieve max row, but from raw map
+maxRow' :: RawSheetType -- ^ The raw map, implementation dependend. Will change.
+        -> Int -- ^ Max row or -1
+maxRow' s = case Map.lookup (L.makeAddr (-1) (-1)) s of
+              Just (T.Raw (P.PlInt i)) -> i
+              otherwise -> -1
 
 -- | Retrieve number of rows in sheet
 maxRow :: RawSheet -- ^ The sheet.
        -> Int -- ^ Max row or -1.
-maxRow s = case Map.lookup (L.makeAddr (-1) (-1)) $ rSheet s of
-             Just (T.Raw (P.PlInt i)) -> i
-             otherwise -> -1
+maxRow = maxRow' . rSheet
 
--- | Retrieve maximum column in row
-maxCol :: RawSheet -- ^ The sheet.
-       -> Int -- ^ Row to search
-       -> Int -- ^ Max column in row or -1
-maxCol s r = case Map.lookup (L.makeAddr r (-1)) $ rSheet s of
+-- | Retrieve maximum columns for row. Implementation specific function used
+-- for short circuiting implementation. Must not be exported.
+maxCol' :: Int -- ^ Row to search
+        -> RawSheetType -- ^ The raw, implementation dependend map. Will change in the future.
+        -> Int -- ^ Max column in row or -1
+maxCol' r s = case Map.lookup (L.makeAddr r (-1)) s of
                Just (T.Raw (P.PlInt i)) -> i
                otherwise -> -1
+
+-- | Retrieve maximum column in row
+maxCol :: Int -- ^ Row to search
+       -> RawSheet -- ^ The sheet.
+       -> Int -- ^ Max column in row or -1
+maxCol r = maxCol' r . rSheet
 
 
 --------------------
