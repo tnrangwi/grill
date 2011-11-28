@@ -143,7 +143,12 @@ term = do -- parse function call containing more terms
          number <- parseNumber
          realSpaces
          return . T.Raw $ number
-     <?> "function term, number, string or reference"
+     <|> -- parse empty cell. FIXME: Does only accept a cell with at least one space
+       do
+         Parsec.char ' '
+         realSpaces
+         return . T.Raw $ P.PlEmpty
+     <?> "function term, number, string, reference or empty"
 
 
 -- | Parse a function call within a tree.
