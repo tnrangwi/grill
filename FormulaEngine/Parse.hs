@@ -103,8 +103,12 @@ sheetHeader = do
 
 -- | Parse one sheet row.
 sheetRow :: Parsec.Parser [T.FormulaTree]
-sheetRow = Parsec.sepBy term (Parsec.char '\t')
-         <?> "expecting sheet row"
+sheetRow = do
+  first  <- Parsec.option (T.Raw P.PlEmpty) term
+  rest <- (Parsec.char '\t' >> sheetRow) <|> (return [])
+  -- FIXME: If 1st cell is empty, return empty list
+  return (first:rest)
+  -- FIXME: Error handling: <?> "expecting sheet row"  
 
 -----------------------------
 -- Parse cell edit expression
@@ -143,12 +147,8 @@ term = do -- parse function call containing more terms
          number <- parseNumber
          realSpaces
          return . T.Raw $ number
-     <|> -- parse empty cell. FIXME: Does only accept a cell with at least one space
-       do
-         Parsec.char ' '
-         realSpaces
-         return . T.Raw $ P.PlEmpty
-     <?> "function term, number, string, reference or empty"
+
+     <?> "function term, number, string or reference"
 
 
 -- | Parse a function call within a tree.
@@ -217,8 +217,9 @@ parseNumber = do
 
 -- | Parse "our" definition of eol. Will change, I see no reason why this should be text editor
 -- compatible.
+-- 28.11.: dropped support for Mac newline.
 eol :: Parsec.Parser ()
-eol = (Parsec.string "\n" <|> Parsec.string "\r\n" <|> Parsec.string "\r") >> return ()
+eol = (Parsec.string "\n" <|> Parsec.string "\r\n") >> return ()
 
 -- | Parse any number of spaces. Standard whitespace is not suitable because tabs are used
 -- to separate the cells within a row. Spaces will be possible within the cell editor.
