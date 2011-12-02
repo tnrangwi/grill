@@ -18,8 +18,8 @@ import qualified Data.SheetLayout as L
 
 -- | Type to encapsulate evaluates with and without sheet references.
 data EvalRef = NoRef -- ^ Eval formula tree without sheet references.
-             | SheetRef S.RawSheet -- ^ Eval with sheet
-             | FullRef S.RawSheet [L.Address] -- ^ Full eval with sheet reference and list of used cells.
+             | SheetRef S.Sheet -- ^ Eval with sheet
+             | FullRef S.Sheet [L.Address] -- ^ Full eval with sheet reference and list of used cells.
                                                -- Params are sheet reference and a list of
                                                -- previously evaluated cells to check for circular references.
 
@@ -56,7 +56,7 @@ findError r argv = let errors = filter P.checkError argv
 
 
 -- | Calculate one cell in a sheet and return Plain value.
-calcCell :: S.RawSheet -- ^ The sheet to calculate a cell
+calcCell :: S.Sheet -- ^ The sheet to calculate a cell
          -> L.Address -- ^ The cell address we are interested in
          -> P.Plain -- ^ Plain value suitable for show
 calcCell  sheet addr = eval (T.Reference addr) (SheetRef sheet)

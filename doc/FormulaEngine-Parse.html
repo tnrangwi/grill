@@ -97,9 +97,23 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AcompileSheet"
 >compileSheet</A
-> :: String -&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+> :: String -&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AcompileEditCell"
+>compileEditCell</A
+> :: String -&gt; Either String (<A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+>, <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+>)</TD
 ></TR
 ></TABLE
 ></TD
@@ -179,8 +193,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>-&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 ></TD
@@ -188,6 +202,48 @@
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
 >Function to parse a whole sheet.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:compileEditCell"
+><A NAME="v%3AcompileEditCell"
+></A
+></A
+><B
+>compileEditCell</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: String</TD
+><TD CLASS="rdoc"
+>Input String.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Either String (<A HREF="Data-SheetLayout.html#t%3AAddress"
+>Address</A
+>, <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
+>FormulaTree</A
+>)</TD
+><TD CLASS="rdoc"
+></TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Function to compile an address and a new tree to put into address.
 </TD
 ></TR
 ></TABLE

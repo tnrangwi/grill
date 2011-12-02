@@ -122,8 +122,8 @@
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >data</SPAN
->  <A HREF="#t%3ARawSheet"
->RawSheet</A
+>  <A HREF="#t%3ASheet"
+>Sheet</A
 > </TD
 ></TR
 ><TR
@@ -134,8 +134,8 @@
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >data</SPAN
->  <A HREF="#t%3ARawHeader"
->RawHeader</A
+>  <A HREF="#t%3AHeader"
+>Header</A
 > </TD
 ></TR
 ><TR
@@ -144,10 +144,10 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AemptyRawSheet"
->emptyRawSheet</A
-> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+><A HREF="#v%3AemptySheet"
+>emptySheet</A
+> :: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ></TR
 ><TR
@@ -158,12 +158,12 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AbuildSheet"
 >buildSheet</A
-> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+> :: <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 > -&gt; [[<A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
 >FormulaTree</A
->]] -&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>]] -&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ></TR
 ><TR
@@ -172,16 +172,16 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AaddCell"
->addCell</A
+><A HREF="#v%3AchangeCell"
+>changeCell</A
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
 > -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
 >FormulaTree</A
-> -&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
-> -&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ></TR
 ><TR
@@ -192,8 +192,8 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AgetCell"
 >getCell</A
-> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+> :: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 > -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
 > -&gt; <A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
@@ -208,8 +208,8 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AmaxRow"
 >maxRow</A
-> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+> :: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 > -&gt; Int</TD
 ></TR
 ><TR
@@ -220,9 +220,9 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AmaxCol"
 >maxCol</A
-> :: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
-> -&gt; Int -&gt; Int</TD
+> :: Int -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
+> -&gt; Int</TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -230,10 +230,10 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AemptyRawHeader"
->emptyRawHeader</A
-> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+><A HREF="#v%3AemptyHeader"
+>emptyHeader</A
+> :: <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ></TR
 ><TR
@@ -246,10 +246,10 @@
 >addHeaderProperties</A
 > :: [(String, <A HREF="Data-Plain.html#t%3APlain"
 >Plain</A
->)] -&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
-> -&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+>)] -&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
+> -&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ></TR
 ></TABLE
@@ -280,12 +280,12 @@
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >data</SPAN
->  <A NAME="t:RawSheet"
-><A NAME="t%3ARawSheet"
+>  <A NAME="t:Sheet"
+><A NAME="t%3ASheet"
 ></A
 ></A
 ><B
->RawSheet</B
+>Sheet</B
 >  </TD
 ></TR
 ><TR
@@ -308,12 +308,12 @@
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
 >data</SPAN
->  <A NAME="t:RawHeader"
-><A NAME="t%3ARawHeader"
+>  <A NAME="t:Header"
+><A NAME="t%3AHeader"
 ></A
 ></A
 ><B
->RawHeader</B
+>Header</B
 >  </TD
 ></TR
 ><TR
@@ -346,12 +346,12 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:emptyRawSheet"
-><A NAME="v%3AemptyRawSheet"
+><A NAME="v:emptySheet"
+><A NAME="v%3AemptySheet"
 ></A
 ></A
 ><B
->emptyRawSheet</B
+>emptySheet</B
 ></TD
 ></TR
 ><TR
@@ -359,8 +359,8 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>:: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >Empty sheet created with defaults
@@ -393,8 +393,8 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+>:: <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ><TD CLASS="rdoc"
 >Sheet header
@@ -411,8 +411,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Either String <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>-&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >Error message or sheet structure.
@@ -432,12 +432,12 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:addCell"
-><A NAME="v%3AaddCell"
+><A NAME="v:changeCell"
+><A NAME="v%3AchangeCell"
 ></A
 ></A
 ><B
->addCell</B
+>changeCell</B
 ></TD
 ></TR
 ><TR
@@ -463,8 +463,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>-&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >Sheet to update
@@ -472,8 +472,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>-&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >Updated sheet
@@ -481,7 +481,7 @@
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Add a single cell to a raw sheet. May change and require certain conditions in the future.
+>Add / change a single cell to a raw sheet. May change and require certain conditions in the future.
 </TD
 ></TR
 ></TABLE
@@ -506,8 +506,8 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>:: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >The sheet.
@@ -557,8 +557,8 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
+>:: <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
 ></TD
 ><TD CLASS="rdoc"
 >The sheet.
@@ -598,18 +598,18 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: <A HREF="Data-Sheet.html#t%3ARawSheet"
->RawSheet</A
-></TD
+>:: Int</TD
 ><TD CLASS="rdoc"
->The sheet.
+>Row to search
 </TD
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Int</TD
+>-&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
+></TD
 ><TD CLASS="rdoc"
->Row to search
+>The sheet.
 </TD
 ></TR
 ><TR
@@ -646,14 +646,14 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:emptyRawHeader"
-><A NAME="v%3AemptyRawHeader"
+><A NAME="v:emptyHeader"
+><A NAME="v%3AemptyHeader"
 ></A
 ></A
 ><B
->emptyRawHeader</B
-> :: <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+>emptyHeader</B
+> :: <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ></TR
 ><TR
@@ -689,8 +689,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+>-&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ><TD CLASS="rdoc"
 >Old header
@@ -698,8 +698,8 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; <A HREF="Data-Sheet.html#t%3ARawHeader"
->RawHeader</A
+>-&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
 ></TD
 ><TD CLASS="rdoc"
 >updated header

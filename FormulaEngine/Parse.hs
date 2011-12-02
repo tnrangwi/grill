@@ -48,7 +48,7 @@ compileTree s = case Parsec.parse (realSpaces >> term) "" s of
 
 -- | Function to parse a whole sheet.
 compileSheet :: String -- ^ Input String. This may change to something else in the future.
-             -> Either String Sheet.RawSheet
+             -> Either String Sheet.Sheet
 compileSheet s = case Parsec.parse sheet "" s of
                    Left err -> Left $ show err
                    Right v -> Right v
@@ -66,7 +66,7 @@ compileEditCell s = case Parsec.parse editCellExpr "" s of
 ------------------------------------------------
 
 -- | Parser help function for parsing a whole sheet.
-sheet :: Parsec.Parser Sheet.RawSheet
+sheet :: Parsec.Parser Sheet.Sheet
 sheet = do
           header <- sheetHeader
           rows <- Parsec.endBy sheetRow eol
@@ -81,7 +81,7 @@ sheet = do
 
           
 -- | Parse sheet header
-sheetHeader :: Parsec.Parser Sheet.RawHeader
+sheetHeader :: Parsec.Parser Sheet.Header
 sheetHeader = do
                 Version.parseMagicBytes
                 format <- Version.parseFormat
@@ -97,7 +97,7 @@ sheetHeader = do
                                 [("format", P.PlString format),
                                  ("version", P.PlString version),
                                  ("checksum", P.PlString checksum)]
-                                Sheet.emptyRawHeader 
+                                Sheet.emptyHeader 
             <?> "expecting sheet header"
 
 

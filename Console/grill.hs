@@ -73,7 +73,7 @@ getCommandLine = do
 
 -- | Console main loop: Print command line keys, read command and execute it
 -- FIXME: Do not use command line properties. Use something else!
-consoleLoop :: Cmd.Properties -> Sheet.RawSheet -> IO ()
+consoleLoop :: Cmd.Properties -> Sheet.Sheet -> IO ()
 consoleLoop props sheet = do
   putStr . take 25 . List.repeat $ '\n'
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
@@ -93,19 +93,19 @@ consoleLoop props sheet = do
     _ -> showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet
 
 loadSheet :: [String]
-          -> IO Sheet.RawSheet
+          -> IO Sheet.Sheet
 loadSheet names = case length names of
-                    0 -> showMessage "No sheet preloaded" >> return Sheet.emptyRawSheet
+                    0 -> showMessage "No sheet preloaded" >> return Sheet.emptySheet
                     1 -> do
                       let sheetName = head names
                       stream <- FileIO.readFile (head names)
                       let sheet = Parse.compileSheet stream
                       case sheet of
-                        Left msg -> showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptyRawSheet
+                        Left msg -> showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptySheet
                         Right parsedSheet -> showMessage ("Sheet loaded:" ++ sheetName) >> return parsedSheet
                     _ -> do
                       putStr "Only one sheet supported"
-                      return Sheet.emptyRawSheet
+                      return Sheet.emptySheet
 
 
 -- | Startup ugly command interface

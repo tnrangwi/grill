@@ -25,13 +25,13 @@ import qualified FormulaEngine.Evaluate as E -- FIXME: Sheet calculation in this
 class Dump a b where
     dump :: a -> b
 
-instance Dump S.RawSheet (IO ()) where
+instance Dump S.Sheet (IO ()) where
     dump sheet = let line = take 79 (List.repeat '=') ++ "\n"
                  in
                    putStr $ line ++ (dump sheet :: String) ++ line
 
 -- FIXME: Replace by Data.Text
-instance Dump S.RawSheet String where
+instance Dump S.Sheet String where
     dump sheet = concat [buildRow r | r <- [0..nRows] ]
         where
           nRows = S.maxRow sheet
