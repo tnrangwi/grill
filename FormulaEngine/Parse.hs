@@ -105,7 +105,7 @@ sheetHeader = do
 sheetRow :: Parsec.Parser [T.FormulaTree]
 sheetRow = do
   first  <- Parsec.option (T.Raw P.PlEmpty) term
-  rest <- (Parsec.char '\t' >> sheetRow) <|> (return [])
+  rest <- (Parsec.char '\t' >> sheetRow) <|> return []
   -- FIXME: If 1st cell is empty, return empty list
   return (first:rest)
   -- FIXME: Error handling: <?> "expecting sheet row"  
