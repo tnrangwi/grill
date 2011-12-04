@@ -37,10 +37,10 @@ import qualified Version.Information as V
 -- | Implementation type.
 -- This type must not be exported. It exists here only for shortcuts in implementation.
 data RawSheet = RawSheet {
-      rCells :: Map.Map L.Address T.FormulaTree -- ^ Map of all cells
-      , rlRows :: L.Coord -- ^ Max row that exists in the sheet. Empty rows are possible.
-      , rlCols :: Map.Map L.Coord L.Coord -- ^ Max column for corresponding row. Empty cells are possible before.
-      , rHeaderInfo :: RawHeader -- ^ Header information
+      sCells :: Map.Map L.Address T.FormulaTree -- ^ Map of all cells
+      , sNrows :: L.Coord -- ^ Max row that exists in the sheet. Empty rows are possible.
+      , sNcols :: Map.Map L.Coord L.Coord -- ^ Max column for corresponding row. Empty cells are possible before.
+      , sHeaderInfo :: RawHeader -- ^ Header information
     }
 
 -- | (Hidden) type for raw sheet. May change in the future.
@@ -66,10 +66,10 @@ newtype Header = RHeader { rHeader :: RawHeader }
 createSheet :: String -- ^ Name of this sheet.
            -> Sheet -- ^ Empty sheet created with defaults
 createSheet name = RSheet $ RawSheet {
-                    rCells = Map.empty
-                  , rlRows = 0
-                  , rlCols = Map.empty
-                  , rHeaderInfo = rHeader $ createHeader name
+                    sCells = Map.empty
+                  , sNrows = 0
+                  , sNcols = Map.empty
+                  , sHeaderInfo = rHeader $ createHeader name
                   }
 
 
@@ -82,10 +82,10 @@ buildSheet :: Header -- ^ Sheet header
            -> [[T.FormulaTree]] -- ^ List of rows, rows itself lists of trees.
            -> Sheet -- ^ Sheet structure.
 buildSheet header rows = RSheet $ RawSheet {
-                           rCells = Map.fromList $ concatMap buildRow annotatedRows
-                         , rlRows = fromIntegral . length $ rows
-                         , rlCols = Map.fromList $ map (\(c, r) -> (c, fromIntegral $ length r)) annotatedRows
-                         , rHeaderInfo = rHeader header
+                           sCells = Map.fromList $ concatMap buildRow annotatedRows
+                         , sNrows = fromIntegral . length $ rows
+                         , sNcols = Map.fromList $ map (\(c, r) -> (c, fromIntegral $ length r)) annotatedRows
+                         , sHeaderInfo = rHeader header
                          }
     where
       buildRow (r, cs) = map (buildCell r) (zip annotations cs)
@@ -100,12 +100,12 @@ changeCell :: L.Address -- ^ Cell address
            -> Sheet -- ^ Updated sheet
 -- FIXME: Set max updater for row and / or column to id, if nothing to do.
 -- Insert is quite more expensive then id and id will be sufficint in most cases.
-changeCell a t s = RSheet $ rawsheet { rCells = Map.insert a t (rCells rawsheet)
-                                     , rlRows = max (r + 1) (rlRows rawsheet)
-                                     , rlCols = Map.insert r (max (c + 1) $ Map.findWithDefault 0 r nCols) nCols
+changeCell a t s = RSheet $ rawsheet { sCells = Map.insert a t (sCells rawsheet)
+                                     , sNrows = max (r + 1) (sNrows rawsheet)
+                                     , sNcols = Map.insert r (max (c + 1) $ Map.findWithDefault 0 r nCols) nCols
                                      }
     where rawsheet = rSheet s
-          nCols = rlCols rawsheet
+          nCols = sNcols rawsheet
           r = L.row a
           c = L.col a
 
@@ -113,18 +113,18 @@ changeCell a t s = RSheet $ rawsheet { rCells = Map.insert a t (rCells rawsheet)
 getCell :: Sheet -- ^ The sheet.
         -> L.Address -- ^ Cell address.
         -> T.FormulaTree
-getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a . rCells . rSheet $ s
+getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a . sCells . rSheet $ s
 
 -- | Number of rows in the sheet
 numRows :: Sheet -- ^ The sheet
         -> L.Coord -- ^ Number of rows
-numRows = rlRows . rSheet
+numRows = sNrows . rSheet
 
 -- | Number of columns of a particular row.
 numCols :: L.Coord -- ^ The row of interest.
         -> Sheet -- ^ The sheet.
         -> L.Coord -- ^ Number of columns in the row.
-numCols n = Map.findWithDefault 0 n . rlCols . rSheet
+numCols n = Map.findWithDefault 0 n . sNcols . rSheet
 
 
 --------------------
