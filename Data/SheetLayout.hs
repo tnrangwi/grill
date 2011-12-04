@@ -4,6 +4,7 @@
 
 module Data.SheetLayout
 (
+ Coord,
  Address,
  row,
  col,
@@ -15,32 +16,36 @@ module Data.SheetLayout
 where
 
 import Data.Function (on)
+import qualified Data.Word as Word
+
+-- -- | Type used for both row and column index.
+type Coord = Word.Word32
 
 -- | Type storing a sheet cell address. Format may change.
-newtype Address = Addr { adr :: (Int, Int) }
+newtype Address = Addr { adr :: (Coord, Coord) }
 
 -- | Max rows allowed in sheet. FIXME: Should be in Constants.
-maxRow :: Int
-maxRow = 256
+maxRow :: Coord
+maxRow = fromIntegral 256
 
 -- | Max columns in sheet. FIXME: Should be in Constants.
-maxCol :: Int
-maxCol = 16
+maxCol :: Coord
+maxCol = fromIntegral 16
 
 -- | Extract row from address.
-row :: Address -> Int
+row :: Address -> Coord
 row (Addr (a, _)) = a
 
 -- | Extract column of address.
-col :: Address -> Int
+col :: Address -> Coord
 col (Addr (_, b)) = b
 
 -- | Access row / col from string. While the internal representation of Address may change, address should not.
 address :: Address -- ^ Input adress
-        -> (Int, Int) -- ^ Row / Col
+        -> (Coord, Coord) -- ^ Row / Col
 address (Addr a) = a
 
-makeAddr :: Int -> Int -> Address
+makeAddr :: Coord -> Coord -> Address
 makeAddr a b = Addr (a, b)
 
 instance Show Address
@@ -52,7 +57,6 @@ instance Ord Address
       --(<=) a b = (<=) (address a) (address b)
       (<=) = (<=) `on` address
       max a b = Addr $ max (address a) (address b)
-
 
 instance Eq Address
     where

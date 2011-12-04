@@ -2,24 +2,26 @@
 -- 
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
---FIXME: Define a sheet, additional to RawSheet and use that one externally.
---FIXME: Interate sheet header data, maxrow and maxcol better in sheet.
 
 module Data.Sheet
     (
      -- * Data types
-     Sheet,
-     Header,
+     Sheet
+    , Header
      -- * Sheet functions
-     emptySheet,
-     buildSheet,
-     changeCell,
-     getCell,
-     maxRow,
-     maxCol,
+    , createSheet
+    , emptySheet
+    , buildSheet
+    , changeCell
+    , getCell
+    , numRows
+    , numCols
      -- * Header functions
-     emptyHeader,
-     addHeaderProperties
+    , createHeader
+    , requestHeader
+    , addHeaderProperties
+    -- * Miscellaneous functions
+    , defaultName
     )
 
 where
@@ -29,101 +31,151 @@ import qualified Data.Map as Map
 import qualified Tree.FormulaTree as T
 import qualified Data.SheetLayout as L
 
--- | Implementation type. Ugly, needs to change to something where rows and column lengths and
--- headers are included better than just put in unfitting wrapper types in the map.
+import Version.Types (SmallVersion)
+import qualified Version.Information as V
+
+-- | Implementation type.
 -- This type must not be exported. It exists here only for shortcuts in implementation.
-type SheetType = Map.Map L.Address T.FormulaTree
+data RawSheet = RawSheet {
+      rCells :: Map.Map L.Address T.FormulaTree -- ^ Map of all cells
+      , rlRows :: L.Coord -- ^ Max row that exists in the sheet. Empty rows are possible.
+      , rlCols :: Map.Map L.Coord L.Coord -- ^ Max column for corresponding row. Empty cells are possible before.
+      , rHeaderInfo :: RawHeader -- ^ Header information
+    }
 
--- | (Hidden) type for raw sheet: Just a map. May change in the future.
--- Most likely will become some well suited functional data structure (tree?).
-newtype Sheet = RSheet { rSheet :: SheetType }
+-- | (Hidden) type for raw sheet. May change in the future.
+newtype Sheet = RSheet { rSheet :: RawSheet }
 
--- | Type for sheet header. Just a properties map. May cange in the future.
-newtype Header = RHeader { rHeader :: (Map.Map String P.Plain) }
+data RawHeader = RawHeader {
+      hFormatVersion :: (SmallVersion, SmallVersion, SmallVersion) -- ^ Major, minor and patch level of sheet format.
+                                                                   -- This is two numbers too much.
+    , hCalcVersion :: (SmallVersion, SmallVersion, SmallVersion) -- ^ Major, minor and patch level of calculator lib.
+    , hChecksum :: String -- ^ We do not need it now, reserved
+    , hName :: String -- ^ The name of the sheet - there should be one for every sheet.
+    , hFileName :: String  -- ^ File name of the sheet - if present. This only makes sense as long there is only one sheet.
+    , hExtended :: (Map.Map String P.Plain) -- ^ Further custom attributes stored in a map.
+    }
+
+-- | Type for sheet header. Just a properties map. May change in the future.
+newtype Header = RHeader { rHeader :: RawHeader }
 
 ------------------
 -- Sheet functions
 ------------------
+-- | Create a new sheet. Name is mandatory.
+createSheet :: String -- ^ Name of this sheet.
+           -> Sheet -- ^ Empty sheet created with defaults
+createSheet name = RSheet $ RawSheet {
+                    rCells = Map.empty
+                  , rlRows = 0
+                  , rlCols = Map.empty
+                  , rHeaderInfo = rHeader $ createHeader name
+                  }
 
--- | Create new empty sheet - use that for parsing a new sheet
-emptySheet :: Sheet -- ^ Empty sheet created with defaults
-emptySheet = RSheet Map.empty
 
+-- | Create new empty sheet.
+emptySheet :: Sheet -- ^ The default sheet returned.
+emptySheet = createSheet defaultName
 
 -- | Create a sheet from (usually parsed) contents
 buildSheet :: Header -- ^ Sheet header
            -> [[T.FormulaTree]] -- ^ List of rows, rows itself lists of trees.
-           -> Either String Sheet -- ^ Error message or sheet structure.
-buildSheet header rows =
-    Right . RSheet . Map.fromList $
-              (L.makeAddr (-1) (-1), len rows) : concatMap buildRow (zip [0..] rows)
-        where
-          len = T.Raw . P.PlInt . flip (-) 1 . length
-          buildRow (r, cs) = (L.makeAddr r (-1), len cs) : map (buildCell r) (zip [0..] cs)
-          buildCell r (c, t) = (L.makeAddr r c, t)
-
+           -> Sheet -- ^ Sheet structure.
+buildSheet header rows = RSheet $ RawSheet {
+                           rCells = Map.fromList $ concatMap buildRow annotatedRows
+                         , rlRows = fromIntegral . length $ rows
+                         , rlCols = Map.fromList $ map (\(c, r) -> (c, fromIntegral $ length r)) annotatedRows
+                         , rHeaderInfo = rHeader header
+                         }
+    where
+      buildRow (r, cs) = map (buildCell r) (zip annotations cs)
+      buildCell r (c, t) = (L.makeAddr r c, t)
+      annotatedRows = zip annotations rows
+      annotations = [((fromIntegral 0) :: L.Coord)..]
 
 -- | Add / change a single cell to a raw sheet. May change and require certain conditions in the future.
 changeCell :: L.Address -- ^ Cell address
            -> T.FormulaTree -- ^ Tree to add into cell
            -> Sheet -- ^ Sheet to update
            -> Sheet -- ^ Updated sheet
-changeCell a t = RSheet . updateMax a . Map.insert a t . rSheet
-                 where updateMax a m = Map.insert (L.makeAddr (-1) (-1)) (rMax m) .
-                                       Map.insert (L.makeAddr r (-1)) (cMax m) $ m
-                       r = L.row a
-                       c = L.col a
-                       rMax m = T.Raw . P.PlInt $ max (maxRow' m) r
-                       cMax m = T.Raw . P.PlInt $ max (maxCol' r m) c
 -- FIXME: Set max updater for row and / or column to id, if nothing to do.
 -- Insert is quite more expensive then id and id will be sufficint in most cases.
-
+changeCell a t s = RSheet $ rawsheet { rCells = Map.insert a t (rCells rawsheet)
+                                     , rlRows = max (r + 1) (rlRows rawsheet)
+                                     , rlCols = Map.insert r (max (c + 1) $ Map.findWithDefault 0 r nCols) nCols
+                                     }
+    where rawsheet = rSheet s
+          nCols = rlCols rawsheet
+          r = L.row a
+          c = L.col a
 
 -- | Get content of single cell
 getCell :: Sheet -- ^ The sheet.
         -> L.Address -- ^ Cell address.
         -> T.FormulaTree
-getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a $ rSheet s
+getCell s a = Map.findWithDefault (T.Raw P.PlEmpty) a . rCells . rSheet $ s
 
--- | Help stub: Retrieve max row, but from raw map
-maxRow' :: SheetType -- ^ The raw map, implementation dependend. Will change.
-        -> Int -- ^ Max row or -1
-maxRow' s = case Map.lookup (L.makeAddr (-1) (-1)) s of
-              Just (T.Raw (P.PlInt i)) -> i
-              otherwise -> -1
+-- | Number of rows in the sheet
+numRows :: Sheet -- ^ The sheet
+        -> L.Coord -- ^ Number of rows
+numRows = rlRows . rSheet
 
--- | Retrieve number of rows in sheet
-maxRow :: Sheet -- ^ The sheet.
-       -> Int -- ^ Max row or -1.
-maxRow = maxRow' . rSheet
-
--- | Retrieve maximum columns for row. Implementation specific function used
--- for short circuiting implementation. Must not be exported.
-maxCol' :: Int -- ^ Row to search
-        -> SheetType -- ^ The raw, implementation dependend map. Will change in the future.
-        -> Int -- ^ Max column in row or -1
-maxCol' r s = case Map.lookup (L.makeAddr r (-1)) s of
-               Just (T.Raw (P.PlInt i)) -> i
-               otherwise -> -1
-
--- | Retrieve maximum column in row
-maxCol :: Int -- ^ Row to search
-       -> Sheet -- ^ The sheet.
-       -> Int -- ^ Max column in row or -1
-maxCol r = maxCol' r . rSheet
+-- | Number of columns of a particular row.
+numCols :: L.Coord -- ^ The row of interest.
+        -> Sheet -- ^ The sheet.
+        -> L.Coord -- ^ Number of columns in the row.
+numCols n = Map.findWithDefault 0 n . rlCols . rSheet
 
 
 --------------------
 -- Header functions.
 --------------------
 
--- | Return empty header to add properties later.
-emptyHeader :: Header
-emptyHeader = RHeader Map.empty
+-- | Create header with default settings. A name is mandatory.
+createHeader :: String -- ^ Mandatory name of the sheet
+             -> Header -- ^ Default header returned
+createHeader n = RHeader $ RawHeader {
+                   hFormatVersion = V.formatVersion
+                 , hCalcVersion = V.grillVersion
+                 , hChecksum = ""
+                 , hName = n
+                 , hFileName = ""
+                 , hExtended = Map.empty
+                 }
+
+-- | Request for a valid header for given versions.
+requestHeader :: (SmallVersion, SmallVersion, SmallVersion) -- ^ Format of this sheet
+              -> (SmallVersion, SmallVersion, SmallVersion) -- ^ Level of calculation engine
+              -> String -- ^ Checksum -- FIXME: use a typedef for that
+              -> String -- ^ Sheet name
+              -> Either String Header -- ^ Error message or header
+requestHeader format calc check name =
+    case V.checkFormat format of
+      Just err -> Left err
+      Nothing -> case V.checkGrill calc of
+                   Just err -> Left err
+                   Nothing -> Right $ RHeader RawHeader {
+                                          hFormatVersion = format
+                                        , hCalcVersion = calc
+                                        , hChecksum = ""
+                                        , hName = name
+                                        , hFileName = ""
+                                        , hExtended = Map.empty
+                                        }
 
 -- | Add properties to header.
 addHeaderProperties :: [(String, P.Plain)] -- ^ Property name / value
                     -> Header -- ^ Old header
                     -> Header -- ^ updated header
-addHeaderProperties p = RHeader . Map.union (Map.fromList p) . rHeader
+addHeaderProperties p h = RHeader $ rawheader { hExtended = Map.union (Map.fromList p) extended }
+    where rawheader = rHeader h
+          extended = hExtended rawheader
 
+----------------------------
+-- Stubs
+----------------------------
+
+-- | Return the default name for a newly created sheet. This may change if there are more than one
+-- sheet bundled in a workbook as in that case there must be a counter to give any sheet a different name.
+defaultName :: String
+defaultName = "Unnamed"

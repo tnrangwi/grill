@@ -84,6 +84,18 @@
 ><TR
 ><TD CLASS="decl"
 ><SPAN CLASS="keyword"
+>type</SPAN
+> <A HREF="#t%3ACoord"
+>Coord</A
+> = Word32</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
 >data</SPAN
 >  <A HREF="#t%3AAddress"
 >Address</A
@@ -99,7 +111,9 @@
 >row</A
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -111,7 +125,9 @@
 >col</A
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -121,7 +137,11 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AmakeAddr"
 >makeAddr</A
-> :: Int -&gt; Int -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
 ></TD
 ></TR
@@ -133,7 +153,9 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AmaxRow"
 >maxRow</A
-> :: Int</TD
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -143,7 +165,9 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AmaxCol"
 >maxCol</A
-> :: Int</TD
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ></TABLE
 ></TD
@@ -155,6 +179,22 @@
 ><TR
 ><TD CLASS="section1"
 >Documentation</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>type</SPAN
+> <A NAME="t:Coord"
+><A NAME="t%3ACoord"
+></A
+></A
+><B
+>Coord</B
+> = Word32</TD
 ></TR
 ><TR
 ><TD CLASS="s15"
@@ -197,7 +237,9 @@
 >row</B
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="doc"
@@ -218,7 +260,9 @@
 >col</B
 > :: <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="doc"
@@ -237,7 +281,11 @@
 ></A
 ><B
 >makeAddr</B
-> :: Int -&gt; Int -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+> -&gt; <A HREF="Data-SheetLayout.html#t%3AAddress"
 >Address</A
 ></TD
 ></TR
@@ -253,7 +301,9 @@
 ></A
 ><B
 >maxRow</B
-> :: Int</TD
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="doc"
@@ -272,7 +322,9 @@
 ></A
 ><B
 >maxCol</B
-> :: Int</TD
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="doc"

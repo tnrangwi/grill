@@ -74,6 +74,11 @@
 ></DT
 ><DT
 ><A HREF="#3"
+>Validate version
+</A
+></DT
+><DT
+><A HREF="#4"
 >Parser to parse version from a string - only used by parsers
 </A
 ></DT
@@ -140,6 +145,70 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
+><A HREF="#v%3AgrillVersion"
+>grillVersion</A
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AformatVersion"
+>formatVersion</A
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AcheckGrill"
+>checkGrill</A
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; Maybe String</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AcheckFormat"
+>checkFormat</A
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; Maybe String</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
 ><A HREF="#v%3AparseMagicBytes"
 >parseMagicBytes</A
 > :: Parser ()</TD
@@ -152,7 +221,13 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AparseFormat"
 >parseFormat</A
-> :: Parser String</TD
+> :: Parser (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -162,7 +237,13 @@
 ><TD CLASS="decl"
 ><A HREF="#v%3AparseVersion"
 >parseVersion</A
-> :: Parser String</TD
+> :: Parser (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -260,9 +341,122 @@
 ></TD
 ></TR
 ><TR
+><TD CLASS="decl"
+><A NAME="v:grillVersion"
+><A NAME="v%3AgrillVersion"
+></A
+></A
+><B
+>grillVersion</B
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Grill's calculation version.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:formatVersion"
+><A NAME="v%3AformatVersion"
+></A
+></A
+><B
+>formatVersion</B
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Sheet format version.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
 ><TD CLASS="section1"
 ><A NAME="3"
 ><A NAME="3"
+>Validate version
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:checkGrill"
+><A NAME="v%3AcheckGrill"
+></A
+></A
+><B
+>checkGrill</B
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; Maybe String</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Check a given version if it is supported by the current calculation.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:checkFormat"
+><A NAME="v%3AcheckFormat"
+></A
+></A
+><B
+>checkFormat</B
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; Maybe String</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Check a given version if it is supported by the current sheet formatter.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="4"
+><A NAME="4"
 >Parser to parse version from a string - only used by parsers
 </A
 ></A
@@ -299,7 +493,13 @@
 ></A
 ><B
 >parseFormat</B
-> :: Parser String</TD
+> :: Parser (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
 ></TR
 ><TR
 ><TD CLASS="doc"
@@ -318,7 +518,13 @@
 ></A
 ><B
 >parseVersion</B
-> :: Parser String</TD
+> :: Parser (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
 ></TR
 ><TR
 ><TD CLASS="doc"

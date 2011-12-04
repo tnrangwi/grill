@@ -73,10 +73,9 @@ sheet = do
                                 -- FIXME: This is mad. Read in the whole sheet and convert it afterwards.
                                 -- Use a parser with a state to fill sheet on the fly. Or solve this properly
                                 -- with lazy evaluation (maybe it even is already).
-          let res = Sheet.buildSheet header rows
-          case res of
-            Left err -> fail err
-            Right r -> return r
+          -- FIXME:checksum should be calculated during parsing and checked NOW. If we have valid rows,
+          -- there is no chance for buildSheet to fail.
+          return $ Sheet.buildSheet header rows
       <?> "This does not have sheet structure"
 
           
@@ -89,15 +88,7 @@ sheetHeader = do
                 checksum <- Version.parseChecksum
                 Version.parseEndOfHeader
                 eol
-                let f = Version.formatString
-                    v = Version.versionString
-                M.when (format > f || version > v) (fail "Your grill version is too old to open this")
-                return $ 
-                       Sheet.addHeaderProperties
-                                [("format", P.PlString format),
-                                 ("version", P.PlString version),
-                                 ("checksum", P.PlString checksum)]
-                                Sheet.emptyHeader 
+                either fail return $ Sheet.requestHeader format version checksum (Sheet.defaultName)
             <?> "expecting sheet header"
 
 
@@ -106,8 +97,9 @@ sheetRow :: Parsec.Parser [T.FormulaTree]
 sheetRow = do
   first  <- Parsec.option (T.Raw P.PlEmpty) term
   rest <- (Parsec.char '\t' >> sheetRow) <|> return []
-  -- FIXME: If 1st cell is empty, return empty list
-  return (first:rest)
+  case first of
+    T.Raw P.PlEmpty -> return []
+    _ -> return (first:rest)
   -- FIXME: Error handling: <?> "expecting sheet row"  
 
 -----------------------------

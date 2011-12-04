@@ -7,9 +7,15 @@
 
 module Version.StaticVersion where
 
-grillMajor :: Int ; grillMinor :: Int ; grillMicro :: Int
+import Version.Types
 
+grillMajor :: SmallVersion ; grillMinor :: SmallVersion ; grillMicro :: SmallVersion
+formatMajor :: SmallVersion ; formatMinor :: SmallVersion ; formatMicro :: SmallVersion
 
 grillMajor = 0
 grillMinor = 0
 grillMicro = 1
+
+formatMajor = 0
+formatMinor = 0
+formatMicro = 1

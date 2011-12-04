@@ -77,6 +77,11 @@
 >Header functions
 </A
 ></DT
+><DT
+><A HREF="#4"
+>Miscellaneous functions
+</A
+></DT
 ></DL
 ></TD
 ></TR
@@ -144,6 +149,18 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
+><A HREF="#v%3AcreateSheet"
+>createSheet</A
+> :: String -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
 ><A HREF="#v%3AemptySheet"
 >emptySheet</A
 > :: <A HREF="Data-Sheet.html#t%3ASheet"
@@ -162,7 +179,7 @@
 >Header</A
 > -&gt; [[<A HREF="Tree-FormulaTree.html#t%3AFormulaTree"
 >FormulaTree</A
->]] -&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>]] -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
 >Sheet</A
 ></TD
 ></TR
@@ -206,11 +223,13 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AmaxRow"
->maxRow</A
+><A HREF="#v%3AnumRows"
+>numRows</A
 > :: <A HREF="Data-Sheet.html#t%3ASheet"
 >Sheet</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -218,11 +237,15 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AmaxCol"
->maxCol</A
-> :: Int -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+><A HREF="#v%3AnumCols"
+>numCols</A
+> :: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+> -&gt; <A HREF="Data-Sheet.html#t%3ASheet"
 >Sheet</A
-> -&gt; Int</TD
+> -&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ></TR
 ><TR
 ><TD CLASS="s8"
@@ -230,9 +253,33 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A HREF="#v%3AemptyHeader"
->emptyHeader</A
-> :: <A HREF="Data-Sheet.html#t%3AHeader"
+><A HREF="#v%3AcreateHeader"
+>createHeader</A
+> :: String -&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3ArequestHeader"
+>requestHeader</A
+> :: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>) -&gt; String -&gt; String -&gt; Either String <A HREF="Data-Sheet.html#t%3AHeader"
 >Header</A
 ></TD
 ></TR
@@ -251,6 +298,16 @@
 > -&gt; <A HREF="Data-Sheet.html#t%3AHeader"
 >Header</A
 ></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AdefaultName"
+>defaultName</A
+> :: String</TD
 ></TR
 ></TABLE
 ></TD
@@ -293,8 +350,7 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="ndoc"
->(Hidden) type for raw sheet: Just a map. May change in the future.
- Most likely will become some well suited functional data structure (tree?).
+>(Hidden) type for raw sheet. May change in the future.
 </TD
 ></TR
 ></TABLE
@@ -321,7 +377,7 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="ndoc"
->Type for sheet header. Just a properties map. May cange in the future.
+>Type for sheet header. Just a properties map. May change in the future.
 </TD
 ></TR
 ></TABLE
@@ -338,6 +394,47 @@
 >Sheet functions
 </A
 ></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:createSheet"
+><A NAME="v%3AcreateSheet"
+></A
+></A
+><B
+>createSheet</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: String</TD
+><TD CLASS="rdoc"
+>Name of this sheet.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3ASheet"
+>Sheet</A
+></TD
+><TD CLASS="rdoc"
+>Empty sheet created with defaults
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Create a new sheet. Name is mandatory.
+</TD
+></TR
+></TABLE
 ></TD
 ></TR
 ><TR
@@ -363,12 +460,12 @@
 >Sheet</A
 ></TD
 ><TD CLASS="rdoc"
->Empty sheet created with defaults
+>The default sheet returned.
 </TD
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Create new empty sheet - use that for parsing a new sheet
+>Create new empty sheet.
 </TD
 ></TR
 ></TABLE
@@ -411,11 +508,11 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Either String <A HREF="Data-Sheet.html#t%3ASheet"
+>-&gt; <A HREF="Data-Sheet.html#t%3ASheet"
 >Sheet</A
 ></TD
 ><TD CLASS="rdoc"
->Error message or sheet structure.
+>Sheet structure.
 </TD
 ></TR
 ><TR
@@ -477,6 +574,8 @@
 ></TD
 ><TD CLASS="rdoc"
 >Updated sheet
+ FIXME: Set max updater for row and / or column to id, if nothing to do.
+ Insert is quite more expensive then id and id will be sufficint in most cases.
 </TD
 ></TR
 ><TR
@@ -544,12 +643,12 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:maxRow"
-><A NAME="v%3AmaxRow"
+><A NAME="v:numRows"
+><A NAME="v%3AnumRows"
 ></A
 ></A
 ><B
->maxRow</B
+>numRows</B
 ></TD
 ></TR
 ><TR
@@ -561,19 +660,21 @@
 >Sheet</A
 ></TD
 ><TD CLASS="rdoc"
->The sheet.
+>The sheet
 </TD
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Int</TD
+>-&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ><TD CLASS="rdoc"
->Max row or -1.
+>Number of rows
 </TD
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Retrieve number of rows in sheet
+>Number of rows in the sheet
 </TD
 ></TR
 ></TABLE
@@ -585,12 +686,12 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:maxCol"
-><A NAME="v%3AmaxCol"
+><A NAME="v:numCols"
+><A NAME="v%3AnumCols"
 ></A
 ></A
 ><B
->maxCol</B
+>numCols</B
 ></TD
 ></TR
 ><TR
@@ -598,9 +699,11 @@
 ><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
 ><TR
 ><TD CLASS="arg"
->:: Int</TD
+>:: <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ><TD CLASS="rdoc"
->Row to search
+>The row of interest.
 </TD
 ></TR
 ><TR
@@ -614,14 +717,16 @@
 ></TR
 ><TR
 ><TD CLASS="arg"
->-&gt; Int</TD
+>-&gt; <A HREF="Data-SheetLayout.html#t%3ACoord"
+>Coord</A
+></TD
 ><TD CLASS="rdoc"
->Max column in row or -1
+>Number of columns in the row.
 </TD
 ></TR
 ><TR
 ><TD CLASS="ndoc" COLSPAN="2"
->Retrieve maximum column in row
+>Number of columns of a particular row.
 </TD
 ></TR
 ></TABLE
@@ -646,20 +751,114 @@
 ></TR
 ><TR
 ><TD CLASS="decl"
-><A NAME="v:emptyHeader"
-><A NAME="v%3AemptyHeader"
+><A NAME="v:createHeader"
+><A NAME="v%3AcreateHeader"
 ></A
 ></A
 ><B
->emptyHeader</B
-> :: <A HREF="Data-Sheet.html#t%3AHeader"
->Header</A
+>createHeader</B
 ></TD
 ></TR
 ><TR
-><TD CLASS="doc"
->Return empty header to add properties later.
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: String</TD
+><TD CLASS="rdoc"
+>Mandatory name of the sheet
 </TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
+></TD
+><TD CLASS="rdoc"
+>Default header returned
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Create header with default settings. A name is mandatory.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:requestHeader"
+><A NAME="v%3ArequestHeader"
+></A
+></A
+><B
+>requestHeader</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+><TD CLASS="rdoc"
+>Format of this sheet
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; (<A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>, <A HREF="Version-Types.html#t%3ASmallVersion"
+>SmallVersion</A
+>)</TD
+><TD CLASS="rdoc"
+>Level of calculation engine
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; String</TD
+><TD CLASS="rdoc"
+>Checksum -- FIXME: use a typedef for that
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; String</TD
+><TD CLASS="rdoc"
+>Sheet name
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; Either String <A HREF="Data-Sheet.html#t%3AHeader"
+>Header</A
+></TD
+><TD CLASS="rdoc"
+>Error message or header
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Request for a valid header for given versions.
+</TD
+></TR
+></TABLE
+></TD
 ></TR
 ><TR
 ><TD CLASS="s15"
@@ -712,6 +911,39 @@
 ></TR
 ></TABLE
 ></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+><A NAME="4"
+><A NAME="4"
+>Miscellaneous functions
+</A
+></A
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v:defaultName"
+><A NAME="v%3AdefaultName"
+></A
+></A
+><B
+>defaultName</B
+> :: String</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Return the default name for a newly created sheet. This may change if there are more than one
+ sheet bundled in a workbook as in that case there must be a counter to give any sheet a different name.
+</TD
 ></TR
 ><TR
 ><TD CLASS="s15"

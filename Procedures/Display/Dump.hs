@@ -32,8 +32,7 @@ instance Dump S.Sheet (IO ()) where
 
 -- FIXME: Replace by Data.Text
 instance Dump S.Sheet String where
-    dump sheet = concat [buildRow r | r <- [0..nRows] ]
+    dump sheet = concat [buildRow r | r <- [0..S.numRows sheet - 1] ]
         where
-          nRows = S.maxRow sheet
-          nCols = flip S.maxCol sheet
-          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..nCols r] ] ++ "\n"
+          maxCol = flip (-) 1 . flip S.numCols sheet
+          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
