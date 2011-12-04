@@ -88,7 +88,7 @@ sheetHeader = do
                 checksum <- Version.parseChecksum
                 Version.parseEndOfHeader
                 eol
-                either fail return $ Sheet.requestHeader format version checksum (Sheet.defaultName)
+                either fail return $ Sheet.requestHeader format version checksum Sheet.defaultName
             <?> "expecting sheet header"
 
 

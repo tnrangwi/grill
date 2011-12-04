@@ -65,7 +65,7 @@ newtype Header = RHeader { rHeader :: RawHeader }
 -- | Create a new sheet. Name is mandatory.
 createSheet :: String -- ^ Name of this sheet.
            -> Sheet -- ^ Empty sheet created with defaults
-createSheet name = RSheet $ RawSheet {
+createSheet name = RSheet RawSheet {
                     sCells = Map.empty
                   , sNrows = 0
                   , sNcols = Map.empty
@@ -81,7 +81,7 @@ emptySheet = createSheet defaultName
 buildSheet :: Header -- ^ Sheet header
            -> [[T.FormulaTree]] -- ^ List of rows, rows itself lists of trees.
            -> Sheet -- ^ Sheet structure.
-buildSheet header rows = RSheet $ RawSheet {
+buildSheet header rows = RSheet RawSheet {
                            sCells = Map.fromList $ concatMap buildRow annotatedRows
                          , sNrows = fromIntegral . length $ rows
                          , sNcols = Map.fromList $ map (\(c, r) -> (c, fromIntegral $ length r)) annotatedRows
@@ -91,7 +91,7 @@ buildSheet header rows = RSheet $ RawSheet {
       buildRow (r, cs) = map (buildCell r) (zip annotations cs)
       buildCell r (c, t) = (L.makeAddr r c, t)
       annotatedRows = zip annotations rows
-      annotations = [((fromIntegral 0) :: L.Coord)..]
+      annotations = [fromIntegral 0  :: L.Coord ..]
 
 -- | Add / change a single cell to a raw sheet. May change and require certain conditions in the future.
 changeCell :: L.Address -- ^ Cell address
@@ -134,7 +134,7 @@ numCols n = Map.findWithDefault 0 n . sNcols . rSheet
 -- | Create header with default settings. A name is mandatory.
 createHeader :: String -- ^ Mandatory name of the sheet
              -> Header -- ^ Default header returned
-createHeader n = RHeader $ RawHeader {
+createHeader n = RHeader RawHeader {
                    hFormatVersion = V.formatVersion
                  , hCalcVersion = V.grillVersion
                  , hChecksum = ""

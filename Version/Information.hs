@@ -37,9 +37,9 @@ import Version.Types (SmallVersion)
 -- | Version coded as string
 versionString :: String
 versionString = Printf.printf "%02d.%02d.%02d"
-                ((fromIntegral StaticVersion.grillMajor) :: Int)
-                ((fromIntegral StaticVersion.grillMinor) :: Int)
-                ((fromIntegral StaticVersion.grillMicro) :: Int)
+                (fromIntegral StaticVersion.grillMajor :: Int)
+                (fromIntegral StaticVersion.grillMinor :: Int)
+                (fromIntegral StaticVersion.grillMicro :: Int)
 
 -- | Grill's calculation version.
 grillVersion :: (SmallVersion, SmallVersion, SmallVersion)
@@ -52,9 +52,9 @@ formatVersion = (StaticVersion.formatMajor, StaticVersion.formatMinor, StaticVer
 -- | Maximum sheet format grill can handle
 formatString :: String
 formatString = Printf.printf "%02d.%02d.%02d"
-                ((fromIntegral StaticVersion.formatMajor) :: Int)
-                ((fromIntegral StaticVersion.formatMinor) :: Int)
-                ((fromIntegral StaticVersion.formatMicro) :: Int)
+                (fromIntegral StaticVersion.formatMajor  :: Int)
+                (fromIntegral StaticVersion.formatMinor :: Int)
+                (fromIntegral StaticVersion.formatMicro :: Int)
 
 -- | Parse magic bytes at the beginning of every grill sheet
 parseMagicBytes :: Parsec.Parser ()
