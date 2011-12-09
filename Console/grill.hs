@@ -5,7 +5,6 @@
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 import qualified System.IO as FileIO
-import qualified Data.List as List
 import qualified Data.Char as DChar
 
 import qualified Console.CommandLine as Cmd
