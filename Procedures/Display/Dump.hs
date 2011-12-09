@@ -36,3 +36,14 @@ instance Dump S.Sheet String where
         where
           maxCol = flip (-) 1 . flip S.numCols sheet
           buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
+
+{-
+class Serialise a b where
+    marshal :: a -> b
+
+instance Serialise S.Sheet String where
+    marshal sheet = concat [buildRow r | r <- [0..S.numRows - 1] ]
+        where
+          maxCol = flip (-) 1 . flip S.numCols sheet
+          buildRow r = List.intersperse '\t' [(E.showCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
+-}

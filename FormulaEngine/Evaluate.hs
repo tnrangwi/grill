@@ -55,6 +55,8 @@ findError r argv = let errors = filter P.checkError argv
                          r
 
 
+
+
 -- | Calculate one cell in a sheet and return Plain value.
 calcCell :: S.Sheet -- ^ The sheet to calculate a cell
          -> L.Address -- ^ The cell address we are interested in
@@ -65,3 +67,23 @@ calcCell  sheet addr = eval (T.Reference addr) (SheetRef sheet)
 calcTree :: T.FormulaTree -- ^ Tree for evaluation.
          -> P.Plain -- ^ Return value
 calcTree t = eval t NoRef
+
+{-
+-- | Show serialised format (edit format) of a cell (i.e. tree)
+showTree :: T.FormulaTree -- ^ Tree to display
+         -> String
+showTree (T.Raw v) = P.serialize v
+showTree (T.TreeError e) = error "You should never be here: Erranous tree cannot be serialised for saving"
+showTree (T.Funcall f l) = "(" ++ 
+
+ let argv = map (flip eval r) l
+                                      res = f argv
+                           in
+                             case res of
+                               P.PlError _ -> findError res argv
+                             otherwise -> res
+showTree (T.Reference a) = if a `elem` xs then
+                               P.PlError $ "Circular reference. Twice referenced:" ++ show a
+                           else
+                               eval (S.getCell s a) (FullRef s (a:xs))
+-}

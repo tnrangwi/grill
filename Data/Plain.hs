@@ -13,20 +13,22 @@ module Data.Plain
  -- * Tree Function Interface
  PlainFunction,
  checkError,
- -- * Experimental
- GenericResult -- export more of it?
 )
 
 where
+
+{- FIXME: A Plain should be a plain. The trees could return some kind of unserialisable result, which is needed
+  to be analysed further.
 
 -- | Generic object - this is to hold results that cannot be shown (like the result of an external library).
 -- I currently don\'t know how this should be implemented but I am sure we will need that even for
 -- internal use.
 -- FIXME: Use a special type class instead with methods for display in cell,
 -- possibly serialisation or whatever will be needed.
-data GenericResult = GResError String -- ^ Error returned, information in string
-                   | GResXYZ Int -- ^ Example to test implementation
-                     deriving Show
+-- data GenericResult = GResError String -- ^ Error returned, information in string
+--                   | GResXYZ Int -- ^ Example to test implementation
+--                     deriving Show
+-}
 
 -- | Plain data type containing some plain value or a composite result that should not be evaluated further.
 data Plain = PlEmpty -- ^ Empty item
@@ -34,7 +36,6 @@ data Plain = PlEmpty -- ^ Empty item
            | PlFloat Float -- ^ Float value
            | PlString String -- ^ String value
            | PlError String -- ^ Error occured
-           | PlComposite GenericResult
              deriving Show
 
 -- | Check Plain for error
