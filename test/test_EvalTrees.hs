@@ -18,18 +18,18 @@ import qualified FormulaEngine.Parse as Parse
 
 
 -- | Convert a tree function into an Int function.
-integerFuncWrapper :: ([P.Plain] -> P.Plain) -> ([Int] -> Int)
+integerFuncWrapper :: ([P.Plain] -> P.Plain) -> [Int] -> Int
 integerFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlInt)
 
-floatFuncWrapper :: ([P.Plain] -> P.Plain) -> ([Float] -> Float)
+floatFuncWrapper :: ([P.Plain] -> P.Plain) -> [Float] -> Float
 floatFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlFloat)
 
-stringFuncWrapper :: ([P.Plain] -> P.Plain) -> ([String] -> String)
+stringFuncWrapper :: ([P.Plain] -> P.Plain) -> [String] -> String
 stringFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlString)
 
 -- | Integer add function should match results of builtin (+) for Int.
 prop_addInt :: [Int] -> Bool
-prop_addInt xs = integerFuncWrapper NumFuncs.add xs == foldl (\x y -> x + y) 0 xs
+prop_addInt xs = integerFuncWrapper NumFuncs.add xs == sum xs
 
 -- | String concatenation function.
 prop_concString :: [String] -> Bool
@@ -48,7 +48,7 @@ quote s = "\"" ++ s ++ "\""
 -- | Leading spaces.
 prop_leadingSpaces :: Int -> String -> Bool
 prop_leadingSpaces n s =
-    (P.get . Eval.calcTree . Parse.compileTree) (concat [(DL.replicate n ' '), "\"", concatMap escape s, "\""]) == s
+    (P.get . Eval.calcTree . Parse.compileTree) (concat [DL.replicate n ' ', "\"", concatMap escape s, "\""]) == s
 
 -- | Arbitrary strings.
 prop_string :: String -> Bool

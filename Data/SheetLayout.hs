@@ -26,11 +26,11 @@ newtype Address = Addr { adr :: (Coord, Coord) }
 
 -- | Max rows allowed in sheet. FIXME: Should be in Constants.
 maxRow :: Coord
-maxRow = fromIntegral 256
+maxRow = 256
 
 -- | Max columns in sheet. FIXME: Should be in Constants.
 maxCol :: Coord
-maxCol = fromIntegral 16
+maxCol = 16
 
 -- | Extract row from address.
 row :: Address -> Coord

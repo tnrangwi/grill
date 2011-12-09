@@ -26,7 +26,7 @@ class Dump a b where
     dump :: a -> b
 
 instance Dump S.Sheet (IO ()) where
-    dump sheet = let line = take 79 (List.repeat '=') ++ "\n"
+    dump sheet = let line = replicate 79 '=' ++ "\n"
                  in
                    putStr $ line ++ (dump sheet :: String) ++ line
 

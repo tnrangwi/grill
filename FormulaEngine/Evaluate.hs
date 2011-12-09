@@ -29,7 +29,7 @@ eval :: T.FormulaTree -- ^ Compiled tree to evaluate
      -> P.Plain -- ^ Plain result value
 eval (T.Raw v) _ = v
 eval (T.TreeError e) _ = P.PlError $ show e
-eval (T.Funcall f l) r = let argv = map (flip eval r) l
+eval (T.Funcall f l) r = let argv = map (`eval` r) l
                              res = f argv
                          in
                            case res of

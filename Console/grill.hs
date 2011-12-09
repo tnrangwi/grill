@@ -75,7 +75,7 @@ getCommandLine = do
 -- FIXME: Do not use command line properties. Use something else!
 consoleLoop :: Cmd.Properties -> Sheet.Sheet -> IO ()
 consoleLoop props sheet = do
-  putStr . take 25 . List.repeat $ '\n'
+  putStr . replicate 25 $ '\n'
   putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
   (command, args) <- getCommandLine

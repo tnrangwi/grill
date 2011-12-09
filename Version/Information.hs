@@ -73,7 +73,7 @@ parseVersionString prefix msg = do
   sMicro <- Parsec.many1 Parsec.digit
   Monad.when (length sMajor /= 2 || length sMinor /= 2 || length sMicro /= 2)
            (fail $ "Invalid version string:" ++ sMajor ++ "." ++ sMinor ++ "." ++ sMicro ++ " for " ++ msg ++ ".")
-  return ((fromIntegral $ read sMajor), (fromIntegral $ read sMinor), (fromIntegral $ read sMicro))
+  return (fromIntegral $ read sMajor, fromIntegral $ read sMinor, fromIntegral $ read sMicro)
 
 -- | Parse sheet version in header.
 parseFormat :: Parsec.Parser (SmallVersion, SmallVersion, SmallVersion)

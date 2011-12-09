@@ -53,7 +53,7 @@ data RawHeader = RawHeader {
     , hChecksum :: String -- ^ We do not need it now, reserved
     , hName :: String -- ^ The name of the sheet - there should be one for every sheet.
     , hFileName :: String  -- ^ File name of the sheet - if present. This only makes sense as long there is only one sheet.
-    , hExtended :: (Map.Map String P.Plain) -- ^ Further custom attributes stored in a map.
+    , hExtended :: Map.Map String P.Plain -- ^ Further custom attributes stored in a map.
     }
 
 -- | Type for sheet header. Just a properties map. May change in the future.
@@ -91,7 +91,7 @@ buildSheet header rows = RSheet RawSheet {
       buildRow (r, cs) = map (buildCell r) (zip annotations cs)
       buildCell r (c, t) = (L.makeAddr r c, t)
       annotatedRows = zip annotations rows
-      annotations = [fromIntegral 0  :: L.Coord ..]
+      annotations = [0 :: L.Coord ..]
 
 -- | Add / change a single cell to a raw sheet. May change and require certain conditions in the future.
 changeCell :: L.Address -- ^ Cell address
@@ -167,7 +167,7 @@ requestHeader format calc check name =
 addHeaderProperties :: [(String, P.Plain)] -- ^ Property name / value
                     -> Header -- ^ Old header
                     -> Header -- ^ updated header
-addHeaderProperties p h = RHeader $ rawheader { hExtended = Map.union (Map.fromList p) extended }
+addHeaderProperties p h = RHeader $ rawheader { hExtended = Map.fromList p `Map.union` extended }
     where rawheader = rHeader h
           extended = hExtended rawheader
 
