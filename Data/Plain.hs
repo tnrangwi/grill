@@ -10,9 +10,10 @@ module Data.Plain
  Plain(..),
  -- * Type Classes for Base Data Types
  Convert(..),
+ repr,
  -- * Tree Function Interface
  PlainFunction,
- checkError,
+ checkError
 )
 
 where
@@ -75,3 +76,15 @@ instance Convert String where
     get (PlString v) = v
     get PlEmpty =  []
     get _ = error "No plain string value"
+
+
+-- | Get a string representation
+repr :: Plain -- ^ Plain value
+     -> String -- ^ String representation
+repr PlEmpty = ""
+repr (PlInt a) = show a
+repr (PlFloat a) = show a
+repr (PlString a) = "\"" ++ 
+                  concatMap (\c -> if c `elem` "\\\"" then ['\\', c] else [c]) a
+                  ++ "\""
+repr (PlError m) = "!" ++ show m -- FIXME: Escape xyz

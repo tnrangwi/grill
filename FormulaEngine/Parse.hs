@@ -123,7 +123,7 @@ term :: Parsec.Parser T.FormulaTree
 term = do -- parse function call containing more terms
          (command, args) <- parseFunction
          realSpaces
-         return $ T.Funcall (Reg.resolve command) args
+         return $ T.Funcall (T.NamedFunction command (Reg.resolve command)) args
      <|> -- parse escaped string
        do
          word <- parseString

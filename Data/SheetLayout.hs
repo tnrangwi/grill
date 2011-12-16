@@ -10,7 +10,8 @@ module Data.SheetLayout
  col,
  makeAddr,
  maxRow,
- maxCol
+ maxCol,
+ showAddress
 )
 
 where
@@ -61,3 +62,9 @@ instance Ord Address
 instance Eq Address
     where
       (==) = (==) `on` address
+
+-- | Show address in serialisable format. This currently is the
+-- same as the usual show output.
+showAddress :: Address
+            -> String
+showAddress a = show a

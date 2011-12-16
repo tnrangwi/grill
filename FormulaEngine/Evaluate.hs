@@ -5,10 +5,13 @@
 module FormulaEngine.Evaluate
 (
  calcTree,
- calcCell
+ calcCell,
+ showTree
 )
 
 where
+
+import qualified Data.List as List
 
 import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
@@ -30,7 +33,8 @@ eval :: T.FormulaTree -- ^ Compiled tree to evaluate
 eval (T.Raw v) _ = v
 eval (T.TreeError e) _ = P.PlError $ show e
 eval (T.Funcall f l) r = let argv = map (`eval` r) l
-                             res = f argv
+                             func = T.funcCall f
+                             res = func argv
                          in
                            case res of
                              P.PlError _ -> findError res argv
@@ -68,22 +72,11 @@ calcTree :: T.FormulaTree -- ^ Tree for evaluation.
          -> P.Plain -- ^ Return value
 calcTree t = eval t NoRef
 
-{-
+
 -- | Show serialised format (edit format) of a cell (i.e. tree)
 showTree :: T.FormulaTree -- ^ Tree to display
          -> String
-showTree (T.Raw v) = P.serialize v
+showTree (T.Raw v) = P.repr v
 showTree (T.TreeError e) = error "You should never be here: Erranous tree cannot be serialised for saving"
-showTree (T.Funcall f l) = "(" ++ 
-
- let argv = map (flip eval r) l
-                                      res = f argv
-                           in
-                             case res of
-                               P.PlError _ -> findError res argv
-                             otherwise -> res
-showTree (T.Reference a) = if a `elem` xs then
-                               P.PlError $ "Circular reference. Twice referenced:" ++ show a
-                           else
-                               eval (S.getCell s a) (FullRef s (a:xs))
--}
+showTree (T.Funcall f l) = "(" ++ (T.funcName f) ++ " " ++ (List.intersperse ' ' (concat (map showTree l))) ++ ")"
+showTree (T.Reference a) = "'" ++ L.showAddress a

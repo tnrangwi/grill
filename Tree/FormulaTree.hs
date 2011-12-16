@@ -5,7 +5,8 @@
 module Tree.FormulaTree
 (
  FormulaTree(..),
- TreeError(..)
+ TreeError(..),
+ NamedFunction(..) -- FIXME: Export creater and exporters, not type
 )
 
 where
@@ -19,10 +20,15 @@ data TreeError = NamedError String -- ^ Named error - this should be used
                | UnspecifiedError -- ^ Unspecified error - not useful, better add more specific errors
                  deriving Show
 
+
+-- | Wrapper to be used in the trees.
+data NamedFunction = NamedFunction { funcName :: String, funcCall :: P.PlainFunction }
+
+
 -- | Compiled representation of a formula
 data FormulaTree = Raw P.Plain -- ^ Node is plain result value
                  | Reference L.Address
-                 | Funcall P.PlainFunction [FormulaTree] -- ^ Node is a formula
+                 | Funcall NamedFunction [FormulaTree] -- ^ Node is a formula
                  | TreeError TreeError -- ^ Node is evaluated to an error
                                        -- This makes sense for errors affecting the tree like circular references
                                        -- in contrast to plain value errors like div/0.

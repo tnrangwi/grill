@@ -15,7 +15,7 @@ import qualified FormulaEngine.Parse as Parse
 main :: IO ()
 main = do
   print "Evaluating raw formula tree"
-  let rawtree = T.Funcall NumFuncs.add [T.Raw (P.PlInt 1), T.Raw (P.PlInt 2)]
+  let rawtree = T.Funcall (T.NamedFunction "add" NumFuncs.add) [T.Raw (P.PlInt 1), T.Raw (P.PlInt 2)]
   print (Eval.calcTree rawtree)
   print "Done!"
 

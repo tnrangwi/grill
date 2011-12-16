@@ -9,6 +9,7 @@
 module Procedures.Display.Dump
 (
  Dump(..)
+,Serialise(..)
 )
 
 where
@@ -37,13 +38,17 @@ instance Dump S.Sheet String where
           maxCol = flip (-) 1 . flip S.numCols sheet
           buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
 
-{-
+
+-- FIXME: This is quite similar to dump. Restructure!
 class Serialise a b where
     marshal :: a -> b
 
 instance Serialise S.Sheet String where
-    marshal sheet = concat [buildRow r | r <- [0..S.numRows - 1] ]
+    marshal sheet = concat [buildRow r | r <- [0..S.numRows sheet - 1] ]
         where
           maxCol = flip (-) 1 . flip S.numCols sheet
-          buildRow r = List.intersperse '\t' [(E.showCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
--}
+          buildRow r = (List.intersperse '\t' (concat [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ]))
+                       ++ "\n"
+
+instance Serialise S.Sheet (IO ()) where
+    marshal sheet = putStr $ (marshal sheet :: String)
