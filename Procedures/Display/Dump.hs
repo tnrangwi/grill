@@ -33,8 +33,9 @@ instance Dump S.Sheet (IO ()) where
 
 -- FIXME: Replace by Data.Text
 instance Dump S.Sheet String where
-    dump sheet = concat [buildRow r | r <- [0..S.numRows sheet - 1] ]
+    dump sheet = concat [buildRow r | r <- if nRows > 0 then [0..nRows - 1] else [] ]
         where
+          nRows = S.numRows sheet
           maxCol = flip (-) 1 . flip S.numCols sheet
           buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
 
@@ -44,8 +45,9 @@ class Serialise a b where
     marshal :: a -> b
 
 instance Serialise S.Sheet String where
-    marshal sheet = concat [buildRow r | r <- [0..S.numRows sheet - 1] ]
+    marshal sheet = concat [buildRow r | r <- if nRows > 0 then [0..nRows - 1] else [] ]
         where
+          nRows = S.numRows sheet
           maxCol = flip (-) 1 . flip S.numCols sheet
           buildRow r = concat (List.intersperse "\t" [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ])
                        ++ "\n"
