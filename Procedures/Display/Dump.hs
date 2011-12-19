@@ -47,7 +47,7 @@ instance Serialise S.Sheet String where
     marshal sheet = concat [buildRow r | r <- [0..S.numRows sheet - 1] ]
         where
           maxCol = flip (-) 1 . flip S.numCols sheet
-          buildRow r = List.intersperse '\t' (concat [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ])
+          buildRow r = concat (List.intersperse "\t" [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ])
                        ++ "\n"
 
 instance Serialise S.Sheet (IO ()) where

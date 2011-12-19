@@ -75,14 +75,15 @@ getCommandLine = do
 consoleLoop :: Cmd.Properties -> Sheet.Sheet -> IO ()
 consoleLoop props sheet = do
   putStr . replicate 25 $ '\n'
-  putStr "[D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
+  putStr "[C]alculate [D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
   (command, args) <- getCommandLine
   case command of
     'q' -> return ()
     'l' -> loadSheet [args] >>= consoleLoop props
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
-    'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
+    'c' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
+    'd' -> (Dump.marshal sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
     'e' -> case Parse.compileEditCell args of
              Left err -> showMessage err >> consoleLoop props sheet
