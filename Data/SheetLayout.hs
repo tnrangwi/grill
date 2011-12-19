@@ -67,4 +67,4 @@ instance Eq Address
 -- same as the usual show output.
 showAddress :: Address
             -> String
-showAddress a = show a
+showAddress = show

@@ -87,4 +87,4 @@ repr (PlFloat a) = show a
 repr (PlString a) = "\"" ++ 
                   concatMap (\c -> if c `elem` "\\\"" then ['\\', c] else [c]) a
                   ++ "\""
-repr (PlError m) = "!" ++ show m -- FIXME: Escape xyz
+repr (PlError m) = "!" : show m -- FIXME: Escape xyz
