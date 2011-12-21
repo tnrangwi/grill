@@ -20,7 +20,7 @@ import qualified Data.Plain as P
 import qualified Tree.FormulaTree as T
 import qualified Data.Sheet as S
 import qualified Data.SheetLayout as L
-import qualified FormulaEngine.Evaluate as E -- FIXME: Sheet calculation in this module?
+import qualified FormulaEngine.Evaluate as E
 
 -- | Dump objects in a more or less suitable way
 class Dump a b where
@@ -33,11 +33,11 @@ instance Dump S.Sheet (IO ()) where
 
 -- FIXME: Replace by Data.Text
 instance Dump S.Sheet String where
-    dump sheet = concat [buildRow r | r <- if nRows > 0 then [0..nRows - 1] else [] ]
+    dump sheet = concat [buildRow r | r <- buildList (S.numRows sheet) ]
         where
-          nRows = S.numRows sheet
-          maxCol = flip (-) 1 . flip S.numCols sheet
-          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ] ++ "\n"
+          buildList n = if n > 0 then [0..n - 1] else []
+          nCols = flip S.numCols sheet
+          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- buildList (nCols r) ] ++ "\n"
 
 
 -- FIXME: This is quite similar to dump. Restructure!
@@ -45,11 +45,12 @@ class Serialise a b where
     marshal :: a -> b
 
 instance Serialise S.Sheet String where
-    marshal sheet = concat [buildRow r | r <- if nRows > 0 then [0..nRows - 1] else [] ]
+    marshal sheet = concat [buildRow r | r <- buildList (S.numRows sheet) ]
         where
-          nRows = S.numRows sheet
-          maxCol = flip (-) 1 . flip S.numCols sheet
-          buildRow r = concat (List.intersperse "\t" [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- [0..maxCol r] ])
+          buildList n = if n > 0 then [0..n - 1] else []
+          nCols = flip S.numCols sheet
+          buildRow r = concat (List.intersperse "\t" 
+                                       [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- buildList (nCols r )])
                        ++ "\n"
 
 instance Serialise S.Sheet (IO ()) where
