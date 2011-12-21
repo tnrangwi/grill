@@ -21,6 +21,12 @@ import qualified Data.Sheet as S
 import qualified Data.SheetLayout as L
 import qualified FormulaEngine.Evaluate as E
 
+-- | Help stub to build lists
+buildListX :: (Num a, Enum a, Ord a) =>
+             a -- ^ Maximum in list
+          -> [a] -- ^ The list from 0..max-1 or [] if max is 0
+buildListX n = if n > 0 then [0..n - 1] else []
+
 -- | Dump objects in a more or less suitable way
 class Dump a b where
     dump :: a -> b
@@ -40,8 +46,8 @@ instance Dump S.Sheet String where
         where
           buildList n = if n > 0 then [0..n - 1] else []
           nCols = flip S.numCols sheet
-          buildRow r = concat (List.intersperse "\t" 
-                                       [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- buildList (nCols r )])
+          buildRow r = List.intercalate "\t" 
+                                       [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- buildList (nCols r )]
                        ++ "\n"
 
     eval sheet = concat [buildRow r | r <- buildList (S.numRows sheet) ]

@@ -78,5 +78,5 @@ showTree :: T.FormulaTree -- ^ Tree to display
          -> String
 showTree (T.Raw v) = P.repr v
 showTree (T.TreeError e) = error "You should never be here: Erranous tree cannot be serialised for saving"
-showTree (T.Funcall f l) = "(" ++ T.funcName f ++ " " ++ concat (List.intersperse " " (map showTree l)) ++ ")"
+showTree (T.Funcall f l) = "(" ++ T.funcName f ++ " " ++ List.intercalate " " (map showTree l) ++ ")"
 showTree (T.Reference a) = '\'' : L.showAddress a
