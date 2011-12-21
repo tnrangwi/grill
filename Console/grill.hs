@@ -10,7 +10,7 @@ import qualified Data.Char as DChar
 import qualified Console.CommandLine as Cmd
 import qualified FormulaEngine.Parse as Parse
 import qualified Data.Sheet as Sheet
-import qualified Procedures.Display.Dump as Dump
+import qualified Procedures.Serialise.Dump as Dump
 
 -- | Command line option description for grill.
 -- List of Option constructor from System.GetOpt taking the following arguments:
@@ -82,8 +82,8 @@ consoleLoop props sheet = do
     'q' -> return ()
     'l' -> loadSheet [args] >>= consoleLoop props
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
-    'c' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
-    'd' -> (Dump.marshal sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
+    'c' -> (Dump.eval sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
+    'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
     's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
     'e' -> case Parse.compileEditCell args of
              Left err -> showMessage err >> consoleLoop props sheet

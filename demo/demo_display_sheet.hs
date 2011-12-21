@@ -10,7 +10,7 @@ import qualified Control.Monad as M
 
 import qualified FormulaEngine.Parse as Parse
 import qualified FormulaEngine.Evaluate as Eval
-import qualified Procedures.Display.Dump as Dump
+import qualified Procedures.Serialise.Dump as Dump
 
 -- | Tell error and exit from main.
 exitMain :: String -- ^ Error message
@@ -37,7 +37,7 @@ main = do
     Left pErr -> putStr $ "Parse error in sheet:" ++ pErr
     Right parsedSheet -> do
                print "Sheet parsed"
-               Dump.dump parsedSheet
+               Dump.eval parsedSheet
   putStr "\n\nDone\n"
   
   -- Parse contents using the enhanced parser for a whole sheet - TODO!

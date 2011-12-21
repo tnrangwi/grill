@@ -6,10 +6,9 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
-module Procedures.Display.Dump
+module Procedures.Serialise.Dump
 (
  Dump(..)
-,Serialise(..)
 )
 
 where
@@ -25,11 +24,15 @@ import qualified FormulaEngine.Evaluate as E
 -- | Dump objects in a more or less suitable way
 class Dump a b where
     dump :: a -> b
+    eval :: a -> b
 
 instance Dump S.Sheet (IO ()) where
-    dump sheet = let line = replicate 79 '=' ++ "\n"
+
+    dump sheet = putStr (dump sheet :: String)
+
+    eval sheet = let line = replicate 79 '=' ++ "\n"
                  in
-                   putStr $ line ++ (dump sheet :: String) ++ line
+                   putStr $ line ++ (eval sheet :: String) ++ line
 
 -- FIXME: Replace by Data.Text
 instance Dump S.Sheet String where
@@ -37,21 +40,12 @@ instance Dump S.Sheet String where
         where
           buildList n = if n > 0 then [0..n - 1] else []
           nCols = flip S.numCols sheet
-          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- buildList (nCols r) ] ++ "\n"
-
-
--- FIXME: This is quite similar to dump. Restructure!
-class Serialise a b where
-    marshal :: a -> b
-
-instance Serialise S.Sheet String where
-    marshal sheet = concat [buildRow r | r <- buildList (S.numRows sheet) ]
-        where
-          buildList n = if n > 0 then [0..n - 1] else []
-          nCols = flip S.numCols sheet
           buildRow r = concat (List.intersperse "\t" 
                                        [E.showTree (S.getCell sheet (L.makeAddr r c)) | c <- buildList (nCols r )])
                        ++ "\n"
 
-instance Serialise S.Sheet (IO ()) where
-    marshal sheet = putStr (marshal sheet :: String)
+    eval sheet = concat [buildRow r | r <- buildList (S.numRows sheet) ]
+        where
+          buildList n = if n > 0 then [0..n - 1] else []
+          nCols = flip S.numCols sheet
+          buildRow r = show [show (E.calcCell sheet (L.makeAddr r c)) | c <- buildList (nCols r) ] ++ "\n"
