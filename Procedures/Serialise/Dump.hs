@@ -51,7 +51,8 @@ data DumpType = DumpRaw
               | DumpEvaluated
               | DumpPretty
 
--- | Only buildrow is different for every dump type.
+-- | Only buildRow is different for every dump type. Evaluated e.g. creates an evaluated list, concatenated with show.
+-- Unevaluated creates a list suitable for saving in a file.
 dump' :: DumpType
       -> S.Sheet
       -> String
