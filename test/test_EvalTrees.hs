@@ -2,10 +2,11 @@
 -- 
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 -- 
--- Currently depends on QuickCheck < 2 - My debian based distribution
--- does not yet support ghc7.
+-- This needs QuickCheck in at least version 2. Otherwise you have to replace QuickCheck2 with QuickCheck and
+-- either implement an instance for Arbitrary Char or leave out the string tests.
 
-import Test.QuickCheck.Batch
+import qualified Test.Framework as Fw
+import qualified Test.Framework.Providers.QuickCheck2 as FQc
 
 import qualified Data.List as DL
 
@@ -19,13 +20,13 @@ import qualified FormulaEngine.Parse as Parse
 
 -- | Convert a tree function into an Int function.
 integerFuncWrapper :: ([P.Plain] -> P.Plain) -> [Int] -> Int
-integerFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlInt)
+integerFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall (T.NamedFunction "f" tFunc) . map (T.Raw . P.PlInt)
 
 floatFuncWrapper :: ([P.Plain] -> P.Plain) -> [Float] -> Float
-floatFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlFloat)
+floatFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall (T.NamedFunction "f" tFunc) . map (T.Raw . P.PlFloat)
 
 stringFuncWrapper :: ([P.Plain] -> P.Plain) -> [String] -> String
-stringFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall tFunc . map (T.Raw . P.PlString)
+stringFuncWrapper tFunc = P.get . Eval.calcTree . T.Funcall (T.NamedFunction "f" tFunc) . map (T.Raw . P.PlString)
 
 -- | Integer add function should match results of builtin (+) for Int.
 prop_addInt :: [Int] -> Bool
@@ -48,7 +49,7 @@ quote s = "\"" ++ s ++ "\""
 -- | Leading spaces.
 prop_leadingSpaces :: Int -> String -> Bool
 prop_leadingSpaces n s =
-    (P.get . Eval.calcTree . Parse.compileTree) (concat [DL.replicate n ' ', "\"", concatMap escape s, "\""]) == s
+    (P.get . Eval.calcTree . Parse.compileTree) (concat [DL.replicate (n `mod` 20) ' ', "\"", concatMap escape s, "\""]) == s
 
 -- | Arbitrary strings.
 prop_string :: String -> Bool
@@ -58,18 +59,27 @@ prop_string s = (P.get . Eval.calcTree . Parse.compileTree . quote . concatMap e
 prop_invalidReference :: Bool
 prop_invalidReference = (P.checkError . Eval.calcTree . Parse.compileTree) "'1:1"
 
-
+{- --FIXME: How are these options passed in QuickCheck V2 and Test.Framework?
 options = TestOptions { no_of_tests = 200,
                         length_of_tests = 1,
                         debug_tests = False }
+-}
 
 -- | Run the tests
 main :: IO ()
-main = runTests "simple" options
-       [ run prop_addInt
-       --, run prop_concString    --FIXME: Define Char as instance of Arbitrary
-       , run prop_recursive
-       --, run prop_leadingSpaces --FIXME: Same fix
-       --, run prop_string        --FIXME: Same fix
-       , run prop_invalidReference
-       ]
+main = Fw.defaultMain tests
+
+tests = [
+ Fw.testGroup "Integer tests" [
+        FQc.testProperty "add Int" prop_addInt
+       ],
+ Fw.testGroup "Miscellaneous tests" [
+        FQc.testProperty "recursive" prop_recursive,
+        FQc.testProperty "invalid ref" prop_invalidReference
+       ],
+ Fw.testGroup "String tests" [
+       FQc.testProperty "concatenate" prop_concString,
+       FQc.testProperty "spaces" prop_leadingSpaces,
+       FQc.testProperty "string" prop_string
+      ]]
+

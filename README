@@ -4,3 +4,10 @@ See file LICENSE for licensing details.
 
 Currently only a quite rudimentary prototype is implemented. Two sheet functions,
 spartanic console GUI to edit sheets.
+
+This is build on haskell platform March 2011, with ghc 7.
+For compilation you should additionally have the cabal packages
+
+-hlint (optional, for make hlint)
+-test-framwork and test-framework-quickcheck2 (optional, for make test)
+-QuickCheck in version >= 2 (already part of Haskell platform?)
