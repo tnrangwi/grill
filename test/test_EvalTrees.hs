@@ -9,6 +9,7 @@ import qualified Test.Framework as Fw
 import qualified Test.Framework.Providers.QuickCheck2 as FQc
 
 import qualified Data.List as DL
+import qualified Data.Monoid as Monoid
 
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
@@ -59,20 +60,24 @@ prop_string s = (P.get . Eval.calcTree . Parse.compileTree . quote . concatMap e
 prop_invalidReference :: Bool
 prop_invalidReference = (P.checkError . Eval.calcTree . Parse.compileTree) "'1:1"
 
-{- --FIXME: How are these options passed in QuickCheck V2 and Test.Framework?
-options = TestOptions { no_of_tests = 200,
-                        length_of_tests = 1,
-                        debug_tests = False }
--}
+
+-- | Example for test options used below. To make them the default, a top level group can be defined
+-- and tests can be nested. This is *NOT* intuitive and took me some hours to find out how this works.
+-- There is no single example for that in order to migrate this stuff from old QuickCheck!!!
+options :: Fw.TestOptions
+options = Monoid.mempty { Fw.topt_maximum_generated_tests = Just 200
+                        , Fw.topt_maximum_unsuitable_generated_tests = Just 1 }
+
 
 -- | Run the tests
 main :: IO ()
 main = Fw.defaultMain tests
 
+-- | The tests. Test can be nested to reuse test options.
 tests = [
- Fw.testGroup "Integer tests" [
+ Fw.plusTestOptions options (Fw.testGroup "Integer tests" [
         FQc.testProperty "add Int" prop_addInt
-       ],
+       ]),
  Fw.testGroup "Miscellaneous tests" [
         FQc.testProperty "recursive" prop_recursive,
         FQc.testProperty "invalid ref" prop_invalidReference
