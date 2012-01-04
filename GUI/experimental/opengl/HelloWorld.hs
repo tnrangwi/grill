@@ -4,6 +4,8 @@
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
+import Bindings
+
 myPoints :: [(GLfloat, GLfloat, GLfloat)]
 myPoints = map (\k -> (sin(2*pi*k/12), cos(2*pi**k/12), 0.0))[1..12]
 
@@ -12,13 +14,6 @@ main = do
   createWindow "Hello, world!"
   displayCallback $= display
   reshapeCallback $= Just reshape
+  keyboardMouseCallback $= Just keyboardMouse
   mainLoop
 
-display = do
-  clear [ ColorBuffer ]
-  renderPrimitive Points $ mapM_(\(x, y, z) -> vertex$Vertex3 x y z) myPoints
-  flush
-
-reshape s@(Size w h) = do
-  viewport $= (Position 0 0, s)
-  postRedisplay Nothing
