@@ -1,3 +1,6 @@
+-- | Example for test purposes - copied from http://www.haskell.org/haskellwiki/OpenGLTutorial1.
+-- For all rights see there - I just do some tests.
+
 module Cube
 where
 
