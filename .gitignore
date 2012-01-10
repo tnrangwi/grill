@@ -20,3 +20,6 @@
 .#*
 
 grill
+/dist
+/.dist-buildwrapper
+/.DS_Store
