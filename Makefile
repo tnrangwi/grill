@@ -13,7 +13,7 @@ TEST_EXE=$(TEST_HS:.hs=) $(TEST_HS:.hs=.exe)
 EXCLUDE_HS=$(DEMO_HS) $(TEST_HS)
 #From file1 file2 file3 --> file1 -o -name file2 -o -name file3
 EXCLUDE_HS_FIND_PARAM=$(patsubst %,-o -name %,$(EXCLUDE_HS))
-HS_SRC=$(shell find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_FIND_PARAM) \))
+HS_SRC=$(shell cd src && find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_FIND_PARAM) \))
 HS_OBJ=$(HS_SRC:.hs=.o)
 HS_HI=$(HS_SRC:.hs=.hi)
 
@@ -28,30 +28,31 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 # Just let ghc create one executable depending on all source files. Quick hack, will change in the future.
 all:
-	ghc --make demo/demo_calc_trees.hs
-	ghc --make demo/demo_display_sheet.hs
-	ghc -Wall -O --make Console/grill.hs -o grill
+	ghc --make -isrc src/demo/demo_calc_trees.hs
+	ghc --make -isrc src/demo/demo_display_sheet.hs
+	ghc -Wall -isrc -O --make src/Console/grill.hs -o grill
 
 #Run test suites
 test:
-	cd test && runghc -i.. test_EvalTrees.hs
+	cd src/test && runghc -i.. test_EvalTrees.hs
 
 #Run demonstrations
 demo:
 #Mac shell does not like she-bang if the script is not compatible to bourne shell. So call runghc directly.
-	runghc demo/demo_calc_trees.hs
-	runghc demo/demo_display_sheet.hs TestData/demo_sheet.gst
+	runghc -isrc src/demo/demo_calc_trees.hs
+	runghc -isrc src/demo/demo_display_sheet.hs TestData/demo_sheet.gst
 
 #Check syntax of all files using hlint
 hlint:
 	hlint .
 
 clean:
-	rm -f $(HS_OBJ) $(HS_HI)
-	rm -f demo/*.hi demo/*.o
+	cd src && rm -f $(HS_OBJ) $(HS_HI)
+	rm -f src/demo/*.hi src/demo/*.o
 
 doc:
-	haddock -o doc -h $(HS_SRC)
+	echo "HS:" $(HS_SRC)
+	cd src && haddock -o ../doc -h $(HS_SRC)
 
 clean_doc:
 	rm -f doc/*
