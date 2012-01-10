@@ -1,0 +1,17 @@
+name:           grill
+version:        0.1
+cabal-version:  >= 1.2
+build-type:     Simple
+license-file:   LICENSE
+
+executable grill
+  ghc-options:     -Wall -rtsopts
+  build-depends:   
+                   base,
+                   parsec,
+                   containers,
+                   haskell98
+  extensions:      FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances
+  main-is:         Console/grill.hs
+  hs-source-dirs:  src
+
