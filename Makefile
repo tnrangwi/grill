@@ -32,6 +32,11 @@ all:
 	ghc --make -isrc src/demo/demo_display_sheet.hs
 	ghc -Wall -isrc -O --make src/Console/grill.hs -o grill
 
+# Build via cabal. Thanks to Christian for that.
+build:
+	runhaskell Setup.hs configure
+	runhaskell Setup.hs build
+
 #Run test suites
 test:
 	cd src/test && runghc -i.. test_EvalTrees.hs
@@ -50,6 +55,7 @@ clean:
 	cd src && rm -f $(HS_OBJ) $(HS_HI)
 	rm -f src/Console/grill.hi src/Console/grill.o
 	rm -f src/demo/*.hi src/demo/*.o
+	runhaskell Setup.hs clean
 
 doc:
 	cd src && haddock -o ../doc -h $(HS_SRC)
