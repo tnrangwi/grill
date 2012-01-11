@@ -48,10 +48,10 @@ hlint:
 
 clean:
 	cd src && rm -f $(HS_OBJ) $(HS_HI)
+	rm -f src/Console/grill.hi src/Console/grill.o
 	rm -f src/demo/*.hi src/demo/*.o
 
 doc:
-	echo "HS:" $(HS_SRC)
 	cd src && haddock -o ../doc -h $(HS_SRC)
 
 clean_doc:
@@ -59,3 +59,4 @@ clean_doc:
 
 mrproper: clean clean_doc
 	rm -f $(DEMO_EXE)
+	rm -f grill
