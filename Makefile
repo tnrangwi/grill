@@ -28,9 +28,9 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 # Just let ghc create one executable depending on all source files. Quick hack, will change in the future.
 all:
-	ghc --make -isrc src/demo/demo_calc_trees.hs
-	ghc --make -isrc src/demo/demo_display_sheet.hs
-	ghc -Wall -isrc -O --make src/Console/grill.hs -o grill
+	ghc --make -Wall -isrc src/demo/demo_calc_trees.hs
+	ghc --make -Wall -isrc src/demo/demo_display_sheet.hs
+	ghc -Wall -Wall -isrc -O --make src/Console/grill.hs -o grill
 
 # Build via cabal. Thanks to Christian for that.
 build:

@@ -15,8 +15,6 @@ where
 
 import qualified Data.List as List
 
-import qualified Data.Plain as P
-import qualified Tree.FormulaTree as T
 import qualified Data.Sheet as S
 import qualified Data.SheetLayout as L
 import qualified FormulaEngine.Evaluate as E
@@ -36,7 +34,7 @@ class Dump a b where
     -- | Pretty print evaluated dump.
     pprint :: a -- ^ Arbitrary input type for nice evaluated print.
            -> b -- ^ Arbitrary output type.
-    pprint a = error "Pretty print not yet implemented"
+    pprint _ = error "Pretty print not yet implemented"
 
 
 instance Dump S.Sheet (IO ()) where

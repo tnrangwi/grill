@@ -9,7 +9,6 @@ import qualified System.IO as FileIO
 import qualified Control.Monad as M
 
 import qualified FormulaEngine.Parse as Parse
-import qualified FormulaEngine.Evaluate as Eval
 import qualified Procedures.Serialise.Dump as Dump
 
 -- | Tell error and exit from main.

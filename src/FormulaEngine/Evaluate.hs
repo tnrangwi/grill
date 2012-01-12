@@ -38,12 +38,12 @@ eval (T.Funcall f l) r = let argv = map (`eval` r) l
                          in
                            case res of
                              P.PlError _ -> findError res argv
-                             otherwise -> res
+                             _ -> res
 eval (T.Reference a) (FullRef s xs) = if a `elem` xs then
                                           P.PlError $ "Circular reference. Twice referenced:" ++ show a
                                       else
                                           eval (S.getCell s a) (FullRef s (a:xs))
-eval r@(T.Reference a) (SheetRef s) = eval r (FullRef s [])
+eval r@(T.Reference _) (SheetRef s) = eval r (FullRef s [])
 eval (T.Reference a) (NoRef) = P.PlError $ "Cannot evaluate address without a sheet - referenced:" ++ show a ++ "."
 
 
@@ -77,6 +77,6 @@ calcTree t = eval t NoRef
 showTree :: T.FormulaTree -- ^ Tree to display
          -> String
 showTree (T.Raw v) = P.repr v
-showTree (T.TreeError e) = error "You should never be here: Erranous tree cannot be serialised for saving"
+showTree (T.TreeError _) = error "You should never be here: Erranous tree cannot be serialised for saving"
 showTree (T.Funcall f l) = "(" ++ T.funcName f ++ " " ++ List.intercalate " " (map showTree l) ++ ")"
 showTree (T.Reference a) = '\'' : L.showAddress a

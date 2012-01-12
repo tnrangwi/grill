@@ -36,4 +36,4 @@ resolve :: String -- ^ Name of the function
         -> P.PlainFunction -- ^ The function found in the registry
 resolve name = case Map.lookup name registry of
                  Just func -> func
-                 otherwise -> defaultFunction name
+                 _ -> defaultFunction name

@@ -9,7 +9,6 @@ module FormulaEngine.Functions.StringFuncs
 
 where
 
-import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
 
 -- Fixme: add concatenation for integers, floats

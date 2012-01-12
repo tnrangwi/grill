@@ -5,8 +5,8 @@
 module Version.Information
     (
      -- * Compile time and forever constants
-     module Constants,
-     module StaticVersion,
+     module Version.Constants,
+     module Version.StaticVersion,
      -- * Version information
      versionString,
      formatString,
@@ -30,68 +30,69 @@ import qualified Control.Monad as Monad
 import qualified Text.ParserCombinators.Parsec as Parsec
 import Text.Printf as Printf
 
-import qualified Version.Constants as Constants
-import qualified Version.StaticVersion as StaticVersion
+import Version.Constants -- needs to be imported unqualified or re-export will not work
+import Version.StaticVersion -- same here
 import Version.Types (SmallVersion)
 
 -- | Version coded as string
 versionString :: String
 versionString = Printf.printf "%02d.%02d.%02d"
-                (fromIntegral StaticVersion.grillMajor :: Int)
-                (fromIntegral StaticVersion.grillMinor :: Int)
-                (fromIntegral StaticVersion.grillMicro :: Int)
+                (fromIntegral Version.StaticVersion.grillMajor :: Int)
+                (fromIntegral Version.StaticVersion.grillMinor :: Int)
+                (fromIntegral Version.StaticVersion.grillMicro :: Int)
 
 -- | Grill's calculation version.
 grillVersion :: (SmallVersion, SmallVersion, SmallVersion)
-grillVersion = (StaticVersion.grillMajor, StaticVersion.grillMinor, StaticVersion.grillMicro)
+grillVersion = (Version.StaticVersion.grillMajor, Version.StaticVersion.grillMinor, Version.StaticVersion.grillMicro)
 
 -- | Sheet format version.
 formatVersion :: (SmallVersion, SmallVersion, SmallVersion)
-formatVersion = (StaticVersion.formatMajor, StaticVersion.formatMinor, StaticVersion.formatMicro)
+formatVersion = (Version.StaticVersion.formatMajor, Version.StaticVersion.formatMinor, Version.StaticVersion.formatMicro)
 
 -- | Maximum sheet format grill can handle
 formatString :: String
 formatString = Printf.printf "%02d.%02d.%02d"
-                (fromIntegral StaticVersion.formatMajor  :: Int)
-                (fromIntegral StaticVersion.formatMinor :: Int)
-                (fromIntegral StaticVersion.formatMicro :: Int)
+                (fromIntegral Version.StaticVersion.formatMajor  :: Int)
+                (fromIntegral Version.StaticVersion.formatMinor :: Int)
+                (fromIntegral Version.StaticVersion.formatMicro :: Int)
 
 -- | Parse magic bytes at the beginning of every grill sheet
 parseMagicBytes :: Parsec.Parser ()
-parseMagicBytes = Parsec.string Constants.grillPrefix >> return ()
+parseMagicBytes = Parsec.string Version.Constants.grillPrefix >> return ()
 
 -- | Help stub to parse one of the versions in the sheet header
 parseVersionString :: Char -- ^ Identifier
                    -> String -- ^ String for fail messages
                    -> Parsec.Parser (SmallVersion, SmallVersion, SmallVersion) -- ^ Parsec data type for string parsers
 parseVersionString prefix msg = do
-  Parsec.char prefix
+  _ <- Parsec.char prefix
   sMajor <- Parsec.many1 Parsec.digit
-  Parsec.char '.'
+  _ <- Parsec.char '.'
   sMinor <- Parsec.many1 Parsec.digit
-  Parsec.char '.'
+  _ <- Parsec.char '.'
   sMicro <- Parsec.many1 Parsec.digit
   Monad.when (length sMajor /= 2 || length sMinor /= 2 || length sMicro /= 2)
            (fail $ "Invalid version string:" ++ sMajor ++ "." ++ sMinor ++ "." ++ sMicro ++ " for " ++ msg ++ ".")
-  return (fromIntegral $ read sMajor, fromIntegral $ read sMinor, fromIntegral $ read sMicro)
+  return (read sMajor :: SmallVersion, read sMinor, read sMicro)
 
 -- | Parse sheet version in header.
 parseFormat :: Parsec.Parser (SmallVersion, SmallVersion, SmallVersion)
-parseFormat = parseVersionString Constants.sheetPrefix "sheet"
+parseFormat = parseVersionString Version.Constants.sheetPrefix "sheet"
 
 -- | Parse calc engine version in header.
 parseVersion :: Parsec.Parser (SmallVersion, SmallVersion, SmallVersion)
-parseVersion = parseVersionString Constants.calcEnginePrefix "calc engine"
+parseVersion = parseVersionString Version.Constants.calcEnginePrefix "calc engine"
 
 -- | Parse checksum in sheet header. Not yet implemented, always gives empty string currently.
 parseChecksum :: Parsec.Parser String
 parseChecksum = do
-  Parsec.char Constants.checksumPrefix
-  Parsec.many $ Parsec.oneOf "ABCDEF0123456789"
+  _ <- Parsec.char Version.Constants.checksumPrefix
+  c <- Parsec.many $ Parsec.oneOf "ABCDEF0123456789"
+  return c -- FIXME: The whole function should be possible without do and without return
 
 -- | Parse header terminator.
 parseEndOfHeader :: Parsec.Parser ()
-parseEndOfHeader = Parsec.string Constants.grillSuffix >> return ()
+parseEndOfHeader = Parsec.string Version.Constants.grillSuffix >> return ()
 
 -- | Check version help stub.
 checkVersion :: (SmallVersion, SmallVersion, SmallVersion) -- ^ The version to check.
@@ -107,9 +108,9 @@ checkVersion (m, _, _) c s = if m > c then
 -- | Check a given version if it is supported by the current calculation.
 checkGrill :: (SmallVersion, SmallVersion, SmallVersion)
            -> Maybe String
-checkGrill v = checkVersion v StaticVersion.grillMajor "calculation engine"
+checkGrill v = checkVersion v Version.StaticVersion.grillMajor "calculation engine"
 
 -- | Check a given version if it is supported by the current sheet formatter.
 checkFormat :: (SmallVersion, SmallVersion, SmallVersion)
             -> Maybe String
-checkFormat v = checkVersion v StaticVersion.formatMajor "sheet format"
+checkFormat v = checkVersion v Version.StaticVersion.formatMajor "sheet format"

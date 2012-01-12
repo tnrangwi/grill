@@ -149,7 +149,7 @@ requestHeader :: (SmallVersion, SmallVersion, SmallVersion) -- ^ Format of this 
               -> String -- ^ Checksum -- FIXME: use a typedef for that
               -> String -- ^ Sheet name
               -> Either String Header -- ^ Error message or header
-requestHeader format calc check name =
+requestHeader format calc _ name = -- checksum not needed up to now
     case V.checkFormat format of
       Just err -> Left err
       Nothing -> case V.checkGrill calc of

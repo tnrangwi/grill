@@ -23,7 +23,7 @@ import qualified Data.Word as Word
 type Coord = Word.Word32
 
 -- | Type storing a sheet cell address. Format may change.
-newtype Address = Addr { adr :: (Coord, Coord) }
+newtype Address = Addr (Coord, Coord)
 
 -- | Max rows allowed in sheet. FIXME: Should be in Constants.
 maxRow :: Coord

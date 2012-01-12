@@ -2,6 +2,9 @@
 -- 
 -- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
+{-# OPTIONS_GHC -fno-warn-unused-do-bind #-} -- This does not make sense in the parser module.
+                                             -- A lot is parsed into the void.
+
 module FormulaEngine.Parse
 (
  compileTree,
@@ -13,7 +16,6 @@ where
 
 import qualified Tree.FormulaTree as T
 import qualified Data.Plain as P
-import qualified FormulaEngine.Functions.Numerics as NumFuncs
 import qualified FormulaEngine.Registry as Reg
 import qualified Data.SheetLayout as SheetLayout
 import qualified Data.Sheet as Sheet
@@ -242,4 +244,4 @@ getSign :: (Num a) =>
 getSign c = case c of
               '+' -> 1
               '-' -> -1
-              otherwise -> error $ "Internal error - got invalid sign:" ++ [c]
+              _ -> error $ "Internal error - got invalid sign:" ++ [c]
