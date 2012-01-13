@@ -24,7 +24,7 @@ keyboardAct a p (Char '+') Down = do
 
 keyboardAct a p (Char '-') Down = do
   a' <- get a
-  a $= -a'/2
+  a $= a'/2
 
 keyboardAct a p (SpecialKey KeyLeft) Down = do
   (x, y) <- get p
