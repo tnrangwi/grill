@@ -2,7 +2,13 @@ name:           grill
 version:        0.0.1
 cabal-version:  >= 1.2
 build-type:     Simple
+license:	MIT
 license-file:   LICENSE
+synopsis:	Wants to become a Trader's system
+description:	Small tree based calculation engine. To be extended with visual tools and grid framework later.
+		Currently only a quite rudimentary prototype is implemented. Two sheet functions,
+		spartanic console GUI to edit sheets.
+tested-with:	GHC >= 7.0
 
 executable grill
   ghc-options:     -Wall -rtsopts
@@ -11,7 +17,7 @@ executable grill
                    parsec,
                    containers,
                    haskell98
-  extensions:      FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances
+--  extensions:      FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances
   main-is:         Console/grill.hs
   hs-source-dirs:  src
 

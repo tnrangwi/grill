@@ -28,24 +28,24 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 # Just let ghc create one executable depending on all source files. Quick hack, will change in the future.
 all:
-	ghc --make -Wall -isrc src/demo/demo_calc_trees.hs
-	ghc --make -Wall -isrc src/demo/demo_display_sheet.hs
+	ghc --make -Wall -isrc demo/demo_calc_trees.hs
+	ghc --make -Wall -isrc demo/demo_display_sheet.hs
 	ghc -Wall -Wall -isrc -O --make src/Console/grill.hs -o grill
 
 # Build via cabal. Thanks to Christian for that.
 build:
-	runhaskell Setup.hs configure
-	runhaskell Setup.hs build
+	runhaskell Setup configure
+	runhaskell Setup build
 
 #Run test suites
 test:
-	cd src/test && runghc -i.. test_EvalTrees.hs
+	runghc -isrc test/functional/test_EvalTrees.hs
 
 #Run demonstrations
 demo:
 #Mac shell does not like she-bang if the script is not compatible to bourne shell. So call runghc directly.
-	runghc -isrc src/demo/demo_calc_trees.hs
-	runghc -isrc src/demo/demo_display_sheet.hs TestData/demo_sheet.gst
+	runghc -isrc demo/demo_calc_trees.hs
+	runghc -isrc demo/demo_display_sheet.hs TestData/demo_sheet.gst
 
 #Check syntax of all files using hlint
 hlint:
@@ -54,8 +54,8 @@ hlint:
 clean:
 	cd src && rm -f $(HS_OBJ) $(HS_HI)
 	rm -f src/Console/grill.hi src/Console/grill.o
-	rm -f src/demo/*.hi src/demo/*.o
-	runhaskell Setup.hs clean
+	rm -f demo/*.hi demo/*.o
+	runhaskell Setup clean
 
 doc:
 	cd src && haddock -o ../doc -h $(HS_SRC)
