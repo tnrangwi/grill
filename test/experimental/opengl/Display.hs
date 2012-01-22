@@ -12,11 +12,13 @@ where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
-import Data.IORef
-
 import Cube
 import Points
 
+display :: (HasGetter g1, HasGetter g, MatrixComponent c, Num c) =>
+           g1 GLfloat
+        -> g (c, c)
+        -> IO ()
 display angle position = do
   clear [ ColorBuffer ]
   loadIdentity
@@ -33,6 +35,10 @@ display angle position = do
           ) $ points 7
   swapBuffers
 
+idle :: (HasGetter g, HasGetter s, HasSetter s, Num a) =>
+        s a
+     -> g a
+     -> IO ()
 idle angle delta = do
   a <- get angle
   d <- get delta

@@ -2,11 +2,13 @@
 -- For all rights see there - I just do some tests.
 
 module Cube
+
 where
 
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT
 
+cube :: (VertexComponent a, Num a) => a 
+     -> IO ()
 cube w = do
   renderPrimitive Quads $ do
            vertex $ Vertex3 w w w
