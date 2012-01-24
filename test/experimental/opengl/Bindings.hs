@@ -57,6 +57,9 @@ keyboardAct _ p (SpecialKey KeyDown) Down = do
   (x, y) <- get p
   p $= (x,y-0.1)
 
+keyboardAct _ _ (Char 'q') Down = do
+  leaveMainLoop
+
 keyboardAct _ _ _ _ = return ()
 keyboardMouse :: (HasGetter s,
                   HasGetter s1,
