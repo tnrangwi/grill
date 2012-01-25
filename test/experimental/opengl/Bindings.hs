@@ -4,12 +4,14 @@ module Bindings
 , display
 , reshape
 , keyboardMouse
+, menuCall
 )
 where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Display
+import Menu
 
 reshape :: Size
         -> IO ()
@@ -77,3 +79,7 @@ keyboardMouse :: (HasGetter s,
               -> IO ()
 keyboardMouse angle pos key state _ _ = do
   keyboardAct angle pos key state
+
+menuCall onOff pos = do
+  print "menu opened"
+  -- print $ "Menu on / off at position:" ++ show pos ++ "(" ++ show onOff ++ ")"

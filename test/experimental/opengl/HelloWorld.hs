@@ -8,6 +8,7 @@ import Graphics.UI.GLUT (($=))
 import qualified Data.IORef as IORef
 
 import qualified Bindings
+import qualified Menu
 
 -- myPoints :: [(GLfloat, GLfloat, GLfloat)]
 -- myPoints = map (\k -> (sin(2*pi*k/12), cos(2*pi**k/12), 0.0))[1..12]
@@ -24,4 +25,6 @@ main = do
   GLUT.keyboardMouseCallback $= Just (Bindings.keyboardMouse delta position) -- GLUT.Callbacks.Window
   GLUT.idleCallback $= Just (Bindings.idle angle delta) -- GLUT.Callbacks.Global
   GLUT.displayCallback $= (Bindings.display angle position) -- GLUT.Callbacks.Window
+  GLUT.attachMenu GLUT.LeftButton Menu.main
+  GLUT.menuStatusCallback $= Just Bindings.menuCall -- does not work -- GLUT.Callbacks.Global
   GLUT.mainLoop -- GLUT.Begin
