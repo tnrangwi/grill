@@ -8,72 +8,76 @@ module Bindings
 )
 where
 
-import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT
+import qualified Graphics.Rendering.OpenGL.GL.CoordTrans as CTrans
+import qualified Graphics.Rendering.OpenGL.GL.StateVar as StateVar
+import qualified Graphics.UI.GLUT.Callbacks.Window as Window
+import qualified Graphics.UI.GLUT.Begin as Begin
+import Graphics.Rendering.OpenGL.GL.StateVar (($=))
+
 import Display
 import Menu
 
-reshape :: Size
+reshape :: CTrans.Size
         -> IO ()
-reshape s@(Size _ _) = do -- Size w h
-  viewport $= (Position 0 0, s)
+reshape s@(CTrans.Size _ _) = do -- Size w h
+  CTrans.viewport $= (CTrans.Position 0 0, s)
 
-keyboardAct :: (HasGetter s1,
-                HasGetter s,
-                HasSetter s1,
-                HasSetter s,
+keyboardAct :: (StateVar.HasGetter s1,
+                StateVar.HasGetter s,
+                StateVar.HasSetter s1,
+                StateVar.HasSetter s,
                 Fractional t,
                 Fractional t1,
                 Fractional a) =>
                s a
             -> s1 (t, t1)
-            -> Key
-            -> KeyState
+            -> Window.Key
+            -> Window.KeyState
             -> IO ()
 
-keyboardAct a _ (Char ' ') Down = do
-  a' <- get a
+keyboardAct a _ (Window.Char ' ') Window.Down = do
+  a' <- StateVar.get a
   a $= -a'
 
-keyboardAct a _ (Char '+') Down = do
-  a' <- get a
+keyboardAct a _ (Window.Char '+') Window.Down = do
+  a' <- StateVar.get a
   a $= 2*a'
 
-keyboardAct a _ (Char '-') Down = do
-  a' <- get a
+keyboardAct a _ (Window.Char '-') Window.Down = do
+  a' <- StateVar.get a
   a $= a'/2
 
-keyboardAct _ p (SpecialKey KeyLeft) Down = do
-  (x, y) <- get p
+keyboardAct _ p (Window.SpecialKey Window.KeyLeft) Window.Down = do
+  (x, y) <- StateVar.get p
   p $= (x-0.1,y)
 
-keyboardAct _ p (SpecialKey KeyRight) Down = do
-  (x, y) <- get p
+keyboardAct _ p (Window.SpecialKey Window.KeyRight) Window.Down = do
+  (x, y) <- StateVar.get p
   p $= (x+0.1,y)
 
-keyboardAct _ p (SpecialKey KeyUp) Down = do
-  (x, y) <- get p
+keyboardAct _ p (Window.SpecialKey Window.KeyUp) Window.Down = do
+  (x, y) <- StateVar.get p
   p $= (x,y+0.1)
 
-keyboardAct _ p (SpecialKey KeyDown) Down = do
-  (x, y) <- get p
+keyboardAct _ p (Window.SpecialKey Window.KeyDown) Window.Down = do
+  (x, y) <- StateVar.get p
   p $= (x,y-0.1)
 
-keyboardAct _ _ (Char 'q') Down = do
-  leaveMainLoop
+keyboardAct _ _ (Window.Char 'q') Window.Down = do
+  Begin.leaveMainLoop
 
 keyboardAct _ _ _ _ = return ()
-keyboardMouse :: (HasGetter s,
-                  HasGetter s1,
-                  HasSetter s,
-                  HasSetter s1,
+keyboardMouse :: (StateVar.HasGetter s,
+                  StateVar.HasGetter s1,
+                  StateVar.HasSetter s,
+                  StateVar.HasSetter s1,
                   Fractional t3,
                   Fractional a,
                   Fractional t2) =>
                  s a
               -> s1 (t2, t3)
-              -> Key
-              -> KeyState
+              -> Window.Key
+              -> Window.KeyState
               -> t
               -> t1
               -> IO ()

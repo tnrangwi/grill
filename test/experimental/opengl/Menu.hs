@@ -6,12 +6,12 @@ module Menu
 )
 where
 
-import qualified Graphics.UI.GLUT as GLUT
-
+import qualified Graphics.UI.GLUT.Menu as Menu
+import qualified Graphics.UI.GLUT.Begin as Begin
 
 test = do
   print "test"
 
 
-main = (GLUT.Menu [GLUT.MenuEntry "Console output (test)" test,
-                   GLUT.MenuEntry "Quit" GLUT.leaveMainLoop])
+main = (Menu.Menu [Menu.MenuEntry "Console output (test)" test,
+                   Menu.MenuEntry "Quit" Begin.leaveMainLoop])

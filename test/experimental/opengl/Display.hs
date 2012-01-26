@@ -9,38 +9,43 @@ module Display
 
 where
 
-import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT
+import qualified Graphics.Rendering.OpenGL.GL.CoordTrans as CTrans
+import qualified Graphics.Rendering.OpenGL.GL.BasicTypes as GLBase
+import qualified Graphics.Rendering.OpenGL.GL.Framebuffer as FBuffer
+import qualified Graphics.Rendering.OpenGL.GL.VertexSpec as VSpec
+import qualified Graphics.Rendering.OpenGL.GL.StateVar as StateVar
+import Graphics.Rendering.OpenGL.GL.StateVar (($=!))
+import qualified Graphics.UI.GLUT.Window as Window
 
-import Cube
-import Points
+import qualified Cube
+import qualified Points
 
-display :: (HasGetter g1, HasGetter g, MatrixComponent c, Num c) =>
-           g1 GLfloat
+display :: (StateVar.HasGetter g1, StateVar.HasGetter g, CTrans.MatrixComponent c, Num c) =>
+           g1 GLBase.GLfloat
         -> g (c, c)
         -> IO ()
 display angle position = do
-  clear [ ColorBuffer ]
-  loadIdentity
-  (x, y) <- get position
-  translate $ Vector3 x y 0
-  preservingMatrix $ do
-    a <- get angle
-    rotate a $ Vector3 0 0 (1::GLfloat)
-    scale 0.7 0.7 (0.7::GLfloat)
-    mapM_ (\(x, y, z) -> preservingMatrix $ do
-                           color $ Color3 ((x+1.0)/2.0) ((y+1.0)/2.0) ((z+1.0)/2.0)
-                           translate $ Vector3 x y z
-                           cube (0.1::GLfloat)
-          ) $ points 7
-  swapBuffers
+  FBuffer.clear [ FBuffer.ColorBuffer ]
+  CTrans.loadIdentity
+  (x, y) <- StateVar.get position
+  CTrans.translate $ CTrans.Vector3 x y 0
+  CTrans.preservingMatrix $ do
+    a <- StateVar.get angle
+    CTrans.rotate a $ CTrans.Vector3 0 0 (1::GLBase.GLfloat)
+    CTrans.scale 0.7 0.7 (0.7::GLBase.GLfloat)
+    mapM_ (\(x, y, z) -> CTrans.preservingMatrix $ do
+                           VSpec.color $ VSpec.Color3 ((x+1.0)/2.0) ((y+1.0)/2.0) ((z+1.0)/2.0)
+                           CTrans.translate $ CTrans.Vector3 x y z
+                           Cube.cube (0.1::GLBase.GLfloat)
+          ) $ Points.points 7
+  Window.swapBuffers
 
-idle :: (HasGetter g, HasGetter s, HasSetter s, Num a) =>
+idle :: (StateVar.HasGetter g, StateVar.HasGetter s, StateVar.HasSetter s, Num a) =>
         s a
      -> g a
      -> IO ()
 idle angle delta = do
-  a <- get angle
-  d <- get delta
+  a <- StateVar.get angle
+  d <- StateVar.get delta
   angle $=! (a + d)
-  postRedisplay Nothing
+  Window.postRedisplay Nothing

@@ -3,7 +3,7 @@
 
 module Points where
 
-import Graphics.Rendering.OpenGL
+import qualified Graphics.Rendering.OpenGL.GL.BasicTypes as GLBase
 
-points :: Int -> [(GLfloat, GLfloat, GLfloat)]
+points :: Int -> [(GLBase.GLfloat, GLBase.GLfloat, GLBase.GLfloat)]
 points n' = let n = fromIntegral n' in map (\k -> let t = 2*pi*k/n in (sin(t), cos(t), 0.0)) [1..n]

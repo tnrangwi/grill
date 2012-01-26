@@ -5,34 +5,35 @@ module Cube
 
 where
 
-import Graphics.Rendering.OpenGL
+import qualified Graphics.Rendering.OpenGL.GL.VertexSpec as VSpec
+import qualified Graphics.Rendering.OpenGL.GL.BeginEnd as GLBegEnd
 
-cube :: (VertexComponent a, Num a) => a 
+cube :: (VSpec.VertexComponent a, Num a) => a 
      -> IO ()
 cube w = do
-  renderPrimitive Quads $ do
-           vertex $ Vertex3 w w w
-           vertex $ Vertex3 w w (-w)
-           vertex $ Vertex3 w (-w) (-w)
-           vertex $ Vertex3 w (-w) w
-           vertex $ Vertex3 w w w
-           vertex $ Vertex3 w w (-w)
-           vertex $ Vertex3 (-w) w (-w)
-           vertex $ Vertex3 (-w) w w
-           vertex $ Vertex3 w w w
-           vertex $ Vertex3 w (-w) w
-           vertex $ Vertex3 (-w) (-w) w
-           vertex $ Vertex3 (-w) w w
-           vertex $ Vertex3 (-w) w w
-           vertex $ Vertex3 (-w) w (-w)
-           vertex $ Vertex3 (-w) (-w) (-w)
-           vertex $ Vertex3 (-w) (-w) w
-           vertex $ Vertex3 w (-w) w
-           vertex $ Vertex3 w (-w) (-w)
-           vertex $ Vertex3 (-w) (-w) (-w)
-           vertex $ Vertex3 (-w) (-w) w
-           vertex $ Vertex3 w w (-w)
-           vertex $ Vertex3 w w (-w)
-           vertex $ Vertex3 w (-w) (-w)
-           vertex $ Vertex3 (-w) (-w) (-w)
-           vertex $ Vertex3 (-w) w (-w)
+  GLBegEnd.renderPrimitive GLBegEnd.Quads $ do
+           VSpec.vertex $ VSpec.Vertex3 w w w
+           VSpec.vertex $ VSpec.Vertex3 w w (-w)
+           VSpec.vertex $ VSpec.Vertex3 w (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 w (-w) w
+           VSpec.vertex $ VSpec.Vertex3 w w w
+           VSpec.vertex $ VSpec.Vertex3 w w (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) w (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) w w
+           VSpec.vertex $ VSpec.Vertex3 w w w
+           VSpec.vertex $ VSpec.Vertex3 w (-w) w
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) w
+           VSpec.vertex $ VSpec.Vertex3 (-w) w w
+           VSpec.vertex $ VSpec.Vertex3 (-w) w w
+           VSpec.vertex $ VSpec.Vertex3 (-w) w (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) w
+           VSpec.vertex $ VSpec.Vertex3 w (-w) w
+           VSpec.vertex $ VSpec.Vertex3 w (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) w
+           VSpec.vertex $ VSpec.Vertex3 w w (-w)
+           VSpec.vertex $ VSpec.Vertex3 w w (-w)
+           VSpec.vertex $ VSpec.Vertex3 w (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) (-w) (-w)
+           VSpec.vertex $ VSpec.Vertex3 (-w) w (-w)
