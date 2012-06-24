@@ -5,12 +5,16 @@
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 import qualified System.IO as FileIO
+import qualified System.Exit as Exit
 import qualified Data.Char as DChar
+import qualified Control.Monad as Monad
 
 import qualified Console.CommandLine as Cmd
 import qualified FormulaEngine.Parse as Parse
 import qualified Data.Sheet as Sheet
 import qualified Procedures.Serialise.Dump as Dump
+import qualified Version.Information as Version
+
 
 -- | Command line option description for grill.
 -- List of Option constructor from System.GetOpt taking the following arguments:
@@ -24,12 +28,20 @@ import qualified Procedures.Serialise.Dump as Dump
 options :: [Cmd.Argument]
 options =
     [
-     Cmd.Argument "v?" ["version"] "show version" "ShowVersion" Cmd.Flag
+     Cmd.Argument "v" ["version"] "show version" "ShowVersion" Cmd.Flag
+    ,Cmd.Argument "h?" ["help"] "show help" "Help" Cmd.Flag
     ,Cmd.Argument "c" ["console"] "no GUI - use console" "Console" Cmd.Flag
     ,Cmd.Argument "d" ["debug"] "debug on - pass number to increase level" "DebugLevel" (Cmd.OptOpt "0|1|2" "0")
     ,Cmd.Argument "f" ["output-filter"] "Output filter - TSV, CSV, PP" "OutputFilter" (Cmd.ReqOpt "TSV|CSV|PP")
     ,Cmd.Argument "o" ["dump-file"] "output contents and exit" "Dump" Cmd.Flag
     ]
+
+onlineHelp :: String
+onlineHelp = "\nGrill help\n" ++
+             "==========\n" ++
+             "\n" ++
+             "TODO: write help\n"
+
 
 -- | Print message, wait for return to display it
 showMessage :: String -> IO ()
@@ -114,6 +126,9 @@ main :: IO ()
 main = do
   props <- Cmd.parseCmdLine options
   putStr $ "Options:\n" ++ show props
+  -- parse for options to exit immediately
+  Monad.when (Cmd.getFlag "ShowVersion" props) (putStrLn ("grill version " ++ Version.versionString) >> Exit.exitSuccess)
+  Monad.when (Cmd.getFlag "Help" props) (putStrLn onlineHelp >> Exit.exitSuccess)
   sheet <- loadSheet (Cmd.getArguments props)
   consoleLoop props sheet
   putStr "Exiting grill...\n"
