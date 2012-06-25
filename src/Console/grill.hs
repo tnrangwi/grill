@@ -36,9 +36,10 @@ options =
     ,Cmd.Argument "o" ["dump-file"] "output contents and exit" "Dump" Cmd.Flag
     ]
 
-cmdLineHelp :: String
-cmdLineHelp = "\nGrill help\n" ++
-             "==========\n" ++
+-- | Help string for particular command.
+onlineHelp :: String -- ^ The command string to get help for. E.g. "e" for edit.
+           -> String
+onlineHelp m = "\nGrill help for" ++ m ++
              "\n" ++
              "TODO: write help\n"
 
@@ -80,7 +81,7 @@ getCommandLine = do
 consoleLoop :: Cmd.Properties -> Sheet.Sheet -> IO ()
 consoleLoop props sheet = do
   putStr . replicate 25 $ '\n'
-  putStr "[C]alculate [D]ump  [L]oad  [S]ave [E]dit cell [Q]uit\n"
+  putStr "[C]alculate [D]ump  [L]oad  [S]ave [E]dit cell [H]elp [Q]uit\n"
   -- Design pattern: See fmap remark in Prelude: fmap func (IO x) == (IO x) >>= return . func
   (command, args) <- getCommandLine
   case command of
@@ -93,6 +94,7 @@ consoleLoop props sheet = do
     'e' -> case Parse.compileEditCell args of
              Left err -> ConIO.showMessage err >> consoleLoop props sheet
              Right (addr, tree) -> ConIO.showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
+    'h' -> ConIO.showMessage (onlineHelp args) >> consoleLoop props sheet
     ' ' -> consoleLoop props sheet
     '!' -> ConIO.showMessage ("Error parsing command line:" ++ args) >> consoleLoop props sheet
     _ -> ConIO.showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet
@@ -121,7 +123,7 @@ main = do
   putStr $ "Options:\n" ++ show props
   -- parse for options to exit immediately
   Monad.when (Cmd.getFlag "ShowVersion" props) (ConIO.exitMessage ("grill version " ++ Version.versionString))
-  Monad.when (Cmd.getFlag "Help" props) (ConIO.exitMessage cmdLineHelp)
+  Monad.when (Cmd.getFlag "Help" props) (ConIO.exitMessage (Cmd.helpCmdLine options))
   sheet <- loadSheet (Cmd.getArguments props)
   consoleLoop props sheet
   putStr "Exiting grill...\n"

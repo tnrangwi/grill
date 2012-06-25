@@ -14,7 +14,8 @@ module Console.CommandLine
  PropertyType(..),
  Argument(..),
  parseOptions,
- parseCmdLine
+ parseCmdLine,
+ helpCmdLine
 )
 where
 
@@ -135,3 +136,7 @@ parseCmdLine :: [Argument] -- ^ Options speficication
              -> IO Properties -- ^ Parsed object to be used for queries
 parseCmdLine options = System.getArgs >>= parseOptions options
 
+-- | Show command line help without error message.
+helpCmdLine :: [Argument] -- ^ Options specification
+            -> String
+helpCmdLine options = GetOpt.usageInfo "Command line help:" (optionSpec2GetOpt options)
