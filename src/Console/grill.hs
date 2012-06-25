@@ -5,11 +5,11 @@
 -- Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 import qualified System.IO as FileIO
-import qualified System.Exit as Exit
 import qualified Data.Char as DChar
 import qualified Control.Monad as Monad
 
 import qualified Console.CommandLine as Cmd
+import qualified Console.IO as ConIO
 import qualified FormulaEngine.Parse as Parse
 import qualified Data.Sheet as Sheet
 import qualified Procedures.Serialise.Dump as Dump
@@ -36,19 +36,12 @@ options =
     ,Cmd.Argument "o" ["dump-file"] "output contents and exit" "Dump" Cmd.Flag
     ]
 
-onlineHelp :: String
-onlineHelp = "\nGrill help\n" ++
+cmdLineHelp :: String
+cmdLineHelp = "\nGrill help\n" ++
              "==========\n" ++
              "\n" ++
              "TODO: write help\n"
 
-
--- | Print message, wait for return to display it
-showMessage :: String -> IO ()
-showMessage m = do
-  putStr $ m ++ "\nPress <Enter> to continue\n"
-  _ <- FileIO.getLine
-  return ()
 
 -- | Replace that with internal function in Data.Text when switching to Data.Text instead of String.
 -- There surely should not be functions like that in this main module.
@@ -94,27 +87,27 @@ consoleLoop props sheet = do
     'q' -> return ()
     'l' -> loadSheet [args] >>= consoleLoop props
                           --FIXME without type compiler searches for ":: IO a" instead. Why?
-    'c' -> (Dump.eval sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
-    'd' -> (Dump.dump sheet :: IO ()) >> showMessage "" >> consoleLoop props sheet
-    's' -> showMessage "Save not yet implemented" >> consoleLoop props sheet
+    'c' -> (Dump.eval sheet :: IO ()) >> ConIO.showMessage "" >> consoleLoop props sheet
+    'd' -> (Dump.dump sheet :: IO ()) >> ConIO.showMessage "" >> consoleLoop props sheet
+    's' -> ConIO.showMessage "Save not yet implemented" >> consoleLoop props sheet
     'e' -> case Parse.compileEditCell args of
-             Left err -> showMessage err >> consoleLoop props sheet
-             Right (addr, tree) -> showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
+             Left err -> ConIO.showMessage err >> consoleLoop props sheet
+             Right (addr, tree) -> ConIO.showMessage "Cell changed" >> consoleLoop props (Sheet.changeCell addr tree sheet)
     ' ' -> consoleLoop props sheet
-    '!' -> showMessage ("Error parsing command line:" ++ args) >> consoleLoop props sheet
-    _ -> showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet
+    '!' -> ConIO.showMessage ("Error parsing command line:" ++ args) >> consoleLoop props sheet
+    _ -> ConIO.showMessage ("Unrecognised command char:" ++ [command]) >> consoleLoop props sheet
 
 loadSheet :: [String]
           -> IO Sheet.Sheet
 loadSheet names = case length names of
-                    0 -> showMessage "No sheet preloaded" >> return Sheet.emptySheet
+                    0 -> ConIO.showMessage "No sheet preloaded" >> return Sheet.emptySheet
                     1 -> do
                       let sheetName = head names
                       stream <- FileIO.readFile (head names)
                       let sheet = Parse.compileSheet stream
                       case sheet of
-                        Left msg -> showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptySheet
-                        Right parsedSheet -> showMessage ("Sheet loaded:" ++ sheetName) >> return parsedSheet
+                        Left msg -> ConIO.showMessage ("Parse error in sheet:" ++ msg) >> return Sheet.emptySheet
+                        Right parsedSheet -> ConIO.showMessage ("Sheet loaded:" ++ sheetName) >> return parsedSheet
                     _ -> do
                       putStr "Only one sheet supported"
                       return Sheet.emptySheet
@@ -127,8 +120,8 @@ main = do
   props <- Cmd.parseCmdLine options
   putStr $ "Options:\n" ++ show props
   -- parse for options to exit immediately
-  Monad.when (Cmd.getFlag "ShowVersion" props) (putStrLn ("grill version " ++ Version.versionString) >> Exit.exitSuccess)
-  Monad.when (Cmd.getFlag "Help" props) (putStrLn onlineHelp >> Exit.exitSuccess)
+  Monad.when (Cmd.getFlag "ShowVersion" props) (ConIO.exitMessage ("grill version " ++ Version.versionString))
+  Monad.when (Cmd.getFlag "Help" props) (ConIO.exitMessage cmdLineHelp)
   sheet <- loadSheet (Cmd.getArguments props)
   consoleLoop props sheet
   putStr "Exiting grill...\n"
