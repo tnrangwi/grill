@@ -124,7 +124,9 @@ main = do
   -- parse for options to exit immediately
   Monad.when (Cmd.getFlag "ShowVersion" props) (ConIO.exitMessage ("grill version " ++ Version.versionString))
   Monad.when (Cmd.getFlag "Help" props) (ConIO.exitMessage (Cmd.helpCmdLine options))
+  Monad.when (Cmd.getFlag "Console" props) (putStrLn "Using console (default unless GUI exists)")
   sheet <- loadSheet (Cmd.getArguments props)
+  -- FIXME: Set debug level, implement -o mode (dump) or go to console loop
   consoleLoop props sheet
   putStr "Exiting grill...\n"
 
