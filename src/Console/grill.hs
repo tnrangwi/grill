@@ -31,7 +31,7 @@ options =
      Cmd.Argument "v" ["version"] "show version" "ShowVersion" Cmd.Flag
     ,Cmd.Argument "h?" ["help"] "show help" "Help" Cmd.Flag
     ,Cmd.Argument "c" ["console"] "no GUI - use console" "Console" Cmd.Flag
-    ,Cmd.Argument "d" ["debug"] "debug on - pass number to increase level" "DebugLevel" (Cmd.OptOpt "0|1|2" "0")
+    ,Cmd.Argument "d" ["debug"] "debug on - pass number to increase level" "DebugLevel" (Cmd.OptOpt "1|2|3" "1")
     ,Cmd.Argument "f" ["output-filter"] "Output filter - TSV, CSV, PP" "OutputFilter" (Cmd.ReqOpt "TSV|CSV|PP")
     ,Cmd.Argument "o" ["dump-file"] "output contents and exit" "Dump" Cmd.Flag
     ]
@@ -120,13 +120,14 @@ main :: IO ()
 
 main = do
   props <- Cmd.parseCmdLine options
-  putStr $ "Options:\n" ++ show props
-  -- parse for options to exit immediately
-  Monad.when (Cmd.getFlag "ShowVersion" props) (ConIO.exitMessage ("grill version " ++ Version.versionString))
-  Monad.when (Cmd.getFlag "Help" props) (ConIO.exitMessage (Cmd.helpCmdLine options))
-  Monad.when (Cmd.getFlag "Console" props) (putStrLn "Using console (default unless GUI exists)")
+  let dbLevel = (if null (Cmd.getProp "DebugLevel" props) then "0" else head $ (Cmd.getProp "DebugLevel" props))
+  Monad.when (dbLevel >= "1") (putStr $ "Options:\n" ++ show props)
   sheet <- loadSheet (Cmd.getArguments props)
-  -- FIXME: Set debug level, implement -o mode (dump) or go to console loop
-  consoleLoop props sheet
+  case True of
+    True | (Cmd.getFlag "ShowVersion" props) -> (ConIO.exitMessage ("grill version " ++ Version.versionString))
+         | (Cmd.getFlag "Help" props) -> (ConIO.exitMessage (Cmd.helpCmdLine options))
+         | (Cmd.getFlag "Dump" props) -> fail "Dump sheet from commmand line is not yet implemented"
+         | (Cmd.getFlag "Console" props) -> consoleLoop props sheet
+    _ ->   putStrLn "Defaulting to console" >> consoleLoop props sheet
   putStr "Exiting grill...\n"
 
