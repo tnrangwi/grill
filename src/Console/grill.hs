@@ -7,6 +7,8 @@
 import qualified System.IO as FileIO
 import qualified Data.Char as DChar
 import qualified Control.Monad as Monad
+import qualified Data.List as List
+import qualified Data.Maybe as Maybe
 
 import qualified Console.CommandLine as Cmd
 import qualified Console.IO as ConIO
@@ -126,8 +128,14 @@ main = do
   case True of
     True | (Cmd.getFlag "ShowVersion" props) -> (ConIO.exitMessage ("grill version " ++ Version.versionString))
          | (Cmd.getFlag "Help" props) -> (ConIO.exitMessage (Cmd.helpCmdLine options))
-         | (Cmd.getFlag "Dump" props) -> fail "Dump sheet from commmand line is not yet implemented"
+         | (Cmd.getFlag "Dump" props) -> 
+             let dumpMode = Maybe.fromMaybe "TSV" $ List.find (\_ -> True) (Cmd.getProp "OutputFilter" props)
+             in
+               case dumpMode of
+                 "PP" -> Dump.eval sheet
+                 "TSV" -> Dump.dump sheet
+                 "CSV" -> error "CSV dump not yet implemented"
+                 _ -> error ("Unknown dump filter:" ++ dumpMode ++ "!")
          | (Cmd.getFlag "Console" props) -> consoleLoop props sheet
     _ ->   putStrLn "Defaulting to console" >> consoleLoop props sheet
   putStr "Exiting grill...\n"
-
