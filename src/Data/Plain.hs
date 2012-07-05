@@ -3,6 +3,7 @@
 --   Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Data.Plain
 (
