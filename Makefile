@@ -4,22 +4,28 @@
 #This is a quick and dirty solution. Generation should change to cabal in the future or
 #at least will be build using cabal.
 
-#This file magic is for cleanup and documentation, not needed else currently
+HS_VERSION=$(shell ghc --numeric-version | sed -e 's/^6.*/h98/' -e 's/7.0.*/h98/' -e 's/^7.4.*/h2010/' -e 's/^[0-9].*.*/h0/')
 
+
+#This file magic is for cleanup and documentation, not needed else currently
 DEMO_HS=demo_*.hs grill.hs
 DEMO_EXE=$(DEMO_HS:.hs=) $(DEMO_HS:.hs=.exe)
 TEST_HS=test_*.hs
 TEST_EXE=$(TEST_HS:.hs=) $(TEST_HS:.hs=.exe)
 EXCLUDE_HS=$(DEMO_HS) $(TEST_HS)
+EXCLUDE_HS_RESTRICTED=$(DEMO_HS) $(TEST_HS) CommandLine.hs
 #From file1 file2 file3 --> file1 -o -name file2 -o -name file3
 EXCLUDE_HS_FIND_PARAM=$(patsubst %,-o -name %,$(EXCLUDE_HS))
+EXCLUDE_HS_RESTRICTED_FIND_PARAM=$(patsubst %,-o -name %,$(EXCLUDE_HS_RESTRICTED))
 HS_SRC=$(shell cd src && find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_FIND_PARAM) \))
+HS_RESTRICTED_SRC=$(shell cd src && find . -name \*.hs -a \! \( -name .\* $(EXCLUDE_HS_RESTRICTED_FIND_PARAM) \) | grep -v ./Compat/ )
+
 HS_OBJ=$(HS_SRC:.hs=.o)
 HS_HI=$(HS_SRC:.hs=.hi)
 
 
 .SUFFIXES:
-.PHONY: doc test demo
+.PHONY: doc test demo prerequisites
 
 #Neither correct nor used...
 #%.hi:%.hs
@@ -27,10 +33,15 @@ HS_HI=$(HS_SRC:.hs=.hi)
 
 
 # Just let ghc create one executable depending on all source files. Quick hack, will change in the future.
-all:
-	ghc --make -Wall -isrc demo/demo_calc_trees.hs
-	ghc --make -Wall -isrc demo/demo_display_sheet.hs
-	ghc -Wall -Wall -isrc -O --make src/Console/grill.hs -o grill
+all: prerequisites
+	ghc --make -Wall -isrc -isrc/Compat/$(HS_VERSION) demo/demo_calc_trees.hs
+	ghc --make -Wall -isrc -isrc/Compat/$(HS_VERSION) demo/demo_display_sheet.hs
+	ghc -Wall -Wall -isrc -isrc/Compat/$(HS_VERSION) -O --make src/Console/grill.hs -o grill
+
+prerequisites:
+	ghc --version >/dev/null 2>& 1
+
+
 
 # Build via cabal. Thanks to Christian for that.
 build:
@@ -58,7 +69,7 @@ clean:
 	runhaskell Setup clean
 
 doc:
-	cd src && haddock -o ../doc -h $(HS_SRC)
+	cd src && haddock -o ../doc -h $(HS_RESTRICTED_SRC)
 
 clean_doc:
 	rm -f doc/*

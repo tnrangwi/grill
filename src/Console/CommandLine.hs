@@ -19,7 +19,7 @@ module Console.CommandLine
 )
 where
 
-import qualified System
+import qualified CompatSystem as System
 import qualified System.Console.GetOpt as GetOpt
 
 import qualified Data.Maybe as Maybe

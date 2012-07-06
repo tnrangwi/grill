@@ -3,7 +3,7 @@
 --
 -- | Author: Thorsten Rangwich. See file <../LICENSE> for details.
 
-import qualified System
+import qualified CompatSystem as System
 import qualified System.Exit as Exit
 import qualified System.IO as FileIO
 import qualified Control.Monad as M
