@@ -53,10 +53,10 @@ test:
 	runghc -isrc test/functional/test_EvalTrees.hs
 
 #Run demonstrations
-demo:
+demo: prerequisites
 #Mac shell does not like she-bang if the script is not compatible to bourne shell. So call runghc directly.
-	runghc -isrc demo/demo_calc_trees.hs
-	runghc -isrc demo/demo_display_sheet.hs TestData/demo_sheet.gst
+	runghc -isrc -isrc/Compat/$(HS_VERSION) demo/demo_calc_trees.hs
+	runghc -isrc -isrc/Compat/$(HS_VERSION) demo/demo_display_sheet.hs TestData/demo_sheet.gst
 
 #Check syntax of all files using hlint
 hlint:
