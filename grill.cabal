@@ -8,16 +8,16 @@ synopsis:	Wants to become a Trader's system
 description:	Small tree based calculation engine. To be extended with visual tools and grid framework later.
 		Currently only a quite rudimentary prototype is implemented. Two sheet functions,
 		spartanic console GUI to edit sheets.
-tested-with:	GHC >= 7.0
+tested-with:	GHC >= 7.4
 
 executable grill
   ghc-options:     -Wall -rtsopts
   build-depends:   
                    base,
                    parsec,
-                   containers,
-                   haskell98
+                   containers
 --  extensions:      FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances
   main-is:         Console/grill.hs
-  hs-source-dirs:  src
+  hs-source-dirs:  src,
+                   src/Compat/h2010
 
